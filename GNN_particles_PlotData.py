@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import imageio
 from matplotlib import rc
 
+from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.fitting_models import *
 from ParticleGraph.sparsify import *
 from ParticleGraph.models.utils import *
@@ -12,57 +13,6 @@ from ParticleGraph.utils import bundle_fields
 
 os.environ["PATH"] += os.pathsep + '/usr/local/texlive/2023/bin/x86_64-linux'
 
-
-def plot_gland(config, config_file, device):
-
-    simulation_config = config.simulation
-    train_config = config.training
-    model_config = config.graph_model
-
-    dataset_name = config.dataset
-
-    print(f'Plot data ... {dataset_name}')
-
-    time_series, global_ids = load_wanglab_salivary_gland(dataset_name, device="cuda:0")
-
-    frame = 180
-    frame_data = time_series[frame]
-
-    # IDs are in the range 0, ..., N-1; global ids are stored separately
-    print(f"Data fields: {frame_data.node_attrs()}")
-    print(f"Number of particles in frame {frame}: {frame_data.num_nodes}")
-    print(f"Local ids in frame {frame}: {frame_data.track_id}")
-    print(f"Global ids in frame {frame}: {global_ids[frame_data.track_id]}")
-
-    # summarize some of the fields in a particular dataset
-    x = bundle_fields(frame_data, "track_id", "pos", "velocity")
-
-    fig, ax = fig_init()
-    ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(to_numpy(x[:, 2]), to_numpy(x[:, 1]), to_numpy(x[:, 3]), s=25, color='k', alpha=0.05, edgecolors='none')
-
-    # compute the acceleration and a mask to filter out NaN values
-    acceleration, mask = time_series.compute_derivative("velocity", id_name="track_id")
-    Y = acceleration[frame]
-    Y = Y[mask[frame], :]
-    print(f"NaNs in sanitized acceleration: {torch.isnan(Y).sum()}")
-
-    # Sanity-check one to one correspondence between X and Y
-    #   pred = GNN(X)
-    #   loss = pred[mask] - Y[mask]
-
-    # stack all the accelerations / masks
-    acceleration = torch.vstack(acceleration)
-    mask = torch.hstack(mask)
-    std = torch.std(acceleration[mask, :], dim=0)
-
-    # get velocity for all time steps
-    velocity = torch.vstack([frame.velocity for frame in time_series])
-
-    # a TimeSeries object can be sliced like a list
-    every_second_frame = time_series[::2]
-    first_ten_frames = time_series[:10]
-    last_ten_frames_reversed = time_series[-1:-11:-1]
 
 def plot_gravity_solar_system(config_file, epoch_list, log_dir, logger, device):
     config_file = 'gravity_solar_system'
@@ -294,7 +244,7 @@ if __name__ == '__main__':
 
     config_file = "arbitrary_3"
     config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
-    plot_gland(config, config_file, device)
+    plot_gravity_solar_system(config, config_file, device)
 
     # f_list = ['supp13']
     # for f in f_list:

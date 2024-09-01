@@ -1,19 +1,17 @@
+import random
+
 import matplotlib.pyplot as plt
 import torch
 import seaborn as sns
 import torch.nn.functional as F
-import random
+from geomloss import SamplesLoss
+from sklearn.neighbors import NearestNeighbors
+from scipy.ndimage import median_filter
 
 from ParticleGraph.models.utils import *
 from ParticleGraph.models.Siren_Network import *
 from ParticleGraph.models.Ghost_Particles import *
-from geomloss import SamplesLoss
 from ParticleGraph.sparsify import EmbeddingCluster, sparsify_cluster, sparsify_cluster_state
-
-
-from ParticleGraph.data_loaders import load_agent_data
-from sklearn.neighbors import NearestNeighbors
-from scipy.ndimage import median_filter
 
 
 def data_train(config, config_file, erase, device):
@@ -32,7 +30,6 @@ def data_train(config, config_file, erase, device):
     has_mesh = (config.graph_model.mesh_model_name != '')
     has_signal = (config.graph_model.signal_model_name != '')
     has_particle_field = ('PDE_ParticleField' in config.graph_model.particle_model_name)
-    has_state = (config.simulation.state_type != 'discrete')
     dataset_name = config.dataset
     print('')
     print(f'dataset_name: {dataset_name}')
@@ -43,8 +40,6 @@ def data_train(config, config_file, erase, device):
         data_train_mesh(config, config_file, erase, device)
     elif has_signal:
         data_train_signal(config, config_file, erase, device)
-    elif has_state:
-        data_train_particles_with_states(config, config_file, erase, device)
     else:
         data_train_particles(config, config_file, erase, device)
 
@@ -81,7 +76,6 @@ def data_train_particles(config, config_file, erase, device):
     cmap = CustomColorMap(config=config)  # create colormap for given model_config
     embedding_cluster = EmbeddingCluster(config)
     n_runs = train_config.n_runs
-    has_state = (config.simulation.state_type != 'discrete')
 
     l_dir, log_dir, logger = create_log_dir(config, config_file,erase)
     print(f'Graph files N: {n_runs}')
@@ -1568,7 +1562,6 @@ def data_test(config=None, config_file=None, visualize=False, style='color frame
     dimension = simulation_config.dimension
     has_siren_time = 'siren_with_time' in model_config.field_type
     has_field = ('PDE_ParticleField' in config.graph_model.particle_model_name)
-    has_state = (config.simulation.state_type != 'discrete')
 
     l_dir = os.path.join('.', 'log')
     log_dir = os.path.join(l_dir, 'try_{}'.format(config_file))

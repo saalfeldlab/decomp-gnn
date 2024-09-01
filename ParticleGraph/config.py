@@ -32,7 +32,6 @@ class SimulationConfig(BaseModel):
     n_particles_max: int = 20000
     n_particle_types: int = 5
     n_interactions: int = 5
-    state_type: Literal['discrete', 'sequence', 'continuous'] = 'discrete'
     state_params: list[float] =[-1]
     non_discrete_level: float = 0
     n_nodes: Optional[int] = None
@@ -52,9 +51,6 @@ class SimulationConfig(BaseModel):
     beta: Optional[float] = None
     start_frame: int = 0
     mc_slope: list[float] = [-1]
-    has_fluo: bool = False
-    fluo_path: str = ''
-    fluo_method: str = 'padding'
 
 class GraphModelConfig(BaseModel):
     model_config = ConfigDict(extra='forbid')
