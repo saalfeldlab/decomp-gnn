@@ -21,9 +21,6 @@ class SimulationConfig(BaseModel):
     phi: str = 'tanh'
     tau: float = 1.0
     params: list[list[float]]
-    cell_cycle_length: list[float] =[-1]
-    cell_death_rate: list[float] = [-1]
-    cell_area: list[float] = [-1]
     min_radius: Annotated[float, Field(ge=0)] = 0
     max_radius: Annotated[float, Field(gt=0)]
     n_neighbors: int = 10
@@ -35,7 +32,6 @@ class SimulationConfig(BaseModel):
     n_particles_max: int = 20000
     n_particle_types: int = 5
     n_interactions: int = 5
-    has_cell_state: bool = False
     state_type: Literal['discrete', 'sequence', 'continuous'] = 'discrete'
     state_params: list[float] =[-1]
     non_discrete_level: float = 0
@@ -43,24 +39,18 @@ class SimulationConfig(BaseModel):
     n_node_types: Optional[int] = None
     pos_rate: list[list[float]] = None
     neg_rate: list[list[float]] = None
-    has_cell_division: bool = False
-    has_cell_death: bool = False
-    cell_inert_model_coeff: float = 0
     coeff_area: float = 1
     coeff_perimeter: float = 0
-    cell_active_model_coeff: float = 1
     n_frames: int = 1000
     sigma: float = 0.005
     delta_t: float = 1
     dpos_init: float = 0
     boundary: Literal['periodic', 'no', 'periodic_special'] = 'periodic'
-    cell_type_map: Optional[str] = None
     node_coeff_map: Optional[str] = None
     node_value_map: Optional[str] = None
     node_proliferation_map: Optional[str] = None
     beta: Optional[float] = None
     start_frame: int = 0
-    final_cell_mass: list[float] = [-1]
     mc_slope: list[float] = [-1]
     has_fluo: bool = False
     fluo_path: str = ''
@@ -69,7 +59,6 @@ class SimulationConfig(BaseModel):
 class GraphModelConfig(BaseModel):
     model_config = ConfigDict(extra='forbid')
     particle_model_name: str = ''
-    cell_model_name: str = ''
     mesh_model_name: str = ''
     signal_model_name: str = ''
     prediction: Literal['first_derivative', '2nd_derivative'] = '2nd_derivative'
@@ -124,7 +113,6 @@ class TrainingConfig(BaseModel):
     batch_size: int = 1
     small_init_batch_size: bool = True
     large_range: bool = False
-    do_tracking: bool = False
 
     n_runs: int = 2
     seed : int = 40

@@ -58,8 +58,7 @@ class Interaction_Particle(pyg.nn.MessagePassing):
         self.has_state = config.simulation.state_type != 'discrete'
         self.n_frames = simulation_config.n_frames
         self.state_hot_encoding = train_config.state_hot_encoding
-        self.do_tracking = train_config.do_tracking
-        
+
         temperature = train_config.state_temperature
         self.temperature = torch.tensor(temperature, device=self.device)
 
