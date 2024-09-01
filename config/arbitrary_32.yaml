@@ -1,0 +1,48 @@
+description: 'attraction-repulsion with 16 types particles'
+dataset: 'arbitrary_32'
+
+simulation:
+  params: [[-1]]
+  min_radius: 0
+  max_radius: 0.075
+  n_particles: 4800
+  n_particle_types: 32
+  n_interactions: 32
+  n_frames: 1000
+  sigma: 0.005
+  delta_t: 0.025
+  dpos_init: 0
+  boundary: 'periodic'
+
+graph_model:
+  particle_model_name: 'PDE_A'
+  mesh_model_name: ''
+  prediction: 'first_derivative'
+  input_size: 5
+  output_size: 2
+  hidden_dim: 128
+  n_mp_layers: 5
+  aggr_type: 'mean'
+  embedding_dim: 2
+  update_type: 'none'
+
+plotting:
+  colormap: 'tab20'
+  arrow_length: 2
+
+training:
+  n_epochs: 20
+  batch_size: 1
+  small_init_batch_size: False
+  n_runs: 2
+  sparsity: 'none'
+  cluster_method: 'distance_plot'
+  data_augmentation: True
+  data_augmentation_loop: 100
+  fix_cluster_embedding: True
+  device: 'auto'
+
+
+
+
+

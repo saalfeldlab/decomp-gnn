@@ -1,0 +1,44 @@
+description: 'Gravity model with 16 different particle types'
+dataset: 'gravity_16_noise_0_3'
+
+simulation:
+    params: [[-1]]
+    min_radius: 0.002
+    max_radius: 0.3
+    n_particles: 960
+    n_particle_types: 16
+    n_interactions: 16
+    n_frames: 2000
+    delta_t: 3.0E-5
+    dpos_init:  5.0E-5
+    boundary: 'no'
+    start_frame: 0 # -1000
+
+graph_model:
+    particle_model_name: 'PDE_G'
+    mesh_model_name: ''
+    prediction: '2nd_derivative'
+    input_size: 9
+    output_size: 2
+    hidden_dim: 128
+    n_mp_layers: 5
+    aggr_type: 'add'
+    embedding_dim: 2
+    update_type: 'none'
+
+plotting:
+    colormap: 'tab20'
+    arrow_length: 1
+
+training:
+    n_epochs: 20
+    batch_size: 8
+    small_init_batch_size: False
+    n_runs: 2
+    sparsity: 'replace_embedding_function'
+    data_augmentation: True
+    data_augmentation_loop: 100
+    cluster_method: 'distance_plot'
+    fix_cluster_embedding: True
+    noise_level: 3.0E-1
+    device: 'auto'

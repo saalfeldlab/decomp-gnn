@@ -1,0 +1,48 @@
+description: 'Rock Paper Scissor model'
+dataset: 'RD_RPS'
+
+simulation:
+  params: [[0],[0],[0],[0]]
+  min_radius: 0
+  max_radius: 0.3
+  diffusion_coefficients: [[0.02], [0.04], [0.05], [0.03]]
+  n_particles: 10000
+  n_particle_types: 4
+  n_interactions: 4
+  n_nodes: 10000
+  n_node_types: 4
+  n_frames: 4000
+  delta_t: 0.05
+  boundary: 'periodic'
+  node_value_map: 'pattern_10.tif'
+  node_coeff_map: 'pics_quadrants.tif'
+  beta: 1
+
+graph_model:
+  particle_model_name: ''
+  mesh_model_name: 'RD_RPS_Mesh'
+  prediction: 'first_derivative'
+  input_size: 8
+  output_size: 3
+  hidden_dim: 32
+  n_mp_layers: 5
+  aggr_type: 'add'
+  mesh_aggr_type: 'add'
+  embedding_dim: 2
+  update_type: 'none'
+
+plotting:
+  colormap: 'tab20'
+  arrow_length: 10
+
+training:
+
+  n_epochs: 20
+  batch_size: 8
+  small_init_batch_size: True
+  n_runs: 2
+  sparsity: 'replace_embedding'
+  cluster_method: 'distance_plot'
+  fix_cluster_embedding: True
+
+  device: 'cuda:0'

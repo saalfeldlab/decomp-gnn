@@ -1,0 +1,64 @@
+description: 'attraction-repulsion with 3 types particles'
+dataset: 'arbitrary_3_field_boats'
+
+simulation:
+  params: [[1.6233, 1.0413, 1.6012, 1.5615], [1.7667, 1.8308, 1.0855, 1.9055], [1.7226, 1.7850, 1.0584, 1.8579]]
+  min_radius: 0
+  max_radius: 0.075
+  n_particles: 4800
+  n_particle_types: 3
+  n_interactions: 3
+  n_frames: 250
+  sigma: 0.005
+  delta_t: 0.1
+  dpos_init: 0
+  boundary: 'periodic'
+  n_nodes: 10000
+  n_node_types: 1
+  diffusion_coefficients: [[0]]
+  pos_rate: [[0]]
+  neg_rate: [[0]]
+  node_value_map: 'pattern_boats.tif'
+  node_type_map: 'pattern_Null.tif'
+  node_diffusion_map: 'pattern_Null.tif'
+  node_proliferation_map: 'pattern_Null.tif'
+
+graph_model:
+  particle_model_name: 'PDE_ParticleField_A'
+  mesh_model_name: ''
+  prediction: 'first_derivative'
+  input_size: 5
+  output_size: 2
+  hidden_dim: 256
+  n_mp_layers: 5
+  aggr_type: 'mean'
+  embedding_dim: 2
+  update_type: 'none'
+
+plotting:
+  colormap: 'tab10'
+  arrow_length: 2
+  ylim: [-0.04, 0.03]
+
+training:
+  n_epochs: 20
+  batch_size: 8
+  small_init_batch_size: False
+  n_runs: 2
+  sparsity: 'replace_embedding_function'
+  cluster_method: 'distance_plot'
+  data_augmentation: True
+  data_augmentation_loop: 200
+  fix_cluster_embedding: True
+  device: 'auto'
+
+
+
+
+
+
+
+
+
+
+

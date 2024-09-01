@@ -1,0 +1,61 @@
+description: 'attraction-repulsion with 3 types particles'
+dataset: 'arbitrary_3_3'
+
+simulation:
+  params: [[ 0.0235  ,  0.8607  ,  0.56425 ,  1.8918  ],
+       [ 0.1991  ,  1.1398  ,  0.3518  ,  0.37    ],
+       [ 0.7061  ,  2.8253  ,  0.089325,  0.2487  ],
+       [ 0.072375, -0.2288  ,  0.644125,  0.7656  ],
+       [ 0.26125 , -0.242   , -0.348475,  1.4956  ],
+       [ 0.232325,  0.3876  ,  0.38415 , -0.3303  ],
+       [-0.0659  ,  0.3685  ,  0.4235  ,  2.8136  ],
+       [ 0.074275,  0.0469  ,  0.049375,  1.9027  ],
+       [-0.022275,  0.8188  ,  0.57175 ,  1.1936  ]]
+  min_radius: 0
+  max_radius: 0.075
+  n_particles: 4800
+  n_particle_types: 3
+  n_interactions: 9
+  n_frames: 250
+  sigma: 0.005
+  delta_t: 0.1
+  dpos_init: 0
+  boundary: 'periodic'
+
+graph_model:
+  particle_model_name: 'PDE_A_bis'
+  mesh_model_name: ''
+  prediction: 'first_derivative'
+  input_size: 7
+  output_size: 2
+  hidden_dim: 128
+  n_mp_layers: 5
+  aggr_type: 'mean'
+  embedding_dim: 2
+  update_type: 'none'
+
+plotting:
+  colormap: 'tab10'
+  arrow_length: 2
+  ylim: [-0.03, 0.03]
+
+training:
+  n_epochs: 20
+  batch_size: 8
+  small_init_batch_size: False
+  n_runs: 2
+  sparsity: 'replace_embedding'
+  cluster_method: 'distance_plot'
+  data_augmentation: True
+  data_augmentation_loop: 100
+  fix_cluster_embedding: True
+  device: 'auto'
+
+
+
+
+
+
+
+
+

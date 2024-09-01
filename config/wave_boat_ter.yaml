@@ -1,0 +1,51 @@
+description: 'Wave propagation'
+dataset: 'wave_boat_ter'
+
+simulation:
+  params: [[1.4],[2.6],[3.8],[5.0]]
+  min_radius: 0
+  max_radius: 0.3
+  diffusion_coefficients: [[0.2],[0.4],[0.8],[1.2]]
+  n_particles: 10000
+  n_particle_types: 4
+  n_interactions: 4
+  n_nodes: 10000
+  n_node_types:  10000
+  n_frames: 8000
+  delta_t: 0.125
+  dpos_init: 0
+  boundary: 'periodic'
+  node_value_map: 'pattern_24.tif'
+  node_coeff_map: 'pics_boat.tif'
+  beta: 1.E-2
+  start_frame: 0
+
+graph_model:
+  particle_model_name: ''
+  mesh_model_name: 'WaveMesh'
+  prediction: '2nd_derivative'
+  input_size: 3
+  output_size: 1
+  hidden_dim: 16
+  n_mp_layers: 5
+  aggr_type: 'add'
+  mesh_aggr_type: 'add'
+  embedding_dim: 2
+  update_type: 'none'
+
+plotting:
+  colormap: 'grey'
+  arrow_length: 10
+
+training:
+  noise_level: 1.0E-3
+  n_epochs: 20
+  batch_size: 8
+  small_init_batch_size: True
+  n_runs: 2
+  sparsity: 'none'
+  data_augmentation: True
+  cluster_method: 'kmeans_auto_plot'
+  fix_cluster_embedding: True
+
+  device: 'auto'

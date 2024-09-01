@@ -1,0 +1,45 @@
+description: 'Boids 32 different types'
+dataset: 'boids_32_256'
+
+simulation:
+  params: [[-1]]
+  min_radius: 0.001
+  max_radius: 0.04
+  n_particles: 1792
+  n_particle_types: 32
+  n_interactions: 32
+  has_cell_division: False
+  n_frames: 8000
+  sigma: 0.005
+  delta_t: 0.5
+  dpos_init: 5.0E-4
+  boundary: 'periodic'
+  start_frame: 0
+
+graph_model:
+  particle_model_name: 'PDE_B'
+  mesh_model_name: ''
+  prediction: '2nd_derivative'
+  input_size: 9
+  output_size: 2
+  hidden_dim: 256
+  n_mp_layers: 5
+  aggr_type: 'mean'
+  embedding_dim: 2
+  update_type: 'none'
+
+plotting:
+  colormap: 'tab20'
+  arrow_length: 5
+
+training:
+  n_epochs: 20
+  batch_size: 8
+  small_init_batch_size: True
+  n_runs: 2
+  noise_level: 0
+  data_augmentation: True
+  data_augmentation_loop: 100
+  fix_cluster_embedding: True
+  device: 'auto'
+

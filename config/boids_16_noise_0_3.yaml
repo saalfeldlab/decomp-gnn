@@ -1,0 +1,45 @@
+description: 'Boids 16 different types'
+dataset: 'boids_16_noise_0_3'
+
+simulation:
+  params: [[27.6, 92.5, 48.2], [32.0, 51.8, 29.8], [23.6, 35.0, 13.5], [3.3, 76.4, 13.0], [94.0, 78.7, 30.8,], [81.4, 34.6, 2.2], [3.1, 40.5, 17.0], [88.8, 7.2, 29.8], [32.7, 76.8, 26.1], [14.5, 56.8, 27.6], [63.3, 99.9, 13.9], [32.5, 25.2, 24.4], [97.6, 56.5, 12.1], [62.2, 9.1, 28.3], [76.4, 52.9, 32.0], [48.1, 54.4, 30.7]]
+  min_radius: 0.001
+  max_radius: 0.04
+  n_particles: 1792
+  n_particle_types: 16
+  n_interactions: 16
+  has_cell_division: False
+  n_frames: 8000
+  sigma: 0.005
+  delta_t: 0.5
+  dpos_init: 5.0E-4
+  boundary: 'periodic'
+  start_frame: 0
+
+graph_model:
+  particle_model_name: 'PDE_B'
+  mesh_model_name: ''
+  prediction: '2nd_derivative'
+  input_size: 9
+  output_size: 2
+  hidden_dim: 128
+  n_mp_layers: 5
+  aggr_type: 'mean'
+  embedding_dim: 2
+  update_type: 'none'
+
+plotting:
+  colormap: 'tab20'
+  arrow_length: 5
+
+training:
+  n_epochs: 20
+  batch_size: 8
+  small_init_batch_size: True
+  n_runs: 2
+  noise_level: 3.0E-1
+  data_augmentation: True
+  data_augmentation_loop: 100
+  fix_cluster_embedding: True
+  device: 'auto'
+

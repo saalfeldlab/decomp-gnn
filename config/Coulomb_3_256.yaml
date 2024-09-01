@@ -1,0 +1,44 @@
+description: 'Coulomb model with three different particle types of charges being +1, +2 and -1'
+dataset: 'Coulomb_3_256'
+
+simulation:
+  params: [[2], [1], [-1]]
+  min_radius: 0.001
+  max_radius: 0.15
+  n_particles: 960
+  n_particle_types: 3
+  n_interactions: 3
+  n_frames: 2000
+  sigma: 0.005
+  delta_t: 1.5E-5
+  dpos_init: 1.0E-4
+  boundary: 'periodic'
+  start_frame: 0
+
+graph_model:
+  particle_model_name: 'PDE_E'
+  mesh_model_name: ''
+  prediction: '2nd_derivative'
+  input_size: 7
+  output_size: 2
+  hidden_dim: 250
+  n_mp_layers: 5
+  aggr_type: 'add'
+  embedding_dim: 2
+  update_type: 'none'
+
+plotting:
+  colormap: 'tab10'
+  arrow_length: 10
+
+training:
+  n_epochs: 20
+  batch_size: 8
+  small_init_batch_size: False
+  n_runs: 2
+  sparsity: 'none'
+  data_augmentation: True
+  data_augmentation_loop: 100
+  cluster_method: 'distance_plot'
+  fix_cluster_embedding: True
+  device: 'auto'

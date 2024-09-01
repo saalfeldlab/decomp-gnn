@@ -1,0 +1,49 @@
+description: 'attraction-repulsion with 16 types particles'
+dataset: 'arbitrary_16_noise_0_4'
+
+simulation:
+  params: [ [ 1.3453, 1.5175, 1.1073, 1.0233 ], [ 1.9893, 1.2029, 1.7467, 1.2261 ], [ 1.7790, 1.7066, 1.7218, 1.0976 ], [ 1.8340, 1.0494, 1.0030, 1.0463 ], [ 1.7224, 1.9749, 1.2732, 1.4507 ], [ 1.9939, 1.8826, 1.5949, 1.0536 ], [ 1.6751, 1.3844, 1.3176, 1.8450 ], [ 1.1082, 1.3502, 1.2392, 1.0092 ], [ 1.8788, 1.4203, 1.7060, 1.5666 ], [ 1.2973, 1.5248, 1.9942, 1.2569 ], [ 1.0328, 1.4626, 1.5534, 1.6405 ], [ 1.2190, 1.2711, 1.6013, 1.2168 ], [ 1.7191, 1.5606, 1.1414, 1.6857 ], [ 1.3685, 1.5673, 1.3802, 1.0888 ], [ 1.9721, 1.8492, 1.0533, 1.6541 ], [ 1.0650, 1.1324, 1.6790, 1.9309 ] ]
+  min_radius: 0
+  max_radius: 0.075
+  n_particles: 4800
+  n_particle_types: 16
+  n_interactions: 16
+  n_frames: 500
+  sigma: 0.005
+  delta_t: 0.05
+  dpos_init: 0
+  boundary: 'periodic'
+
+graph_model:
+  particle_model_name: 'PDE_A'
+  mesh_model_name: ''
+  prediction: 'first_derivative'
+  input_size: 5
+  output_size: 2
+  hidden_dim: 128
+  n_mp_layers: 5
+  aggr_type: 'mean'
+  embedding_dim: 2
+  update_type: 'none'
+
+plotting:
+  colormap: 'tab20'
+  arrow_length: 2
+
+training:
+  n_epochs: 20
+  batch_size: 1
+  small_init_batch_size: False
+  n_runs: 2
+  sparsity: 'none'
+  cluster_method: 'distance_plot'
+  data_augmentation: True
+  data_augmentation_loop: 100
+  fix_cluster_embedding: True
+  noise_level: 4.0E-1
+  device: 'auto'
+
+
+
+
+
