@@ -8,7 +8,6 @@ simulation:
   n_particles: 1792
   n_particle_types: 16
   n_interactions: 16
-  has_cell_division: False
   n_frames: 8000
   sigma: 0.005
   delta_t: 0.5

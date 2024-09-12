@@ -65,14 +65,9 @@ class Interaction_Particle_Field(pyg.nn.MessagePassing):
             self.lin_edge = MLP(input_size=self.input_size, output_size=self.output_size, nlayers=self.n_layers,
                                 hidden_size=self.hidden_dim, device=self.device)
 
-        if simulation_config.has_cell_division :
-            self.a = nn.Parameter(
-                torch.tensor(np.ones((self.n_dataset, 20500, 2)), device=self.device,
-                             requires_grad=True, dtype=torch.float32))
-        else:
-            self.a = nn.Parameter(
-                torch.tensor(np.ones((self.n_dataset, int(self.n_particles) + self.n_ghosts, self.embedding_dim)), device=self.device,
-                             requires_grad=True, dtype=torch.float32))
+        self.a = nn.Parameter(
+            torch.tensor(np.ones((self.n_dataset, int(self.n_particles) + self.n_ghosts, self.embedding_dim)), device=self.device,
+                         requires_grad=True, dtype=torch.float32))
 
         if (model_config.field_method == 'tensor'):
             self.field = nn.Parameter(
