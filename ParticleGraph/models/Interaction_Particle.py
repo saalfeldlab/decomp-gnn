@@ -55,7 +55,6 @@ class Interaction_Particle(pyg.nn.MessagePassing):
         self.bc_dpos = bc_dpos
         self.n_ghosts = int(train_config.n_ghosts)
         self.dimension = dimension
-        self.has_state = config.simulation.state_type != 'discrete'
         self.n_frames = simulation_config.n_frames
         self.state_hot_encoding = train_config.state_hot_encoding
 

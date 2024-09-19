@@ -5,6 +5,7 @@ from matplotlib.ticker import FormatStrFormatter
 from ParticleGraph.models import Interaction_Particle, Interaction_Particle_Field, Signal_Propagation, Mesh_Laplacian, Mesh_RPS
 from ParticleGraph.utils import *
 
+import matplotlib
 import matplotlib as mpl
 import networkx as nx
 from torch_geometric.utils.convert import to_networkx

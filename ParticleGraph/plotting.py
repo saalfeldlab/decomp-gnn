@@ -7,11 +7,14 @@ from matplotlib import rc
 from matplotlib.ticker import FormatStrFormatter
 from scipy.spatial import voronoi_plot_2d
 from scipy.stats import pearsonr
+from sklearn import metrics
 from torch_geometric.nn import MessagePassing
 import torch.nn as nn
+from tqdm import trange
 
 from ParticleGraph.fitting_models import *
-from ParticleGraph.models import MLP
+from ParticleGraph.generators import data_generate
+from ParticleGraph.models import MLP, data_test
 from ParticleGraph.models.utils import *
 from ParticleGraph.sparsify import *
 from ParticleGraph.utils import to_numpy, CustomColorMap
@@ -3467,7 +3470,7 @@ def get_figures(index, *, device):
     epoch_list = ['20']
     match index:
         case '3':
-            config_list = ['arbitrary_3_continuous', 'arbitrary_3', 'arbitrary_3_3', 'arbitrary_16', 'arbitrary_32','arbitrary_64']
+            config_list = [ 'arbitrary_3']#, 'arbitrary_3_continuous', 'arbitrary_3_3', 'arbitrary_16', 'arbitrary_32','arbitrary_64']
         case '4':
             config_list = ['arbitrary_3_field_video_bison_quad']
         case 'supp1':

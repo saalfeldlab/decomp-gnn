@@ -11,6 +11,8 @@ from matplotlib.collections import PatchCollection
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import seaborn as sns
 from fa2_modified import ForceAtlas2
+import torch_geometric.data as data
+from torch_geometric.loader import DataLoader
 
 def data_generate(config, visualize=True, run_vizualized=0, style='color', erase=False, step=5, alpha=0.2, ratio=1,
                   scenario='none', device=None, bSave=True):
@@ -102,12 +104,6 @@ def data_generate_particle(config, visualize=True, run_vizualized=0, style='colo
         X1, V1, T1, H1, A1, N1 = init_particles(config=config, scenario=scenario, ratio=ratio, device=device)
         time.sleep(0.5)
         for it in trange(simulation_config.start_frame, n_frames + 1):
-
-            # calculate type change
-            if simulation_config.state_type == 'sequence':
-                sample = torch.rand((len(T1), 1), device=device)
-                sample = (sample < (1 / config.simulation.state_params[0])) * torch.randint(0, n_particle_types,(len(T1), 1), device=device)
-                T1 = (T1 + sample) % n_particle_types
 
             x = torch.concatenate(
                 (N1.clone().detach(), X1.clone().detach(), V1.clone().detach(), T1.clone().detach(),
