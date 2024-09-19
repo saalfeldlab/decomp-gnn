@@ -16,7 +16,7 @@ os.environ["PATH"] += os.pathsep + '/usr/local/texlive/2023/bin/x86_64-linux'
 
 def plot_gravity_solar_system(config_file, epoch_list, log_dir, logger, device):
     config_file = 'gravity_solar_system'
-    config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
+    config = ParticleGraphConfig.from_yaml(f'paper_experiments/config/{config_file}.yaml')
 
     dataset_name = config.dataset
     embedding_cluster = EmbeddingCluster(config)
@@ -243,7 +243,7 @@ if __name__ == '__main__':
     matplotlib.use("Qt5Agg")
 
     config_file = "arbitrary_3"
-    config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
+    config = ParticleGraphConfig.from_yaml(f'paper_experiments/config/{config_file}.yaml')
     plot_gravity_solar_system(config, config_file, device)
 
     # f_list = ['supp13']

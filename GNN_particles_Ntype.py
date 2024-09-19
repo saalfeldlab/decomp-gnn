@@ -14,7 +14,7 @@ if __name__ == '__main__':
     config_list = ['arbitrary_3']
 
     for config_file in config_list:
-        config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
+        config = ParticleGraphConfig.from_yaml(f'paper_experiments/config/{config_file}.yaml')
         device = set_device(config.training.device)
         print(f'device {device}')
         # data_generate(config, device=device, visualize=True, run_vizualized=0, style='color', alpha=1, erase=True, bSave=True, step=10) # config.simulation.n_frames // config.simulation.n_frames)

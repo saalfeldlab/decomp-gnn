@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
     for config_file in config_list:
         # Load parameters from config file
-        config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
+        config = ParticleGraphConfig.from_yaml(f'paper_experiments/config/{config_file}.yaml')
         # print(config.pretty())
 
         device = set_device(config.training.device)
