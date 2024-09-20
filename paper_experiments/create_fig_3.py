@@ -3,7 +3,7 @@ import torch
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.generators import data_generate
 from ParticleGraph.models import data_train, data_test
-from ParticleGraph.plotting import get_figures
+from ParticleGraph.plotting import get_figures, load_and_display
 from ParticleGraph.utils import set_device
 
 device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
@@ -24,3 +24,9 @@ for config_file in config_list:
 for f in f_list:
     config_list,epoch_list = get_figures(f, device=device)
 
+load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_0.tif', title="Initial configuration for data generation")
+load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_250.tif', title="Final configuration in data generation")
+load_and_display('log/try_arbitrary_3/results/embedding_arbitrary_3_20.tif', title="Learned embedding")
+load_and_display('log/try_arbitrary_3/results/func_all_arbitrary_3_20.tif', title="Learned functions")
+load_and_display('log/try_arbitrary_3/tmp_recons/Fig_arbitrary_3_0.tif', title="Initial configuration for rollout")
+load_and_display('log/try_arbitrary_3/tmp_recons/Fig_arbitrary_3_192.tif', title="Final configuration in rollout")

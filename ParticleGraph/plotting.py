@@ -2,7 +2,6 @@ import sys
 from io import StringIO
 
 import torch_geometric.utils as pyg_utils
-import matplotlib
 from matplotlib import rc
 from matplotlib.ticker import FormatStrFormatter
 from scipy.spatial import voronoi_plot_2d
@@ -11,6 +10,8 @@ from sklearn import metrics
 from torch_geometric.nn import MessagePassing
 import torch.nn as nn
 from tqdm import trange
+import matplotlib.pyplot as plt
+from imageio.v3 import imread
 
 from ParticleGraph.fitting_models import *
 from ParticleGraph.generators import data_generate
@@ -3699,3 +3700,23 @@ def get_figures(index, *, device):
     print(' ')
 
     return config_list,epoch_list
+
+
+def load_and_display(
+        file_name: str,
+        *,
+        title: str = None,
+        **kwargs,
+):
+    """
+    Convenience function to load and show an image file.
+    :param file_name: The name of the file to display.
+    :param title: The title (if any) to display.
+    :param kwargs: Key-value pairs to pass to the imshow function.
+    """
+    img = imread(file_name)
+    plt.imshow(img, **kwargs)
+    plt.axis('off')
+    if title:
+        plt.title(title)
+    plt.show()
