@@ -2,30 +2,30 @@ name: gnn
 channels:
   - conda-forge
 dependencies:
-  - pytorch
-  - torchvision
-  - umap-learn
-  - numpy
-  - scipy
+  - astropy
+  - fa2_modified
+  - gputil
+  - h5py
+  - imageio
   - ipython
-  - seaborn
-  - pandas
   - matplotlib
   - networkx
-  - prettytable
-  - tqdm
-  - PyYAML
-  - tifffile
-  - pydantic
-  - gputil
+  - numpy
+  - pandas
   - pip
-  - imageio
-  - astropy
-  - vispy
-  - scikit-image
+  - prettytable
+  - pydantic
   - pysr
-  - h5py
-  - fa2_modified
+  - pytorch
+  - PyYAML
+  - scikit-image
+  - scipy
+  - seaborn
+  - tifffile
+  - torchvision
+  - tqdm
+  - umap-learn
+  - vispy
   - pip:
     - geomloss
     - torch_geometric
