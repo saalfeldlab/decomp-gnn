@@ -8,6 +8,8 @@ dependencies:
   - h5py
   - imageio
   - ipython
+  - jupyter
+  - jupytext
   - matplotlib
   - networkx
   - numpy
