@@ -1890,7 +1890,7 @@ def data_test(config=None, config_file=None, visualize=False, style='color frame
                 x_list[0][it][:, 3:3+dimension] = x[:, 3:3+dimension].clone().detach()
 
 
-        if (it % step == 0) & (it >= 0) & visualize:
+        if (((it % step == 0) & (it >= 0)) | (it==n_frames)) & visualize:
 
             if 'latex' in style:
                 plt.rcParams['text.usetex'] = True
