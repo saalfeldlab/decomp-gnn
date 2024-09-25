@@ -12,6 +12,7 @@ from sklearn.neighbors import NearestNeighbors
 import torch_geometric.data as data
 from torch_geometric.loader import DataLoader
 from scipy.optimize import curve_fit
+import gc
 
 from ParticleGraph.models.utils import *
 from ParticleGraph.models.Siren_Network import *
@@ -253,6 +254,8 @@ def data_train_particles(config, config_file, erase, device):
 
             total_loss += loss.item()
 
+            check_and_clear_memory(device, iteration_number=N)
+
         print("Epoch {}. Loss: {:.6f}".format(epoch, total_loss / (N + 1) / n_particles / batch_size))
         logger.info("Epoch {}. Loss: {:.6f}".format(epoch, total_loss / (N + 1) / n_particles / batch_size))
         torch.save({'model_state_dict': model.state_dict(),
@@ -397,6 +400,8 @@ def data_train_particles(config, config_file, erase, device):
         plt.tight_layout()
         plt.savefig(f"./{log_dir}/tmp_training/Fig_{dataset_name}_{epoch}.tif")
         plt.close()
+
+        check_and_clear_memory(device, iteration_number=epoch)
 
 
 def data_train_mesh(config, config_file, erase, device):
