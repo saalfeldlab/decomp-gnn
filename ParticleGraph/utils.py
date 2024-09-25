@@ -26,19 +26,40 @@ def to_numpy(tensor: torch.Tensor) -> np.ndarray:
     return tensor.detach().cpu().numpy()
 
 
-def set_device(device=None):
-    if device is None or device == 'auto':
+def set_device(device: str = 'auto'):
+    """
+    Set the device to use for computations. If 'auto' is specified, the device is chosen automatically:
+     * if GPUs are available, the GPU with the most free memory is chosen
+     * if MPS is available, MPS is used
+     * otherwise, the CPU is used
+    :param device: The device to use for computations. Automatically chosen if 'auto' is specified (default).
+    :return: The device that is used for computations.
+    """
+    if device == 'auto':
         if torch.cuda.is_available():
-            # Get the list of available GPUs and their free memory
-            gpus = GPUtil.getGPUs()
-            if gpus:
-                # Find the GPU with the maximum free memory
-                device_id = max(range(len(gpus)), key=lambda x: gpus[x].memoryFree)
-                device = f'cuda:{device_id}'
-            else:
-                device = 'cpu'
+            # Get the number of GPUs
+            num_gpus = torch.cuda.device_count()
+
+            # Find the GPU with the maximum free memory
+            max_free_memory = 0
+            best_device_id = 0
+            for i in range(num_gpus):
+                free_memory = torch.cuda.get_device_properties(i).total_memory - torch.cuda.memory_allocated(i)
+                if free_memory > max_free_memory:
+                    max_free_memory = free_memory
+                    best_device_id = i
+            device = f'cuda:{best_device_id}'
+            torch.cuda.device(device)
+            print(
+                f"Using device: {device}, name: {torch.cuda.get_device_name(device)}, memory: {torch.cuda.get_device_properties(device).total_memory / 1024 ** 3:.2f} GB")
+        elif torch.backends.mps.is_available():
+            device = 'mps'
+            print(f"Using device: {device}")
         else:
             device = 'cpu'
+            print(f"Using device: {device}")
+
+    torch.device(device)
     return device
 
 

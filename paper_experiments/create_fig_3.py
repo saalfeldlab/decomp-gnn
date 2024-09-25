@@ -6,11 +6,6 @@ from ParticleGraph.models import data_train, data_test
 from ParticleGraph.plotting import get_figures, load_and_display
 from ParticleGraph.utils import set_device
 
-device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
-print(' ')
-print(f'device {device}')
-print(' ')
-
 config_list = ['arbitrary_3']
 f_list = ['3']
 
