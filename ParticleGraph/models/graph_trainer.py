@@ -12,6 +12,7 @@ from sklearn.neighbors import NearestNeighbors
 import torch_geometric.data as data
 from torch_geometric.loader import DataLoader
 from scipy.optimize import curve_fit
+from tqdm import trange
 import gc
 
 from ParticleGraph.models.utils import *
@@ -162,7 +163,7 @@ def data_train_particles(config, config_file, erase, device):
 
     list_loss = []
     time.sleep(1)
-    for epoch in range(n_epochs + 1):
+    for epoch in trange(n_epochs + 1):
 
         batch_size = get_batch_size(epoch)
         logger.info(f'batch_size: {batch_size}')
@@ -175,7 +176,7 @@ def data_train_particles(config, config_file, erase, device):
         Niter = n_frames * data_augmentation_loop // batch_size
 
 
-        for N in range(Niter):
+        for N in trange(Niter):
 
             phi = torch.randn(1, dtype=torch.float32, requires_grad=False, device=device) * np.pi * 2
             cos_phi = torch.cos(phi)
