@@ -9,3 +9,6 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages]
 find = {}  # Scan the project directory with the default parameters
 
+[tool.jupytext]
+formats = "ipynb,py:percent"
+
