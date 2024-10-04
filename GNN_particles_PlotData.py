@@ -11,8 +11,6 @@ from ParticleGraph.utils import to_numpy, CustomColorMap
 from ParticleGraph.data_loaders import *
 from ParticleGraph.utils import bundle_fields
 
-os.environ["PATH"] += os.pathsep + '/usr/local/texlive/2023/bin/x86_64-linux'
-
 
 def plot_gravity_solar_system(config_file, epoch_list, log_dir, logger, device):
     config_file = 'gravity_solar_system'
@@ -50,10 +48,6 @@ def plot_gravity_solar_system(config_file, epoch_list, log_dir, logger, device):
     state_dict = torch.load(net, map_location=device)
     model.load_state_dict(state_dict['model_state_dict'])
     model.eval()
-
-    plt.rcParams['text.usetex'] = True
-    rc('font', **{'family': 'serif', 'serif': ['Palatino']})
-    # matplotlib.use("Qt5Agg")
 
     fig = plt.figure(figsize=(10.5, 9.6))
     plt.ion()
@@ -239,8 +233,6 @@ if __name__ == '__main__':
     print(' ')
     print(f'device {device}')
     print(' ')
-
-    matplotlib.use("Qt5Agg")
 
     config_file = "arbitrary_3"
     config = ParticleGraphConfig.from_yaml(f'paper_experiments/config/{config_file}.yaml')

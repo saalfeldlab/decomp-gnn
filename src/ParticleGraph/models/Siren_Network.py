@@ -121,10 +121,6 @@ def get_mgrid(sidelen, dim=2):
 if __name__ == '__main__':
 
     device = 'cuda:0'
-    try:
-        matplotlib.use("Qt5Agg")
-    except:
-        pass
 
     model_siren = Siren_Network(image_width=256, in_features=2, out_features=1, hidden_features=256, hidden_layers=3, outermost_linear=True)
     model_siren = model_siren.to(device=device)

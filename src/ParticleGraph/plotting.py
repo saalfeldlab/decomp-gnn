@@ -637,15 +637,7 @@ def plot_generated(config, run, style, step, device):
         H1 = x[:, 6:8].clone().detach()
         X1 = x[:, 1:3].clone().detach()
 
-        if 'latex' in style:
-            plt.rcParams['text.usetex'] = True
-            rc('font', **{'family': 'serif', 'serif': ['Palatino']})
-
-
         if 'voronoi' in style:
-            matplotlib.use("Qt5Agg")
-            matplotlib.rcParams['savefig.pad_inches'] = 0
-
             vor, vertices_pos, vertices_per_cell, all_points = get_vertices(points=X1, device=device)
 
             fig = plt.figure(figsize=(12, 12))
@@ -2353,10 +2345,6 @@ def plot_particle_field(config_file, epoch_list, log_dir, logger, cc, device):
     mask_mesh = mesh_data['mask']
     mask_mesh = mask_mesh.repeat(batch_size, 1)
 
-    # matplotlib.use("Qt5Agg")
-    # plt.rcParams['text.usetex'] = True
-    # rc('font', **{'family': 'serif', 'serif': ['Palatino']})
-
     x_mesh = x_mesh_list[0][0].clone().detach()
     i0 = imread(f'graphs_data/{node_value_map}')
     if has_video:
@@ -3299,8 +3287,6 @@ def data_video_training(config_file, epoch_list, log_dir, logger, device):
     function = imread(f"{log_dir}/function.tif")
     # field = imread(f"{log_dir}/field.tif")
 
-    matplotlib.use("Qt5Agg")
-
     os.makedirs(f"video_tmp/{config_file}_training", exist_ok=True)
 
     for n in trange(embedding.shape[0]):
@@ -3392,10 +3378,6 @@ def data_video_training(config_file, epoch_list, log_dir, logger, device):
 
 
 def data_plot(config, config_file, epoch_list, device):
-    plt.rcParams['text.usetex'] = True
-    rc('font', **{'family': 'serif', 'serif': ['Palatino']})
-    matplotlib.rcParams['savefig.pad_inches'] = 0
-
     l_dir = os.path.join('.', 'log')
     log_dir = os.path.join(l_dir, 'try_{}'.format(config_file))
     print('log_dir: {}'.format(log_dir))

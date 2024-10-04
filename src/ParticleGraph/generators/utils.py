@@ -1,4 +1,3 @@
-# matplotlib.use("Qt5Agg")
 from time import sleep
 
 import numpy as np

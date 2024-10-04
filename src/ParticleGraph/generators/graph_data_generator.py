@@ -165,10 +165,6 @@ def data_generate_particle(config, visualize=True, run_vizualized=0, style='colo
             # output plots
             if visualize & (run == run_vizualized) & (it % step == 0) & (it >= 0):
 
-                if 'latex' in style:
-                    plt.rcParams['text.usetex'] = True
-                    rc('font', **{'family': 'serif', 'serif': ['Palatino']})
-
                 if 'bw' in style:
 
                     fig, ax = fig_init(formatx="%.1f", formaty="%.1f")
@@ -281,8 +277,6 @@ def data_generate_particle(config, visualize=True, run_vizualized=0, style='colo
                         plt.close()
 
                     else:
-                        # matplotlib.use("Qt5Agg")
-
                         fig, ax = fig_init(formatx="%.1f", formaty="%.1f")
                         s_p = 100
                         for n in range(n_particle_types):
@@ -726,13 +720,6 @@ def data_generate_mesh(config, visualize=True, run_vizualized=0, style='color', 
 
             if visualize & (run == run_vizualized) & (it % step == 0) & (it >= 0):
 
-                # plt.style.use('dark_background')
-                # matplotlib.use("Qt5Agg")
-
-                if 'latex' in style:
-                    plt.rcParams['text.usetex'] = True
-                    rc('font', **{'family': 'serif', 'serif': ['Palatino']})
-
                 if 'graph' in style:
 
                     fig = plt.figure(figsize=(12, 12))
@@ -756,8 +743,6 @@ def data_generate_mesh(config, visualize=True, run_vizualized=0, style='color', 
                     plt.close()
 
                 if 'color' in style:
-
-                    # matplotlib.use("Qt5Agg")
 
                     matplotlib.rcParams['savefig.pad_inches'] = 0
                     fig = plt.figure(figsize=(12, 12))
@@ -906,7 +891,6 @@ def data_generate_particle_field(config, visualize=True, run_vizualized=0, style
         # X1_mesh, V1_mesh, T1_mesh, H1_mesh, A1_mesh, N1_mesh, mesh_data = init_mesh(config, model_mesh=model_f_f, device=device)
         X1_mesh, V1_mesh, T1_mesh, H1_mesh, A1_mesh, N1_mesh, mesh_data = init_mesh(config, device=device)
 
-        # matplotlib.use("Qt5Agg")
         # fig = plt.figure(figsize=(12, 12))
         # im = torch.reshape(H1_mesh[:,0:1],(100,100))
         # plt.imshow(to_numpy(im))
@@ -1008,13 +992,6 @@ def data_generate_particle_field(config, visualize=True, run_vizualized=0, style
 
             # output plots
             if visualize & (run == run_vizualized) & (it % step == 0) & (it >= 0):
-
-                # plt.style.use('dark_background')
-                # matplotlib.use("Qt5Agg")
-
-                if 'latex' in style:
-                    plt.rcParams['text.usetex'] = True
-                    rc('font', **{'family': 'serif', 'serif': ['Palatino']})
 
                 if 'graph' in style:
 

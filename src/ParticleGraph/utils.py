@@ -345,8 +345,6 @@ def fig_init(formatx='%.2f', formaty='%.2f'):
     #                   'weight': 'normal', 'size': sizeOfFont}
     # ticks_font = font_manager.FontProperties(family='sans-serif', style='normal',
     #                                          size=sizeOfFont, weight='normal', stretch='normal')
-    # rc('text', usetex=True)
-    # rc('font', **fontProperties)
     # figure(1, figsize=(6, 4))
     # ax = axes([0.1, 0.1, 0.8, 0.7])
     # t = arange(0.0, 1.0 + 0.01, 0.01)

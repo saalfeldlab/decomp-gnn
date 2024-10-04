@@ -181,8 +181,6 @@ def scene_sdf(balls, p, ball_r=0.1, c=8.0, with_color=False):
 
 if __name__ == '__main__':
 
-  matplotlib.use("Qt5Agg")
-
   p = (np.random.random((1000, 3)))*10.0-5
   p[:, 1] += 2.5
   pos = jp.array(p)

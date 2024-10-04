@@ -337,8 +337,6 @@ def plot_training (config, dataset_name, log_dir, epoch, N, x, index_particles, 
             case 'PDE_B' | 'PDE_ParticleField_B':
                 max_radius = 0.04
                 fig = plt.figure(figsize=(12, 12))
-                # plt.rcParams['text.usetex'] = True
-                # rc('font', **{'family': 'serif', 'serif': ['Palatino']})
                 ax = fig.add_subplot(1,1,1)
                 rr = torch.tensor(np.linspace(-max_radius, max_radius, 1000)).to(device)
                 func_list = []

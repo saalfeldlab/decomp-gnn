@@ -7,11 +7,6 @@ from ParticleGraph.utils import *
 
 if __name__ == '__main__':
 
-    try:
-        matplotlib.use("Qt5Agg")
-    except:
-        pass
-
     config_list = ['arbitrary_3', 'boids_16_256']
 
     for config_file in config_list:

@@ -23,11 +23,6 @@ from ParticleGraph.sparsify import EmbeddingCluster, sparsify_cluster, sparsify_
 
 def data_train(config, config_file, erase, device):
 
-    # plt.rcParams['text.usetex'] = True
-    # rc('font', **{'family': 'serif', 'serif': ['Palatino']})
-    # matplotlib.rcParams['savefig.pad_inches'] = 0
-
-
     seed = config.training.seed
 
     torch.manual_seed(seed)
@@ -578,7 +573,6 @@ def data_train_mesh(config, config_file, erase, device):
         list_loss.append(total_loss / (N + 1) / n_nodes / batch_size)
         torch.save(list_loss, os.path.join(log_dir, 'loss.pt'))
 
-        # matplotlib.use("Qt5Agg")
         fig = plt.figure(figsize=(22, 4))
 
         ax = fig.add_subplot(1, 5, 1)
@@ -1098,7 +1092,6 @@ def data_train_particle_field(config, config_file, erase, device):
             torch.save({'model_state_dict': ghosts_particles.state_dict(),
                         'optimizer_state_dict': optimizer_ghost_particles.state_dict()}, os.path.join(log_dir, 'models', f'best_ghost_particles_with_{n_runs - 1}_graphs_{epoch}.pt'))
 
-        # matplotlib.use("Qt5Agg")
         fig = plt.figure(figsize=(22, 4))
         # white background
         # plt.style.use('classic')
@@ -1897,10 +1890,6 @@ def data_test(config=None, config_file=None, visualize=False, style='color frame
 
 
         if (((it % step == 0) & (it >= 0)) | (it==n_frames)) & visualize:
-
-            if 'latex' in style:
-                plt.rcParams['text.usetex'] = True
-                rc('font', **{'family': 'serif', 'serif': ['Palatino']})
 
             fig, ax = fig_init(formatx='%.1f', formaty='%.1f')
             ax.tick_params(axis='both', which='major', pad=15)
