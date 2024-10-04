@@ -286,12 +286,12 @@ def load_training_data(dataset_name, n_runs, log_dir, device):
     print('Load data ...')
     time.sleep(0.5)
     for run in trange(n_runs):
-        x = torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device)
-        y = torch.load(f'graphs_data/graphs_{dataset_name}/y_list_{run}.pt', map_location=device)
+        x = torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device, weights_only=True)
+        y = torch.load(f'graphs_data/graphs_{dataset_name}/y_list_{run}.pt', map_location=device, weights_only=True)
         x_list.append(x)
         y_list.append(y)
-    vnorm = torch.load(os.path.join(log_dir, 'vnorm.pt'), map_location=device).squeeze()
-    ynorm = torch.load(os.path.join(log_dir, 'ynorm.pt'), map_location=device).squeeze()
+    vnorm = torch.load(os.path.join(log_dir, 'vnorm.pt'), map_location=device, weights_only=True).squeeze()
+    ynorm = torch.load(os.path.join(log_dir, 'ynorm.pt'), map_location=device, weights_only=True).squeeze()
     print("vnorm:{:.2e},  ynorm:{:.2e}".format(to_numpy(vnorm), to_numpy(ynorm)))
     x = []
     y = []
@@ -626,7 +626,7 @@ def plot_generated(config, run, style, step, device):
 
     print('Load data ...')
 
-    x_list = torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device)
+    x_list = torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device, weights_only=True)
 
 
     for it in trange(0,n_frames,step):
@@ -829,7 +829,7 @@ def plot_attraction_repulsion(config_file, epoch_list, log_dir, logger, device):
 
         net = f"./log/try_{config_file}/models/best_model_with_1_graphs_{epoch}.pt"
         print(f'network: {net}')
-        state_dict = torch.load(net, map_location=device)
+        state_dict = torch.load(net, map_location=device, weights_only=True)
         model.load_state_dict(state_dict['model_state_dict'])
         model.eval()
 
@@ -859,7 +859,7 @@ def plot_attraction_repulsion(config_file, epoch_list, log_dir, logger, device):
         logger.info(f'result accuracy: {np.round(accuracy, 2)}    n_clusters: {n_clusters}    obtained with  method: {config.training.cluster_method}   threshold: {config.training.cluster_distance_threshold}')
 
         fig, ax = fig_init()
-        p = torch.load(f'graphs_data/graphs_{dataset_name}/model_p.pt', map_location=device)
+        p = torch.load(f'graphs_data/graphs_{dataset_name}/model_p.pt', map_location=device, weights_only=True)
         rr = torch.tensor(np.linspace(0, max_radius, 1000)).to(device)
         rmserr_list = []
         for n in range(int(n_particles * (1 - config.training.particle_dropout))):
@@ -928,7 +928,7 @@ def plot_attraction_repulsion_asym(config_file, epoch_list, log_dir, logger, dev
 
         net = f"./log/try_{config_file}/models/best_model_with_1_graphs_{epoch}.pt"
         print(f'network: {net}')
-        state_dict = torch.load(net, map_location=device)
+        state_dict = torch.load(net, map_location=device, weights_only=True)
         model.load_state_dict(state_dict['model_state_dict'])
         model.eval()
 
@@ -980,7 +980,7 @@ def plot_attraction_repulsion_asym(config_file, epoch_list, log_dir, logger, dev
         plt.close()
 
         fig, ax = fig_init()
-        p = torch.load(f'graphs_data/graphs_{dataset_name}/model_p.pt', map_location=device)
+        p = torch.load(f'graphs_data/graphs_{dataset_name}/model_p.pt', map_location=device, weights_only=True)
         true_func = []
         for n in range(n_particle_types):
             for m in range(n_particle_types):
@@ -1032,7 +1032,7 @@ def plot_attraction_repulsion_continuous(config_file, epoch_list, log_dir, logge
 
         net = f"./log/try_{config_file}/models/best_model_with_1_graphs_{epoch}.pt"
         print(f'network: {net}')
-        state_dict = torch.load(net, map_location=device)
+        state_dict = torch.load(net, map_location=device, weights_only=True)
         model.load_state_dict(state_dict['model_state_dict'])
 
         n_particle_types = 3
@@ -1075,7 +1075,7 @@ def plot_attraction_repulsion_continuous(config_file, epoch_list, log_dir, logge
         plt.close()
 
         fig, ax = fig_init()
-        p = torch.load(f'graphs_data/graphs_{dataset_name}/model_p.pt')
+        p = torch.load(f'graphs_data/graphs_{dataset_name}/model_p.pt', weights_only=True)
         true_func_list = []
         csv_ = []
         csv_.append(to_numpy(rr))
@@ -1132,7 +1132,7 @@ def plot_gravity(config_file, epoch_list, log_dir, logger, device):
 
         net = f"./log/try_{config_file}/models/best_model_with_1_graphs_{epoch}.pt"
         print(f'network: {net}')
-        state_dict = torch.load(net, map_location=device)
+        state_dict = torch.load(net, map_location=device, weights_only=True)
         model.load_state_dict(state_dict['model_state_dict'])
         model.eval()
 
@@ -1167,7 +1167,7 @@ def plot_gravity(config_file, epoch_list, log_dir, logger, device):
         logger.info(f'result accuracy: {np.round(accuracy, 2)}    n_clusters: {n_clusters}    obtained with  method: {config.training.cluster_method}   threshold: {config.training.cluster_distance_threshold}')
 
         fig, ax = fig_init(formatx='%.3f', formaty='%.0f')
-        p = torch.load(f'graphs_data/graphs_{dataset_name}/model_p.pt', map_location=device)
+        p = torch.load(f'graphs_data/graphs_{dataset_name}/model_p.pt', map_location=device, weights_only=True)
         rr = torch.tensor(np.linspace(min_radius, max_radius, 1000)).to(device)
         rmserr_list = []
         for n in range(int(n_particles * (1 - config.training.particle_dropout))):
@@ -1400,7 +1400,7 @@ def plot_gravity_continuous(config_file, epoch_list, log_dir, logger, device):
     for epoch in epoch_list:
 
         net = f"./log/try_{config_file}/models/best_model_with_1_graphs_{epoch}.pt"
-        state_dict = torch.load(net, map_location=device)
+        state_dict = torch.load(net, map_location=device, weights_only=True)
         model.load_state_dict(state_dict['model_state_dict'])
         model.eval()
 
@@ -1417,7 +1417,7 @@ def plot_gravity_continuous(config_file, epoch_list, log_dir, logger, device):
         plt.close()
 
         fig, ax = fig_init(formatx='%.3f', formaty='%.0f')
-        p = torch.load(f'graphs_data/graphs_{dataset_name}/model_p.pt', map_location=device)
+        p = torch.load(f'graphs_data/graphs_{dataset_name}/model_p.pt', map_location=device, weights_only=True)
         rr = torch.tensor(np.linspace(min_radius, max_radius, 1000)).to(device)
         rmserr_list = []
         csv_ = []
@@ -1642,7 +1642,7 @@ def plot_Coulomb(config_file, epoch_list, log_dir, logger, device):
     for epoch in epoch_list:
 
         net = f"./log/try_{config_file}/models/best_model_with_{n_runs - 1}_graphs_{epoch}.pt"
-        state_dict = torch.load(net, map_location=device)
+        state_dict = torch.load(net, map_location=device, weights_only=True)
         model.load_state_dict(state_dict['model_state_dict'])
         model.eval()
 
@@ -1855,10 +1855,10 @@ def plot_boids(config_file, epoch_list, log_dir, logger, device):
     x_list = []
     y_list = []
 
-    x_list.append(torch.load(f'graphs_data/graphs_{dataset_name}/x_list_1.pt', map_location=device))
-    y_list.append(torch.load(f'graphs_data/graphs_{dataset_name}/y_list_1.pt', map_location=device))
-    vnorm = torch.load(os.path.join(log_dir, 'vnorm.pt'), map_location=device)
-    ynorm = torch.load(os.path.join(log_dir, 'ynorm.pt'), map_location=device)
+    x_list.append(torch.load(f'graphs_data/graphs_{dataset_name}/x_list_1.pt', map_location=device, weights_only=True))
+    y_list.append(torch.load(f'graphs_data/graphs_{dataset_name}/y_list_1.pt', map_location=device, weights_only=True))
+    vnorm = torch.load(os.path.join(log_dir, 'vnorm.pt'), map_location=device, weights_only=True)
+    ynorm = torch.load(os.path.join(log_dir, 'ynorm.pt'), map_location=device, weights_only=True)
     x = x_list[0][-1].clone().detach()
 
     print('done ...')
@@ -1868,7 +1868,7 @@ def plot_boids(config_file, epoch_list, log_dir, logger, device):
     n_particles = x.shape[0]
     if has_cell_division:
         T1_list = []
-        T1_list.append(torch.load(f'graphs_data/graphs_{dataset_name}/T1_list_1.pt', map_location=device))
+        T1_list.append(torch.load(f'graphs_data/graphs_{dataset_name}/T1_list_1.pt', map_location=device, weights_only=True))
         n_particles_max = np.load(os.path.join(log_dir, 'n_particles_max.npy'))
         config.simulation.n_particles_max = n_particles_max
         type_list = T1_list[0]
@@ -1880,7 +1880,7 @@ def plot_boids(config_file, epoch_list, log_dir, logger, device):
         model = Interaction_Particle_extract(config, device, aggr_type=config.graph_model.aggr_type, bc_dpos=bc_dpos)
 
         net = f"./log/try_{config_file}/models/best_model_with_{n_runs - 1}_graphs_{epoch}.pt"
-        state_dict = torch.load(net, map_location=device)
+        state_dict = torch.load(net, map_location=device, weights_only=True)
         model.load_state_dict(state_dict['model_state_dict'])
         model.eval()
 
@@ -1901,7 +1901,7 @@ def plot_boids(config_file, epoch_list, log_dir, logger, device):
 
         print('compare reconstructed interaction with ground truth...')
 
-        p = torch.load(f'graphs_data/graphs_{dataset_name}/model_p.pt', map_location=device)
+        p = torch.load(f'graphs_data/graphs_{dataset_name}/model_p.pt', map_location=device, weights_only=True)
         model_B = PDE_B_extract(aggr_type=config.graph_model.aggr_type, p=torch.squeeze(p), bc_dpos=bc_dpos)
 
         fig, ax = fig_init()
@@ -2141,21 +2141,21 @@ def plot_wave(config_file, epoch_list, log_dir, logger, cc, device):
     n_frames = config.simulation.n_frames
     n_runs = config.training.n_runs
 
-    hnorm = torch.load(f'./log/try_{config_file}/hnorm.pt', map_location=device).to(device)
+    hnorm = torch.load(f'./log/try_{config_file}/hnorm.pt', map_location=device).to(device, weights_only=True)
 
     x_mesh_list = []
     y_mesh_list = []
     time.sleep(0.5)
     for run in trange(n_runs):
-        x_mesh = torch.load(f'graphs_data/graphs_{dataset_name}/x_mesh_list_{run}.pt', map_location=device)
+        x_mesh = torch.load(f'graphs_data/graphs_{dataset_name}/x_mesh_list_{run}.pt', map_location=device, weights_only=True)
         x_mesh_list.append(x_mesh)
-        h = torch.load(f'graphs_data/graphs_{dataset_name}/y_mesh_list_{run}.pt', map_location=device)
+        h = torch.load(f'graphs_data/graphs_{dataset_name}/y_mesh_list_{run}.pt', map_location=device, weights_only=True)
         y_mesh_list.append(h)
     h = y_mesh_list[0][0].clone().detach()
 
     print(f'hnorm: {to_numpy(hnorm)}')
     time.sleep(0.5)
-    mesh_data = torch.load(f'graphs_data/graphs_{dataset_name}/mesh_data_1.pt', map_location=device)
+    mesh_data = torch.load(f'graphs_data/graphs_{dataset_name}/mesh_data_1.pt', map_location=device, weights_only=True)
     mask_mesh = mesh_data['mask']
 
     x_mesh = x_mesh_list[0][n_frames - 1].clone().detach()
@@ -2198,12 +2198,12 @@ def plot_wave(config_file, epoch_list, log_dir, logger, cc, device):
         mesh_model_gene = choose_mesh_model(config=config, X1_mesh=x_mesh[:,1:3], device=device)
 
         mesh_model, bc_pos, bc_dpos = choose_training_model(config, device)
-        state_dict = torch.load(net, map_location=device)
+        state_dict = torch.load(net, map_location=device, weights_only=True)
         mesh_model.load_state_dict(state_dict['model_state_dict'])
         mesh_model.eval()
 
         x_mesh = x_mesh_list[1][7000].clone().detach()
-        mesh_data = torch.load(f'graphs_data/graphs_{dataset_name}/mesh_data_1.pt', map_location=device)
+        mesh_data = torch.load(f'graphs_data/graphs_{dataset_name}/mesh_data_1.pt', map_location=device, weights_only=True)
         dataset_mesh = data.Data(x=x_mesh, edge_index=mesh_data['edge_index'],
                                  edge_attr=mesh_data['edge_weight'], device=device)
         with torch.no_grad():
@@ -2328,20 +2328,20 @@ def plot_particle_field(config_file, epoch_list, log_dir, logger, cc, device):
 
     x_list = []
     y_list = []
-    x_list.append(torch.load(f'graphs_data/graphs_{dataset_name}/x_list_1.pt', map_location=device))
-    y_list.append(torch.load(f'graphs_data/graphs_{dataset_name}/y_list_1.pt', map_location=device))
-    ynorm = torch.load(f'./log/try_{dataset_name}/ynorm.pt', map_location=device).to(device)
-    vnorm = torch.load(f'./log/try_{dataset_name}/vnorm.pt', map_location=device).to(device)
+    x_list.append(torch.load(f'graphs_data/graphs_{dataset_name}/x_list_1.pt', map_location=device, weights_only=True))
+    y_list.append(torch.load(f'graphs_data/graphs_{dataset_name}/y_list_1.pt', map_location=device, weights_only=True))
+    ynorm = torch.load(f'./log/try_{dataset_name}/ynorm.pt', map_location=device, weights_only=True).to(device)
+    vnorm = torch.load(f'./log/try_{dataset_name}/vnorm.pt', map_location=device, weights_only=True).to(device)
 
     x_mesh_list = []
     y_mesh_list = []
-    x_mesh = torch.load(f'graphs_data/graphs_{dataset_name}/x_mesh_list_0.pt', map_location=device)
+    x_mesh = torch.load(f'graphs_data/graphs_{dataset_name}/x_mesh_list_0.pt', map_location=device, weights_only=True)
     x_mesh_list.append(x_mesh)
-    y_mesh = torch.load(f'graphs_data/graphs_{dataset_name}/y_mesh_list_0.pt', map_location=device)
+    y_mesh = torch.load(f'graphs_data/graphs_{dataset_name}/y_mesh_list_0.pt', map_location=device, weights_only=True)
     y_mesh_list.append(y_mesh)
-    hnorm = torch.load(f'./log/try_{dataset_name}/hnorm.pt', map_location=device).to(device)
+    hnorm = torch.load(f'./log/try_{dataset_name}/hnorm.pt', map_location=device, weights_only=True).to(device)
 
-    mesh_data = torch.load(f'graphs_data/graphs_{dataset_name}/mesh_data_0.pt', map_location=device)
+    mesh_data = torch.load(f'graphs_data/graphs_{dataset_name}/mesh_data_0.pt', map_location=device, weights_only=True)
     mask_mesh = mesh_data['mask']
     mask_mesh = mask_mesh.repeat(batch_size, 1)
 
@@ -2414,12 +2414,12 @@ def plot_particle_field(config_file, epoch_list, log_dir, logger, cc, device):
         print(f'epoch: {epoch}')
 
         net = f"./log/try_{config_file}/models/best_model_with_1_graphs_{epoch}.pt"
-        state_dict = torch.load(net, map_location=device)
+        state_dict = torch.load(net, map_location=device, weights_only=True)
         model.load_state_dict(state_dict['model_state_dict'])
 
         if has_siren:
             net = f'./log/try_{config_file}/models/best_model_f_with_1_graphs_{epoch}.pt'
-            state_dict = torch.load(net, map_location=device)
+            state_dict = torch.load(net, map_location=device, weights_only=True)
             model_f.load_state_dict(state_dict['model_state_dict'])
 
         model_a_first = model.a.clone().detach()
@@ -2435,7 +2435,7 @@ def plot_particle_field(config_file, epoch_list, log_dir, logger, cc, device):
 
 
         fig, ax = fig_init()
-        p = torch.load(f'graphs_data/graphs_{dataset_name}/model_p.pt', map_location=device)
+        p = torch.load(f'graphs_data/graphs_{dataset_name}/model_p.pt', map_location=device, weights_only=True)
         rr = torch.tensor(np.linspace(0, max_radius, 1000)).to(device)
         rmserr_list = []
         for n in range(int(n_particles * (1 - config.training.particle_dropout))):
@@ -2674,21 +2674,21 @@ def plot_RD_RPS(config_file, epoch_list, log_dir, logger, cc, device):
 
     embedding_cluster = EmbeddingCluster(config)
 
-    hnorm = torch.load(f'./log/try_{config_file}/hnorm.pt', map_location=device).to(device)
+    hnorm = torch.load(f'./log/try_{config_file}/hnorm.pt', map_location=device, weights_only=True).to(device)
 
     x_mesh_list = []
     y_mesh_list = []
     time.sleep(0.5)
     for run in trange(n_runs):
-        x_mesh = torch.load(f'graphs_data/graphs_{dataset_name}/x_mesh_list_{run}.pt', map_location=device)
+        x_mesh = torch.load(f'graphs_data/graphs_{dataset_name}/x_mesh_list_{run}.pt', map_location=device, weights_only=True)
         x_mesh_list.append(x_mesh)
-        h = torch.load(f'graphs_data/graphs_{dataset_name}/y_mesh_list_{run}.pt', map_location=device)
+        h = torch.load(f'graphs_data/graphs_{dataset_name}/y_mesh_list_{run}.pt', map_location=device, weights_only=True)
         y_mesh_list.append(h)
     h = y_mesh_list[0][0].clone().detach()
 
     print(f'hnorm: {to_numpy(hnorm)}')
     time.sleep(0.5)
-    mesh_data = torch.load(f'graphs_data/graphs_{dataset_name}/mesh_data_1.pt', map_location=device)
+    mesh_data = torch.load(f'graphs_data/graphs_{dataset_name}/mesh_data_1.pt', map_location=device, weights_only=True)
     mask_mesh = mesh_data['mask']
     edge_index_mesh = mesh_data['edge_index']
     edge_weight_mesh = mesh_data['edge_weight']
@@ -2729,7 +2729,7 @@ def plot_RD_RPS(config_file, epoch_list, log_dir, logger, cc, device):
         net = f"./log/try_{config_file}/models/best_model_with_{n_runs - 1}_graphs_{epoch}.pt"
 
         model, bc_pos, bc_dpos = choose_training_model(config, device)
-        state_dict = torch.load(net, map_location=device)
+        state_dict = torch.load(net, map_location=device, weights_only=True)
         model.load_state_dict(state_dict['model_state_dict'])
         print(f'net: {net}')
         embedding = get_embedding(model.a, 1)
@@ -2946,12 +2946,12 @@ def plot_signal(config_file, epoch_list, log_dir, logger, cc, device):
     x_list = []
     y_list = []
     for run in trange(2):
-        x = torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device)
-        y = torch.load(f'graphs_data/graphs_{dataset_name}/y_list_{run}.pt', map_location=device)
+        x = torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device, weights_only=True)
+        y = torch.load(f'graphs_data/graphs_{dataset_name}/y_list_{run}.pt', map_location=device, weights_only=True)
         x_list.append(x)
         y_list.append(y)
-    vnorm = torch.load(os.path.join(log_dir, 'vnorm.pt'))
-    ynorm = torch.load(os.path.join(log_dir, 'ynorm.pt'))
+    vnorm = torch.load(os.path.join(log_dir, 'vnorm.pt'), weights_only=True)
+    ynorm = torch.load(os.path.join(log_dir, 'ynorm.pt'), weights_only=True)
     print(f'vnorm: {to_numpy(vnorm)}, ynorm: {to_numpy(ynorm)}')
 
     print('Update variables ...')
@@ -2966,7 +2966,7 @@ def plot_signal(config_file, epoch_list, log_dir, logger, cc, device):
         mat = scipy.io.loadmat(config.simulation.connectivity_file)
         adjacency = torch.tensor(mat['A'], device=device)
     else:
-        adjacency = torch.load(config.simulation.connectivity_file, map_location=device)
+        adjacency = torch.load(config.simulation.connectivity_file, map_location=device, weights_only=True)
     adj_t = adjacency > 0
     edge_index = adj_t.nonzero().t().contiguous()
 
@@ -2974,7 +2974,7 @@ def plot_signal(config_file, epoch_list, log_dir, logger, cc, device):
 
         net = f"./log/try_{config_file}/models/best_model_with_{n_runs - 1}_graphs_{epoch}.pt"
         model, bc_pos, bc_dpos = choose_training_model(config, device)
-        state_dict = torch.load(net, map_location=device)
+        state_dict = torch.load(net, map_location=device, weights_only=True)
         model.load_state_dict(state_dict['model_state_dict'])
         model.edges = edge_index
         print(f'net: {net}')
@@ -3400,7 +3400,7 @@ def data_plot(config, config_file, epoch_list, device):
             f'GNN trained with simulation {config.graph_model.particle_model_name} ({config.simulation.n_particle_types} types), no clustering')
 
     if os.path.exists(f'{log_dir}/loss.pt'):
-        loss = torch.load(f'{log_dir}/loss.pt')
+        loss = torch.load(f'{log_dir}/loss.pt', weights_only=True)
         fig, ax = fig_init(formatx='%.0f', formaty='%.5f')
         plt.plot(loss, color='k', linewidth=4)
         plt.xlim([0, 20])
