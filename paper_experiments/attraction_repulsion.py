@@ -4,14 +4,55 @@ import os
 import numpy as np
 import torch
 from matplotlib import pyplot as plt
+import torch_geometric as pyg
 from torch_geometric.data import data
+import torch_geometric.utils as pyg_utils
 from tqdm import trange
 
 from ParticleGraph.config import ParticleGraphConfig
-from ParticleGraph.generators import PDE_A
 from ParticleGraph.models import get_index_particles
 from ParticleGraph.plotting import load_and_display
 from ParticleGraph.utils import CustomColorMap, fig_init, to_numpy, set_device
+
+
+class AttractionRepulsionModel(pyg.nn.MessagePassing):
+    """Interaction Network as proposed in this paper:
+    https://proceedings.neurips.cc/paper/2016/hash/3147da8ab4a0437c15ef51a5cc7f2dc4-Abstract.html"""
+
+    """
+    Compute the speed of particles as a function of their relative position according to an attraction-repulsion law.
+    The latter is defined by four parameters p = (p1, p2, p3, p4) and a parameter sigma.
+
+    See https://github.com/gpeyre/numerical-tours/blob/master/python/ml_10_particle_system.ipynb
+    """
+
+    def __init__(self, aggr_type, p, sigma, bc_dpos, dimension=2):
+        super(AttractionRepulsionModel, self).__init__(aggr=aggr_type)  # "mean" aggregation.
+
+        self.p = p
+        self.sigma = sigma
+        self.bc_dpos = bc_dpos
+        self.dimension = dimension
+
+    def forward(self, data: data):
+        x, edge_index = data.x, data.edge_index
+
+        edge_index, _ = pyg_utils.remove_self_loops(edge_index)
+        particle_type = to_numpy(x[:, 1 + 2*self.dimension])
+        parameters = self.p[particle_type,:]
+        d_pos = self.propagate(edge_index, pos=x[:, 1:self.dimension+1], parameters=parameters)
+        return d_pos
+
+
+    def message(self, pos_i, pos_j, parameters_i):
+
+        relative_position = self.bc_dpos(pos_j - pos_i)
+        distance_squared = torch.sum(relative_position ** 2, dim=1)  # squared distance
+        f = (parameters_i[:, 0] * torch.exp(-distance_squared ** parameters_i[:, 1] / (2 * self.sigma ** 2))
+             - parameters_i[:, 2] * torch.exp(-distance_squared ** parameters_i[:, 3] / (2 * self.sigma ** 2)))
+        velocity = f[:, None] * relative_position
+
+        return velocity
 
 
 def bc_pos(x):
@@ -21,20 +62,6 @@ def bc_pos(x):
 def bc_dpos(x):
     return torch.remainder(x - 0.5, 1.0) - 0.5  # in [-0.5, 0.5)
 
-
-def initialize_model(config, device):
-    aggr_type = config.graph_model.aggr_type
-    n_particle_types = config.simulation.n_particle_types
-    dimension = config.simulation.dimension
-
-    params = config.simulation.params
-
-    # create GNN depending on type specified in config file
-    p = torch.squeeze(torch.tensor(params))
-    sigma = config.simulation.sigma
-    model = PDE_A(aggr_type=aggr_type, p=p, sigma=sigma, bc_dpos=bc_dpos, dimension=dimension)
-
-    return model
 
 def init_particles(config, ratio):
     simulation_config = config.simulation
@@ -95,7 +122,10 @@ def data_generate_particle(config, visualize=True, run_vizualized=0, erase=False
         os.remove(f)
 
     # create GNN
-    model = initialize_model(config=config, device=device)
+    p = torch.squeeze(torch.tensor(config.simulation.params))
+    sigma = config.simulation.sigma
+    model = AttractionRepulsionModel(aggr_type=config.graph_model.aggr_type, p=p, sigma=sigma, bc_dpos=bc_dpos,
+                                     dimension=config.simulation.dimension)
 
     for run in range(config.training.n_runs):
 
