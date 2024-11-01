@@ -30,7 +30,6 @@ def initialize_model(config, device):
     params = config.simulation.params
 
     # create GNN depending on type specified in config file
-    dummy = torch.rand(n_particle_types, 4)
     p = torch.squeeze(torch.tensor(params))
     sigma = config.simulation.sigma
     model = PDE_A(aggr_type=aggr_type, p=p, sigma=sigma, bc_dpos=bc_dpos, dimension=dimension)
