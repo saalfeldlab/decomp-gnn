@@ -10,7 +10,6 @@ import torch_geometric.utils as pyg_utils
 from tqdm import trange
 
 from ParticleGraph.config import ParticleGraphConfig
-from ParticleGraph.models import get_index_particles
 from ParticleGraph.plotting import load_and_display
 from ParticleGraph.utils import CustomColorMap, fig_init, to_numpy, set_device
 
@@ -26,21 +25,20 @@ class AttractionRepulsionModel(pyg.nn.MessagePassing):
     See https://github.com/gpeyre/numerical-tours/blob/master/python/ml_10_particle_system.ipynb
     """
 
-    def __init__(self, aggr_type, p, sigma, bc_dpos, dimension=2):
-        super(AttractionRepulsionModel, self).__init__(aggr=aggr_type)  # "mean" aggregation.
+    def __init__(self, p, sigma, bc_dpos):
+        super(AttractionRepulsionModel, self).__init__(aggr='mean')
 
         self.p = p
         self.sigma = sigma
         self.bc_dpos = bc_dpos
-        self.dimension = dimension
 
     def forward(self, data: data):
         x, edge_index = data.x, data.edge_index
 
         edge_index, _ = pyg_utils.remove_self_loops(edge_index)
-        particle_type = to_numpy(x[:, 1 + 2*self.dimension])
+        particle_type = torch.squeeze(data.particle_type).int()
         parameters = self.p[particle_type,:]
-        d_pos = self.propagate(edge_index, pos=x[:, 1:self.dimension+1], parameters=parameters)
+        d_pos = self.propagate(edge_index, pos=data.pos, parameters=parameters)
         return d_pos
 
 
@@ -61,6 +59,14 @@ def bc_pos(x):
 
 def bc_dpos(x):
     return torch.remainder(x - 0.5, 1.0) - 0.5  # in [-0.5, 0.5)
+
+
+def get_index_particles(particle_type, n_particle_types):
+    index_particles = []
+    for n in range(n_particle_types):
+        index = torch.argwhere(n == particle_type)
+        index_particles.append(index.squeeze())
+    return index_particles
 
 
 def init_particles(config, ratio):
@@ -100,7 +106,6 @@ def data_generate_particle(config, visualize=True, run_vizualized=0, erase=False
 
     print(f'Generating data ... {model_config.particle_model_name} {model_config.mesh_model_name}')
 
-    dimension = simulation_config.dimension
     max_radius = simulation_config.max_radius
     min_radius = simulation_config.min_radius
     n_particle_types = simulation_config.n_particle_types
@@ -124,8 +129,7 @@ def data_generate_particle(config, visualize=True, run_vizualized=0, erase=False
     # create GNN
     p = torch.squeeze(torch.tensor(config.simulation.params))
     sigma = config.simulation.sigma
-    model = AttractionRepulsionModel(aggr_type=config.graph_model.aggr_type, p=p, sigma=sigma, bc_dpos=bc_dpos,
-                                     dimension=config.simulation.dimension)
+    model = AttractionRepulsionModel(p=p, sigma=sigma, bc_dpos=bc_dpos)
 
     for run in range(config.training.n_runs):
 
@@ -137,23 +141,21 @@ def data_generate_particle(config, visualize=True, run_vizualized=0, erase=False
 
         for it in trange(simulation_config.start_frame, n_frames + 1):
 
-            x = torch.concatenate([t.detach().clone() for t in (particle_id, pos, velocity, particle_type, features, age)], 1)
-
-            index_particles = get_index_particles(x, n_particle_types, dimension)  # can be different from frame to frame
-
             # compute connectivity rule
-            distance = torch.sum(bc_dpos(x[:, None, 1:dimension + 1] - x[None, :, 1:dimension + 1]) ** 2, dim=2)
+            dataset = data.Data(pos=pos.detach().clone(), particle_type=particle_type.detach().clone())
+            distance = torch.sum(bc_dpos(dataset.pos[:, None, :] - dataset.pos[None, :, :]) ** 2, dim=2)
             adj_t = ((distance < max_radius ** 2) & (distance > min_radius ** 2)).float() * 1
             edge_index = adj_t.nonzero().t().contiguous()
-            dataset = data.Data(x=x, pos=x[:, 1:3], edge_index=edge_index, field=[])
+            dataset.edge_index = edge_index
 
             # model prediction
             with torch.no_grad():
                 y = model(dataset)
 
             # append list
+            x = torch.concatenate([t.detach().clone() for t in (particle_id, pos, velocity, particle_type, features, age)], 1)
             if (it >= 0) & bSave:
-                x_list.append(x.detach().clone())
+                x_list.append(x)
                 y_list.append(y.detach().clone())
 
             # Particle update
@@ -163,6 +165,7 @@ def data_generate_particle(config, visualize=True, run_vizualized=0, erase=False
 
             # output plots
             if visualize & (run == run_vizualized) & (it % step == 0) & (it >= 0):
+                index_particles = get_index_particles(dataset.particle_type, n_particle_types)
                 visualize_intermediate_state(cmap, dataset_name, index_particles, it, n_particle_types, run, x)
 
         if bSave:
