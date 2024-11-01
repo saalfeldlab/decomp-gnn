@@ -20,28 +20,29 @@ def init_particles(config, ratio, device):
     n_particle_types = simulation_config.n_particle_types
     dimension = simulation_config.dimension
 
-    dpos_init = simulation_config.dpos_init
-
+    # Initialize position and velocity of the particles
     if simulation_config.boundary == 'periodic':
         pos = torch.rand(n_particles, dimension, device=device)
     else:
-        pos = torch.randn(n_particles, dimension, device=device) * 0.5
-    dpos = dpos_init * torch.randn((n_particles, dimension), device=device)
-    dpos = torch.clamp(dpos, min=-torch.std(dpos), max=+torch.std(dpos))
-    type = torch.zeros(int(n_particles / n_particle_types), device=device)
-    for n in range(1, n_particle_types):
-        type = torch.cat((type, n * torch.ones(int(n_particles / n_particle_types), device=device)), 0)
-    if (simulation_config.params == 'continuous') | (config.simulation.non_discrete_level > 0):
-        type = torch.tensor(np.arange(n_particles), device=device)
+        pos = 0.5 * torch.randn(n_particles, dimension, device=device)
+    velocity = simulation_config.dpos_init * torch.randn((n_particles, dimension), device=device)
+    velocity_std = torch.std(velocity)
+    velocity = torch.clamp(velocity, min=-velocity_std, max=velocity_std)
 
-    features = torch.cat((torch.rand((n_particles, 1), device=device) , 0.1 * torch.randn((n_particles, 1), device=device)), 1)
+    # Initialize particle types (either all different, or given number of groups)
+    if (simulation_config.params == 'continuous') | (simulation_config.non_discrete_level > 0):
+        particle_type = torch.tensor(np.arange(n_particles), device=device)
+    else:
+        distinct_types = torch.arange(0, n_particle_types, dtype=torch.get_default_dtype(), device=device)
+        particle_type = torch.repeat_interleave(distinct_types, int(n_particles / n_particle_types))
+    particle_type = particle_type[:, None]
 
-    type = type[:, None]
-    particle_id = torch.arange(n_particles, device=device)
-    particle_id = particle_id[:, None]
+    # Initialize other particle properties
+    features = torch.column_stack((torch.rand((n_particles, 1), device=device) , 0.1 * torch.randn((n_particles, 1), device=device)))
     age = torch.zeros((n_particles,1), device=device)
+    particle_id = torch.arange(n_particles, device=device)[:, None]
 
-    return pos, dpos, type, features, age, particle_id
+    return pos, velocity, particle_type, features, age, particle_id
 
 
 def data_generate_particle(config, visualize=True, run_vizualized=0, erase=False, step=5, ratio=1, device=None, bSave=True):
