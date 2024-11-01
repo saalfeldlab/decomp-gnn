@@ -14,7 +14,7 @@ from ParticleGraph.plotting import load_and_display
 from ParticleGraph.utils import CustomColorMap, fig_init, to_numpy, set_device
 
 
-def init_particles(config, ratio, device):
+def init_particles(config, ratio):
     simulation_config = config.simulation
     n_particles = simulation_config.n_particles * ratio
     n_particle_types = simulation_config.n_particle_types
@@ -22,25 +22,25 @@ def init_particles(config, ratio, device):
 
     # Initialize position and velocity of the particles
     if simulation_config.boundary == 'periodic':
-        pos = torch.rand(n_particles, dimension, device=device)
+        pos = torch.rand(n_particles, dimension)
     else:
-        pos = 0.5 * torch.randn(n_particles, dimension, device=device)
-    velocity = simulation_config.dpos_init * torch.randn((n_particles, dimension), device=device)
+        pos = 0.5 * torch.randn(n_particles, dimension)
+    velocity = simulation_config.dpos_init * torch.randn((n_particles, dimension))
     velocity_std = torch.std(velocity)
     velocity = torch.clamp(velocity, min=-velocity_std, max=velocity_std)
 
     # Initialize particle types (either all different, or given number of groups)
     if (simulation_config.params == 'continuous') | (simulation_config.non_discrete_level > 0):
-        particle_type = torch.tensor(np.arange(n_particles), device=device)
+        particle_type = torch.tensor(np.arange(n_particles))
     else:
-        distinct_types = torch.arange(0, n_particle_types, dtype=torch.get_default_dtype(), device=device)
+        distinct_types = torch.arange(0, n_particle_types, dtype=torch.get_default_dtype())
         particle_type = torch.repeat_interleave(distinct_types, int(n_particles / n_particle_types))
     particle_type = particle_type[:, None]
 
     # Initialize other particle properties
-    features = torch.column_stack((torch.rand((n_particles, 1), device=device) , 0.1 * torch.randn((n_particles, 1), device=device)))
-    age = torch.zeros((n_particles,1), device=device)
-    particle_id = torch.arange(n_particles, device=device)[:, None]
+    features = torch.column_stack((torch.rand((n_particles, 1)) , 0.1 * torch.randn((n_particles, 1))))
+    age = torch.zeros((n_particles,1))
+    particle_id = torch.arange(n_particles)[:, None]
 
     return pos, velocity, particle_type, features, age, particle_id
 
@@ -81,7 +81,7 @@ def data_generate_particle(config, visualize=True, run_vizualized=0, erase=False
         y_list = []
 
         # initialize particle and graph states
-        X1, V1, T1, H1, A1, N1 = init_particles(config=config, ratio=ratio, device=device)
+        X1, V1, T1, H1, A1, N1 = init_particles(config=config, ratio=ratio)
         for it in trange(simulation_config.start_frame, n_frames + 1):
 
             x = torch.concatenate(
@@ -148,7 +148,8 @@ if __name__ == '__main__':
     config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
     device = set_device("auto")
 
-    data_generate_particle(config, device=device, visualize=True, run_vizualized=0, erase=True, bSave=True, step=10)
+    with torch.device(device):
+        data_generate_particle(config, device=device, visualize=True, run_vizualized=0, erase=True, bSave=True, step=10)
 
     load_and_display('graphs_data/validation/Fig_0_0.tif')
     load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_0.tif')
