@@ -141,6 +141,8 @@ def visualize_intermediate_state(cmap, dataset_name, index_particles, it, n_part
 
 if __name__ == '__main__':
 
+    torch.manual_seed(0)
+
     config_file = 'arbitrary_3'
     config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
     device = set_device("auto")
