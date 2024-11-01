@@ -8,11 +8,34 @@ from torch_geometric.data import data
 from tqdm import trange
 
 from ParticleGraph.config import ParticleGraphConfig
-from ParticleGraph.generators import choose_model
+from ParticleGraph.generators import PDE_A
 from ParticleGraph.models import get_index_particles
 from ParticleGraph.plotting import load_and_display
 from ParticleGraph.utils import CustomColorMap, fig_init, to_numpy, set_device
 
+
+def bc_pos(x):
+    return torch.remainder(x, 1.0)  # in [0, 1)
+
+
+def bc_dpos(x):
+    return torch.remainder(x - 0.5, 1.0) - 0.5  # in [-0.5, 0.5)
+
+
+def initialize_model(config, device):
+    aggr_type = config.graph_model.aggr_type
+    n_particle_types = config.simulation.n_particle_types
+    dimension = config.simulation.dimension
+
+    params = config.simulation.params
+
+    # create GNN depending on type specified in config file
+    dummy = torch.rand(n_particle_types, 4)
+    p = torch.squeeze(torch.tensor(params))
+    sigma = config.simulation.sigma
+    model = PDE_A(aggr_type=aggr_type, p=p, sigma=sigma, bc_dpos=bc_dpos, dimension=dimension)
+
+    return model
 
 def init_particles(config, ratio):
     simulation_config = config.simulation
@@ -73,7 +96,7 @@ def data_generate_particle(config, visualize=True, run_vizualized=0, erase=False
         os.remove(f)
 
     # create GNN
-    model, bc_pos, bc_dpos = choose_model(config=config, device=device)
+    model = initialize_model(config=config, device=device)
 
     for run in range(config.training.n_runs):
 
@@ -81,12 +104,11 @@ def data_generate_particle(config, visualize=True, run_vizualized=0, erase=False
         y_list = []
 
         # initialize particle and graph states
-        X1, V1, T1, H1, A1, N1 = init_particles(config=config, ratio=ratio)
+        pos, velocity, particle_type, features, age, particle_id = init_particles(config=config, ratio=ratio)
+
         for it in trange(simulation_config.start_frame, n_frames + 1):
 
-            x = torch.concatenate(
-                (N1.clone().detach(), X1.clone().detach(), V1.clone().detach(), T1.clone().detach(),
-                 H1.clone().detach(), A1.clone().detach()), 1)
+            x = torch.concatenate([t.detach().clone() for t in (particle_id, pos, velocity, particle_type, features, age)], 1)
 
             index_particles = get_index_particles(x, n_particle_types, dimension)  # can be different from frame to frame
 
@@ -102,13 +124,13 @@ def data_generate_particle(config, visualize=True, run_vizualized=0, erase=False
 
             # append list
             if (it >= 0) & bSave:
-                x_list.append(x.clone().detach())
-                y_list.append(y.clone().detach())
+                x_list.append(x.detach().clone())
+                y_list.append(y.detach().clone())
 
             # Particle update
-            V1 = y
-            X1 = bc_pos(X1 + V1 * delta_t)
-            A1 = A1 + 1
+            velocity = y
+            pos = bc_pos(pos + velocity * delta_t)
+            age = age + 1
 
             # output plots
             if visualize & (run == run_vizualized) & (it % step == 0) & (it >= 0):
