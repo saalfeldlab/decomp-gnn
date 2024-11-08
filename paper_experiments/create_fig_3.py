@@ -5,6 +5,7 @@
 # execute:
 #   echo: false
 # ---
+import os
 
 # %% [markdown]
 # This script creates the first column of Figure 3 in the paper: we look at an attraction-repulsion system with three
@@ -98,8 +99,9 @@ train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='0_7500', run=0, step=1, save_velocity=True)
 
 data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
-data_train(config, config_file, **train_kwargs)
-data_test(config, config_file, **test_kwargs)
+if not os.path.exists(f'log/try_{config_file}'):
+    data_train(config, config_file, **train_kwargs)
+    data_test(config, config_file, **test_kwargs)
 
 # %%
 #| echo: true
