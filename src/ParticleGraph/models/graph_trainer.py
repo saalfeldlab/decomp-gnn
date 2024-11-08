@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import torch
 import seaborn as sns
 import torch.nn.functional as F
+from ParticleGraph.config import SimulationConfig
 from geomloss import SamplesLoss
 from matplotlib import rc
 from prettytable import PrettyTable
@@ -21,7 +22,13 @@ from ParticleGraph.models.Ghost_Particles import *
 from ParticleGraph.sparsify import EmbeddingCluster, sparsify_cluster, sparsify_cluster_state
 
 
-def data_train(config, config_file, erase, device):
+def data_train(
+        config: SimulationConfig,
+        config_file: str,
+        *,
+        device: torch.device,
+        erase: bool
+):
 
     seed = config.training.seed
 
@@ -1544,7 +1551,22 @@ def data_train_signal(config, config_file, erase, device):
         plt.yticks([0,n_particles-1],[1,n_particles],fontsize=10)
 
 
-def data_test(config=None, config_file=None, visualize=False, style='color frame', verbose=True, best_model=20, step=15, ratio=1, run=1, save_velocity=False, test_simulation=False, sample_embedding = False, device=[]):
+def data_test(
+        config,
+        config_file,
+        *,
+        device: torch.device = None,
+        visualize: bool = False,
+        style: str = 'color frame',
+        verbose: bool = True,
+        best_model: int = 20,
+        step: int = 15,
+        ratio: int = 1,
+        run: int = 1,
+        save_velocity: bool = False,
+        test_simulation: bool = False,
+        sample_embedding: bool = False,
+):
     dataset_name = config.dataset
     simulation_config = config.simulation
     model_config = config.graph_model
