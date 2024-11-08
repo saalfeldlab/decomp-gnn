@@ -15,9 +15,6 @@ from ParticleGraph.utils import CustomColorMap, fig_init, to_numpy, set_device
 
 
 class AttractionRepulsionModel(pyg.nn.MessagePassing):
-    """Interaction Network as proposed in this paper:
-    https://proceedings.neurips.cc/paper/2016/hash/3147da8ab4a0437c15ef51a5cc7f2dc4-Abstract.html"""
-
     """
     Compute the speed of particles as a function of their relative position according to an attraction-repulsion law.
     The latter is defined by four parameters p = (p1, p2, p3, p4) and a parameter sigma.
@@ -41,7 +38,7 @@ class AttractionRepulsionModel(pyg.nn.MessagePassing):
         d_pos = self.propagate(edge_index, pos=data.pos, parameters=parameters)
         return d_pos
 
-
+    # noinspection PyMethodOverriding
     def message(self, pos_i, pos_j, parameters_i):
 
         relative_position = self.bc_dpos(pos_j - pos_i)
@@ -100,7 +97,7 @@ def init_particles(config, ratio):
     return pos, velocity, particle_type, features, age, particle_id
 
 
-def data_generate_particle(config, visualize=True, run_vizualized=0, erase=False, step=5, ratio=1, device=None, bSave=True):
+def data_generate_particle(config, model, visualize=True, run_visualized=0, erase=False, step=5, ratio=1, save=True):
     simulation_config = config.simulation
     model_config = config.graph_model
 
@@ -126,11 +123,6 @@ def data_generate_particle(config, visualize=True, run_vizualized=0, erase=False
     for f in files:
         os.remove(f)
 
-    # create GNN
-    p = torch.squeeze(torch.tensor(config.simulation.params))
-    sigma = config.simulation.sigma
-    model = AttractionRepulsionModel(p=p, sigma=sigma, bc_dpos=bc_dpos)
-
     for run in range(config.training.n_runs):
 
         x_list = []
@@ -154,7 +146,7 @@ def data_generate_particle(config, visualize=True, run_vizualized=0, erase=False
 
             # append list
             x = torch.concatenate([t.detach().clone() for t in (particle_id, pos, velocity, particle_type, features, age)], 1)
-            if (it >= 0) & bSave:
+            if (it >= 0) & save:
                 x_list.append(x)
                 y_list.append(y.detach().clone())
 
@@ -164,11 +156,11 @@ def data_generate_particle(config, visualize=True, run_vizualized=0, erase=False
             age = age + 1
 
             # output plots
-            if visualize & (run == run_vizualized) & (it % step == 0) & (it >= 0):
+            if visualize & (run == run_visualized) & (it % step == 0) & (it >= 0):
                 index_particles = get_index_particles(dataset.particle_type, n_particle_types)
                 visualize_intermediate_state(cmap, dataset_name, index_particles, it, n_particle_types, run, x)
 
-        if bSave:
+        if save:
             torch.save(x_list, f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt')
             torch.save(y_list, f'graphs_data/graphs_{dataset_name}/y_list_{run}.pt')
             torch.save(model.p, f'graphs_data/graphs_{dataset_name}/model_p.pt')
@@ -203,7 +195,12 @@ if __name__ == '__main__':
     device = set_device("auto")
 
     with torch.device(device):
-        data_generate_particle(config, device=device, visualize=True, run_vizualized=0, erase=True, bSave=True, step=10)
+        model = AttractionRepulsionModel(
+            p=torch.tensor(config.simulation.params),
+            sigma=config.simulation.sigma,
+            bc_dpos=bc_dpos
+        )
+        data_generate_particle(config, model, visualize=True, run_visualized=0, erase=True, save=True, step=10)
 
     load_and_display('graphs_data/validation/Fig_0_0.tif')
     load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_0.tif')
