@@ -2,10 +2,11 @@
 # ---
 # title: Figure 3
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
+# categories:
+#   - Particles
 # execute:
 #   echo: false
 # ---
-import os
 
 # %% [markdown]
 # This script creates the first column of Figure 3 in the paper: we look at an attraction-repulsion system with three
@@ -13,6 +14,8 @@ import os
 
 # %%
 #| output: false
+import os
+
 import torch
 import torch_geometric as pyg
 import torch_geometric.utils as pyg_utils
@@ -32,6 +35,9 @@ config_file = 'arbitrary_3'
 figure_id = '3'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
+
+# %% [markdown]
+# The following model shows how the attraction-repulsion model is implemented in PyTorch Geometric.
 
 # %%
 #| echo: true
