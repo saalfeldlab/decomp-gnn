@@ -1,0 +1,6 @@
+---
+title: "Decomposing heterogeneous dynamical systems with graph neural networks"
+listing:
+  contents: "paper_experiments/*.py"
+  type: grid
+---
