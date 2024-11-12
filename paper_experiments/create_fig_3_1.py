@@ -1,6 +1,6 @@
 # %% [markdown]
 # ---
-# title: Figure 3
+# title: Attraction-Repulsion System with Three Particle Types
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles
