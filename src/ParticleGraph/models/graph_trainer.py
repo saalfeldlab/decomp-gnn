@@ -1552,8 +1552,8 @@ def data_train_signal(config, config_file, erase, device):
 
 
 def data_test(
-        config,
-        config_file,
+        config: SimulationConfig,
+        config_file: str,
         *,
         device: torch.device = None,
         visualize: bool = False,
