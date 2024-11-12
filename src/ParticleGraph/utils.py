@@ -415,7 +415,7 @@ def check_and_clear_memory(
         memory_percentage_threshold: float = 0.6
 ):
     """
-    Check the memory usage of a GPU and clear the cache every n iterations or if it exceeds a certain threshold.
+    Check the memory usage of a GPU and clear the cache every n iterations or if the reserved memory exceeds a certain threshold.
     :param device: The device to check the memory usage for.
     :param iteration_number: The current iteration number.
     :param every_n_iterations: Clear the cache every n iterations.
@@ -427,7 +427,7 @@ def check_and_clear_memory(
         logger.debug(f"Total allocated memory: {torch.cuda.memory_allocated(device)/1024**3:.2f} GB")
         logger.debug(f"Total reserved memory:  {torch.cuda.memory_reserved(device)/1024**3:.2f} GB")
 
-        if (iteration_number % every_n_iterations == 0) or torch.cuda.memory_allocated(device) > memory_percentage_threshold * torch.cuda.get_device_properties(device).total_memory:
+        if (iteration_number % every_n_iterations == 0) or torch.cuda.memory_reserved(device) > memory_percentage_threshold * torch.cuda.get_device_properties(device).total_memory:
             logger.debug("Memory usage is high. Calling garbage collector and clearing cache.")
             gc.collect()
             torch.cuda.empty_cache()
