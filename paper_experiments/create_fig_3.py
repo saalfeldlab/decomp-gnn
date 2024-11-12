@@ -27,10 +27,12 @@ from ParticleGraph.models import data_train, data_test
 from ParticleGraph.plotting import get_figures, load_and_display
 from ParticleGraph.utils import set_device, to_numpy
 
+# %% [markdown]
+# First, we load the configuration file and set the device.
+
 # %%
 #| echo: true
 #| output: false
-# First, we load the configuration file and set the device.
 config_file = 'arbitrary_3'
 figure_id = '3'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
@@ -86,11 +88,14 @@ def bc_pos(x):
 def bc_dpos(x):
     return torch.remainder(x - 0.5, 1.0) - 0.5
 
+# %% [markdown]
+# Subsequently, the data is generated, and the model is trained and tested.
+# Since we ship the trained model with the repository, this step can be skipped if desired.
+# The training model can be found at [Interaction_particle.py](https://github.com/saalfeldlab/decomp-gnn/blob/main/src/ParticleGraph/models/Interaction_Particle.py).
+
 # %%
 #| echo: true
 #| eval: false
-# Subsequently, the data is generated, and the model is trained and tested.
-# Since we ship the trained model with the repository, this step can be skipped if desired.
 p = torch.squeeze(torch.tensor(config.simulation.params))
 sigma = config.simulation.sigma
 model = AttractionRepulsionModel(
@@ -109,11 +114,13 @@ if not os.path.exists(f'log/try_{config_file}'):
     data_train(config, config_file, **train_kwargs)
     data_test(config, config_file, **test_kwargs)
 
+# %% [markdown]
+# Finally, we generate the figures that are shown in the first column of Figure 3. The model that has been trained in the
+# previous step is used to generate the rollouts.
+
 # %%
 #| echo: true
 #| eval: false
-# Here, we generate the figures that are shown in the first column of Figure 3. The model that has been trained in the
-# previous step is used to generate the rollouts.
 config_list, epoch_list = get_figures(figure_id, device=device)
 
 # %%
