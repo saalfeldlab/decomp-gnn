@@ -130,22 +130,20 @@ load_and_display('graphs_data/graphs_arbitrary_3_continuous/Fig/Fig_0_0.tif')
 #| fig-cap: "Final configuration after data generation"
 load_and_display('graphs_data/graphs_arbitrary_3_continuous/Fig/Fig_0_250.tif')
 
-"""
-Don't really know what to plot here
+# Don't really know what to plot here
 
 # %%
 #| fig-cap: "Learned embedding of the particle types"
-load_and_display('log/try_arbitrary_3_continuous/results/embedding_arbitrary_3_20.tif')
+# load_and_display('log/try_arbitrary_3_continuous/results/embedding_arbitrary_3_20.tif')
 
 # %%
 #| fig-cap: "Learned interaction functions"
-load_and_display('log/try_arbitrary_3_continuous/results/func_all_arbitrary_3_20.tif')
+# load_and_display('log/try_arbitrary_3_continuous/results/func_all_arbitrary_3_20.tif')
 
 # %%
 #| fig-cap: "Initial random configuration for rollout"
-load_and_display('log/try_arbitrary_3_continuous/tmp_recons/Fig_arbitrary_3_0.tif')
+# load_and_display('log/try_arbitrary_3_continuous/tmp_recons/Fig_arbitrary_3_0.tif')
 
 # %%
 #| fig-cap: "Final configuration in rollout, which looks qualitatively very similar to the final configuration of the data generation"
-load_and_display('log/try_arbitrary_3_continuous/tmp_recons/Fig_arbitrary_3_192.tif')
-"""
+# load_and_display('log/try_arbitrary_3_continuous/tmp_recons/Fig_arbitrary_3_192.tif')
