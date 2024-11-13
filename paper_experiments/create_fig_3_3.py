@@ -108,7 +108,7 @@ generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='c
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='0_7500', run=0, step=1, save_velocity=True)
 
-# data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
+data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 if not os.path.exists(f'log/try_{config_file}'):
     data_train(config, config_file, **train_kwargs)
     data_test(config, config_file, **test_kwargs)
@@ -124,24 +124,28 @@ config_list, epoch_list = get_figures(figure_id, device=device)
 
 # %%
 #| fig-cap: "Initial configuration for data generation. The orange, blue, and green particles represent the three different particle types."
-load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_0.tif')
+load_and_display('graphs_data/graphs_arbitrary_3_continuous/Fig/Fig_0_0.tif')
 
 # %%
 #| fig-cap: "Final configuration after data generation"
-load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_250.tif')
+load_and_display('graphs_data/graphs_arbitrary_3_continuous/Fig/Fig_0_250.tif')
+
+"""
+Don't really know what to plot here
 
 # %%
 #| fig-cap: "Learned embedding of the particle types"
-load_and_display('log/try_arbitrary_3/results/embedding_arbitrary_3_20.tif')
+load_and_display('log/try_arbitrary_3_continuous/results/embedding_arbitrary_3_20.tif')
 
 # %%
 #| fig-cap: "Learned interaction functions"
-load_and_display('log/try_arbitrary_3/results/func_all_arbitrary_3_20.tif')
+load_and_display('log/try_arbitrary_3_continuous/results/func_all_arbitrary_3_20.tif')
 
 # %%
 #| fig-cap: "Initial random configuration for rollout"
-load_and_display('log/try_arbitrary_3/tmp_recons/Fig_arbitrary_3_0.tif')
+load_and_display('log/try_arbitrary_3_continuous/tmp_recons/Fig_arbitrary_3_0.tif')
 
 # %%
 #| fig-cap: "Final configuration in rollout, which looks qualitatively very similar to the final configuration of the data generation"
-load_and_display('log/try_arbitrary_3/tmp_recons/Fig_arbitrary_3_192.tif')
+load_and_display('log/try_arbitrary_3_continuous/tmp_recons/Fig_arbitrary_3_192.tif')
+"""
