@@ -3,7 +3,6 @@ channels:
   - conda-forge
 dependencies:
   - astropy
-  - fa2_modified
   - gputil
   - h5py
   - imageio
@@ -31,3 +30,4 @@ dependencies:
   - pip:
     - geomloss
     - torch_geometric
+    - fa2_modified
