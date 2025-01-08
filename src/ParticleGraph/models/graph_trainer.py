@@ -1,3 +1,4 @@
+import os
 import random
 
 import matplotlib.pyplot as plt
@@ -2004,6 +2005,7 @@ def data_test(
                 plt.ylim([-2, 2])
 
             plt.tight_layout()
+            os.makedirs(f"./{log_dir}/tmp_recons", exist_ok=True)
             plt.savefig(f"./{log_dir}/tmp_recons/Fig_{config_file}_{it}.tif", dpi=80) #170.7)
             # plt.savefig(f"./{log_dir}/tmp_recons/Fig_{config_file}_{10000+it}.tif", dpi=42.675)
             plt.close()

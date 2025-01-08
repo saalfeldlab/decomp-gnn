@@ -106,12 +106,12 @@ model = AttractionRepulsionModel(
 
 generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', alpha=1, erase=True, save=True, step=10)
 train_kwargs = dict(device=device, erase=True)
-test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='0_7500', run=0, step=1, save_velocity=True)
+test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
 
 data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 if not os.path.exists(f'log/try_{config_file}'):
     data_train(config, config_file, **train_kwargs)
-    data_test(config, config_file, **test_kwargs)
+data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]
 # Finally, we generate the figures that are shown in the first column of Figure 3. The model that has been trained in the
