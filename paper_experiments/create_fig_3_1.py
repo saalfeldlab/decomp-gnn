@@ -43,7 +43,6 @@ device = set_device("auto")
 
 # %%
 #| echo: true
-#| eval: false
 class AttractionRepulsionModel(pyg.nn.MessagePassing):
     """
     Compute the speed of particles as a function of their relative position according to an attraction-repulsion law.
@@ -95,7 +94,6 @@ def bc_dpos(x):
 
 # %%
 #| echo: true
-#| eval: false
 p = torch.squeeze(torch.tensor(config.simulation.params))
 sigma = config.simulation.sigma
 model = AttractionRepulsionModel(
@@ -120,7 +118,6 @@ data_test(config, config_file, **test_kwargs)
 
 # %%
 #| echo: true
-#| eval: false
 config_list, epoch_list = get_figures(figure_id, device=device)
 
 # %%
