@@ -1,33 +1,36 @@
-name: gnn
+name: gnn-2
 channels:
   - conda-forge
 dependencies:
-  - astropy
-  - gputil
-  - h5py
-  - imageio
-  - ipython
-  - jupyter
-  - jupytext
-  - matplotlib
-  - networkx
-  - numpy
-  - pandas
-  - pip
-  - prettytable
-  - pydantic
-  - pysr
-  - pytorch
-  - PyYAML
-  - scikit-image
-  - scipy
-  - seaborn
-  - tifffile
-  - torchvision
-  - tqdm
-  - umap-learn
-  - vispy
+  - astropy=6.1.4=py312hc0a28a1_0
+  - gputil=1.4.0=pyh9f0ad1d_0
+  - h5py=3.12.1=nompi_py312hedeef09_102
+  - imageio=2.36.0=pyh12aca89_1
+  - ipython=8.29.0=pyh707e725_0
+  - jupyter=1.1.1=pyhd8ed1ab_0
+  - jupytext=1.16.4=pyh80e38bb_0
+  - matplotlib=3.9.2=py312h7900ff3_1
+  - networkx=3.4.2=pyhd8ed1ab_1
+  - numpy=2.0.2=py312h58c1407_0
+  - pandas=2.2.3=py312hf9745cd_1
+  - pip=24.3.1=pyh8b19718_0
+  - prettytable=3.12.0=pyhd8ed1ab_0
+  - pydantic=2.9.2=pyhd8ed1ab_0
+  - pysr=0.19.3=pyhd8ed1ab_0
+  - python=3.12.7=hc5c86c4_0_cpython
+  - pytorch=2.4.1=cuda118_py312h02e3f75_303
+  - pyyaml=6.0.2=py312h66e93f0_1
+  - scikit-image=0.24.0=py312hf9745cd_3
+  - scikit-learn=1.5.2=py312h7a48858_1
+  - scipy=1.14.1=py312h62794b6_1
+  - seaborn=0.13.2=hd8ed1ab_2
+  - tifffile=2024.9.20=pyhd8ed1ab_0
+  - torchvision=0.19.1=cuda118py312h9250042_1
+  - tqdm=4.66.6=pyhd8ed1ab_0
+  - umap-learn=0.5.7=py312h7900ff3_0
+  - vispy=0.14.3=py312ha89f626_1
   - pip:
-    - geomloss
-    - torch_geometric
-    - fa2_modified
+    - geomloss==0.2.6
+    - torch-geometric==2.6.1
+    - fa2_modified==0.3.10
+
