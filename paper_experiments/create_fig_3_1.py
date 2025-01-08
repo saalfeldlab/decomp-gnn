@@ -94,6 +94,7 @@ def bc_dpos(x):
 
 # %%
 #| echo: true
+#| output: false
 p = torch.squeeze(torch.tensor(config.simulation.params))
 sigma = config.simulation.sigma
 model = AttractionRepulsionModel(
@@ -118,6 +119,7 @@ data_test(config, config_file, **test_kwargs)
 
 # %%
 #| echo: true
+#| output: false
 config_list, epoch_list = get_figures(figure_id, device=device)
 
 # %%
