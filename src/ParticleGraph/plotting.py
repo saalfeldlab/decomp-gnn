@@ -3455,7 +3455,7 @@ def get_figures(index, *, device):
         case '3':
             config_list = [ 'arbitrary_3']#, 'arbitrary_3_continuous', 'arbitrary_3_3', 'arbitrary_16', 'arbitrary_32','arbitrary_64']
         case '4':
-            config_list = ['arbitrary_3_field_video_bison_quad']
+            config_list = ['arbitrary_3_field_video_bison']
         case 'supp1':
             config_list = ['arbitrary_3']
             epoch_list= ['0_0', '0_200', '0_1000', '20']
