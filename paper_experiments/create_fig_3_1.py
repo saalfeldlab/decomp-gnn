@@ -16,6 +16,7 @@
 #| output: false
 import os
 
+import umap
 import torch
 import torch_geometric as pyg
 import torch_geometric.utils as pyg_utils
@@ -43,7 +44,6 @@ device = set_device("auto")
 
 # %%
 #| echo: true
-#| eval: false
 class AttractionRepulsionModel(pyg.nn.MessagePassing):
     """
     Compute the speed of particles as a function of their relative position according to an attraction-repulsion law.
@@ -95,7 +95,7 @@ def bc_dpos(x):
 
 # %%
 #| echo: true
-#| eval: false
+#| output: false
 p = torch.squeeze(torch.tensor(config.simulation.params))
 sigma = config.simulation.sigma
 model = AttractionRepulsionModel(
@@ -107,12 +107,12 @@ model = AttractionRepulsionModel(
 
 generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', alpha=1, erase=True, save=True, step=10)
 train_kwargs = dict(device=device, erase=True)
-test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='0_7500', run=0, step=1, save_velocity=True)
+test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
 
 data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 if not os.path.exists(f'log/try_{config_file}'):
     data_train(config, config_file, **train_kwargs)
-    data_test(config, config_file, **test_kwargs)
+data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]
 # Finally, we generate the figures that are shown in the first column of Figure 3. The model that has been trained in the
@@ -120,7 +120,7 @@ if not os.path.exists(f'log/try_{config_file}'):
 
 # %%
 #| echo: true
-#| eval: false
+#| output: false
 config_list, epoch_list = get_figures(figure_id, device=device)
 
 # %%
