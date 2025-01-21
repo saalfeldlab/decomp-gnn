@@ -16,6 +16,7 @@
 #| output: false
 import os
 
+import umap
 import torch
 import torch_geometric as pyg
 import torch_geometric.utils as pyg_utils
