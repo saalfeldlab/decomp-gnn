@@ -145,4 +145,4 @@ load_and_display('log/try_arbitrary_3/tmp_recons/Fig_arbitrary_3_0.tif')
 
 # %%
 #| fig-cap: "Final configuration in rollout, which looks qualitatively very similar to the final configuration of the data generation"
-load_and_display('log/try_arbitrary_3/tmp_recons/Fig_arbitrary_3_192.tif')
+load_and_display('log/try_arbitrary_3/tmp_recons/Fig_arbitrary_3_249.tif')

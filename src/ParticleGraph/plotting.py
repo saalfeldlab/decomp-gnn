@@ -3510,9 +3510,9 @@ def get_figures(index, *, device):
             for config_file in config_list:
                 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
                 data_plot(config=config, config_file=config_file, epoch_list=epoch_list, device=device)
-                data_test(config=config, config_file=config_file, visualize=True, style='latex frame color', verbose=False,
-                          best_model=20, run=0, step=64, test_simulation=False,
-                          sample_embedding=False, device=device)  # config.simulation.n_frames // 7
+                # data_test(config=config, config_file=config_file, visualize=True, style='latex frame color', verbose=False,
+                #           best_model=20, run=0, step=64, test_simulation=False,
+                #           sample_embedding=False, device=device)  # config.simulation.n_frames // 7
                 print(' ')
                 print(' ')
 
