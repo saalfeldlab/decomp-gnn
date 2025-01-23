@@ -3452,8 +3452,18 @@ def get_figures(index, *, device):
 
     epoch_list = ['20']
     match index:
-        case '3':
-            config_list = [ 'arbitrary_3']#, 'arbitrary_3_continuous', 'arbitrary_3_3', 'arbitrary_16', 'arbitrary_32','arbitrary_64']
+        case '3_1':
+            config_list = [ 'arbitrary_3']
+        case '3_3':
+            config_list = ['arbitrary_3_continuous']
+        case '3_2':
+            config_list = ['arbitrary_3_3']
+        case '3_4':
+            config_list = ['arbitrary_16']
+        case '3_5':
+            config_list = ['arbitrary_32']
+        case '3_6':
+            config_list = ['arbitrary_64']
         case '4':
             config_list = ['arbitrary_3_field_video_bison']
         case 'supp1':
@@ -3496,7 +3506,7 @@ def get_figures(index, *, device):
 
 
     match index:
-        case '3' | '4' | 'supp4' | 'supp5' | 'supp6' | 'supp7' | 'supp8' | 'supp9' | 'supp10' | 'supp11' | 'supp12' | 'supp15' |'supp16' |'supp18':
+        case '3_1' | '3_2' |'3_3' |'3_4' |'3_5' |'3_6' | '4' | 'supp4' | 'supp5' | 'supp6' | 'supp7' | 'supp8' | 'supp9' | 'supp10' | 'supp11' | 'supp12' | 'supp15' |'supp16' |'supp18':
             for config_file in config_list:
                 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
                 data_plot(config=config, config_file=config_file, epoch_list=epoch_list, device=device)

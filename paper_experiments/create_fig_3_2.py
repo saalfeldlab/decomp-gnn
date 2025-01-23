@@ -34,8 +34,8 @@ from ParticleGraph.utils import set_device, to_numpy
 # %%
 #| echo: true
 #| output: false
-config_file = 'arbitrary_3'
-figure_id = '3_1'
+config_file = 'arbitrary_3_3'
+figure_id = '3'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
