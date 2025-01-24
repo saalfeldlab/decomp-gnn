@@ -283,7 +283,7 @@ class Mesh_RPS_extract(MessagePassing):
 def load_training_data(dataset_name, n_runs, log_dir, device):
     x_list = []
     y_list = []
-    print('Load data ...')
+    print('load data ...')
     time.sleep(0.5)
     for run in trange(n_runs):
         x = torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device, weights_only=True)
@@ -624,7 +624,7 @@ def plot_generated(config, run, style, step, device):
     for f in files:
         os.remove(f)
 
-    print('Load data ...')
+    print('load data ...')
 
     x_list = torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device, weights_only=True)
 

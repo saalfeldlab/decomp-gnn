@@ -90,7 +90,7 @@ def sparsify_cluster(cluster_method, proj_interaction, embedding, cluster_distan
     fig,ax = fig_init()
     for n in label_list:
         pos = np.argwhere(labels == n)
-        print(len(pos))
+        # print(len(pos))
         if len(pos) > 0:
             ax.scatter(embedding[pos, 0], embedding[pos, 1], s=5)
     new_labels = np.ones_like(labels) * n_particle_types
