@@ -1,6 +1,6 @@
 # %% [markdown]
 # ---
-# title: Attraction-Repulsion System with 32 Particle Types
+# title: Attraction-Repulsion System with 64 Particle Types
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles
@@ -9,7 +9,7 @@
 # ---
 
 # %% [markdown]
-# This script creates the fifth column of Figure 3 in the paper: we look at an attraction-repulsion system with 32
+# This script creates the fifth column of Figure 3 in the paper: we look at an attraction-repulsion system with 64
 # particle types.
 
 # %%
@@ -34,8 +34,8 @@ from ParticleGraph.utils import set_device, to_numpy
 # %%
 #| echo: true
 #| output: false
-config_file = 'arbitrary_32'
-figure_id = '3_5'
+config_file = 'arbitrary_64'
+figure_id = '3_6'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
@@ -125,20 +125,24 @@ config_list, epoch_list = get_figures(figure_id, device=device)
 
 # %%
 #| fig-cap: "Initial configuration of the test training dataset. There are 4800 particles. Colors indicate the particle types."
-load_and_display('graphs_data/graphs_arbitrary_32/Fig/Fig_0_0.tif')
+load_and_display('graphs_data/graphs_arbitrary_64/Fig/Fig_0_0.tif')
 
 # %%
 #| fig-cap: "Final configuration at frame 1000"
-load_and_display('graphs_data/graphs_arbitrary_32/Fig/Fig_0_1000.tif')
+load_and_display('graphs_data/graphs_arbitrary_64/Fig/Fig_0_1000.tif')
 
 # %%
 #| fig-cap: "Learned latent vectors (x4800)"
-load_and_display('log/try_arbitrary_32/results/embedding_arbitrary_32_20.tif')
+load_and_display('log/try_arbitrary_64/results/embedding_arbitrary_64_20.tif')
 
 # %%
-#| fig-cap: "Learned interaction functions (x32)"
-load_and_display('log/try_arbitrary_32/results/func_all_arbitrary_32_20.tif')
+#| fig-cap: "Learned interaction functions (x64)"
+load_and_display('log/try_arbitrary_64/results/func_all_arbitrary_64_20.tif')
 
 # %%
-#| fig-cap: "GNN rollout inference"
-load_and_display('log/try_arbitrary_32/tmp_recons/Fig_arbitrary_32_999.tif')
+#| fig-cap: "Initial random configuration for rollout"
+load_and_display('log/try_arbitrary_64/tmp_recons/Fig_arbitrary_64_0.tif')
+
+# %%
+#| fig-cap: "Final configuration in rollout at frame 1000"
+load_and_display('log/try_arbitrary_64/tmp_recons/Fig_arbitrary_64_999.tif')

@@ -1558,7 +1558,6 @@ def plot_gravity_continuous(config_file, epoch_list, log_dir, logger, device):
             sys.stdout = text_trap
             popt_list = []
             for n in range(0,int(n_particles * (1 - config.training.particle_dropout))):
-                print(n)
                 model_pysrr, max_index, max_value = symbolic_regression(rr, plot_list[n])
                 # print(f'{p_list[n].squeeze()}/x0**2, {model_pysrr.sympy(max_index)}')
                 logger.info(f'{np.round(p_list[n].squeeze(),2)}/x0**2, pysrr found {model_pysrr.sympy(max_index)}')

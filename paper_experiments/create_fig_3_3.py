@@ -137,12 +137,8 @@ load_and_display('graphs_data/graphs_arbitrary_3_continuous/Fig/Fig_0_1000.tif')
 load_and_display('log/try_arbitrary_3_continuous/results/first_embedding_arbitrary_3_continuous_20.tif')
 
 # %%
-#| fig-cap: "Learned interaction functions (x3)"
+#| fig-cap: "Learned interaction functions (x4800)"
 load_and_display('log/try_arbitrary_3_continuous/results/func_arbitrary_3_continuous_20.tif')
-
-# %%
-#| fig-cap: "Initial random configuration for rollout"
-load_and_display('log/try_arbitrary_3_continuous/tmp_recons/Fig_arbitrary_3_continuous_0.tif')
 
 # %%
 #| fig-cap: "GNN rollout inference at frame 1000"

@@ -1735,7 +1735,7 @@ def data_test(
             mesh_model.load_state_dict(state_dict['model_state_dict'])
             mesh_model.eval()
         else:
-            state_dict = torch.load(net, map_location=device)
+            state_dict = torch.load(net, map_location=device, weights_only=True)
             model.load_state_dict(state_dict['model_state_dict'])
             model.eval()
             mesh_model = None
