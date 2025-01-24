@@ -1955,7 +1955,6 @@ def data_test(
                     # plt.yticks([])
                     # plt.axis('off')
             elif model_config.signal_model_name == 'PDE_N':
-
                 matplotlib.rcParams['savefig.pad_inches'] = 0
                 fig = plt.figure(figsize=(12, 12))
                 ax = fig.add_subplot(1, 1, 1)
@@ -1974,11 +1973,16 @@ def data_test(
                 ax.tick_params(axis='both', which='major', pad=15)
                 plt.text(0, 1.1, f'   ', ha='left', va='top', transform=ax.transAxes, fontsize=48)
                 plt.tight_layout()
-
-            s_p = 100
-            for n in range(n_particle_types):
-                plt.scatter(x[index_particles[n], 2].detach().cpu().numpy(),
-                            x[index_particles[n], 1].detach().cpu().numpy(), s=s_p, color=cmap.color(n))
+            elif (simulation_config.n_particle_types > 1000):
+                plt.scatter(to_numpy(x[:, 2]), to_numpy(x[:, 1]), s=100, color='k')
+                plt.tight_layout()
+                plt.savefig(f"graphs_data/graphs_{dataset_name}/Fig/Fig_{run}_{it}.tif", dpi=80)
+                plt.xlim([0, 1])
+                plt.ylim([0, 1])
+            else:
+                for n in range(n_particle_types):
+                    plt.scatter(x[index_particles[n], 2].detach().cpu().numpy(),
+                                x[index_particles[n], 1].detach().cpu().numpy(), s=100, color=cmap.color(n))
 
             if 'latex' in style:
                 plt.xlabel(r'$x$', fontsize=78)

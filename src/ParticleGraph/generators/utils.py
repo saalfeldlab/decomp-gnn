@@ -42,8 +42,8 @@ def choose_model(config=[], W=[], phi=[], device=[]):
         case 'PDE_A' | 'PDE_ParticleField_A':
             p = torch.ones(n_particle_types, 4, device=device) + torch.rand(n_particle_types, 4, device=device)
             if config.simulation.non_discrete_level>0:
-                if  os.path.exists(f'graphs_data/graphs_{config.dataset}/model_p.pt'):
-                    p = torch.load(f'graphs_data/graphs_{config.dataset}/model_p.pt')
+                if  os.path.exists(f'graphs_data/model_p_arbitrary_continuous.pt'):
+                    p = torch.load(f'graphs_data/model_p_arbitrary_continuous.pt')
                 else:
                     pp=[]
                     n_particle_types = len(params)
