@@ -9,7 +9,7 @@
 # ---
 
 # %% [markdown]
-# This script creates the fourth column of Figure 3 in the paper: we look at an attraction-repulsion system with sixteen
+# This script creates the fifth column of Figure 3 in the paper: we look at an attraction-repulsion system with 32
 # particle types.
 
 # %%
@@ -34,8 +34,8 @@ from ParticleGraph.utils import set_device, to_numpy
 # %%
 #| echo: true
 #| output: false
-config_file = 'arbitrary_16'
-figure_id = '3_4'
+config_file = 'arbitrary_32'
+figure_id = '3_5'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
@@ -109,9 +109,9 @@ generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='c
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
 
-# data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
-# if not os.path.exists(f'log/try_{config_file}'):
-#     data_train(config, config_file, **train_kwargs)
+data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
+if not os.path.exists(f'log/try_{config_file}'):
+    data_train(config, config_file, **train_kwargs)
 data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]
@@ -125,24 +125,24 @@ config_list, epoch_list = get_figures(figure_id, device=device)
 
 # %%
 #| fig-cap: "Initial configuration of the test training dataset. There are 4800 particles. The orange, blue, and green particles represent the three different particle types."
-load_and_display('graphs_data/graphs_arbitrary_16/Fig/Fig_0_0.tif')
+load_and_display('graphs_data/graphs_arbitrary_32/Fig/Fig_0_0.tif')
 
 # %%
 #| fig-cap: "Final configuration at frame 500"
-load_and_display('graphs_data/graphs_arbitrary_16/Fig/Fig_0_500.tif')
+load_and_display('graphs_data/graphs_arbitrary_32/Fig/Fig_0_500.tif')
 
 # %%
 #| fig-cap: "Learned laternt vectors (x4800)"
-load_and_display('log/try_arbitrary_16/results/embedding_arbitrary_16_20.tif')
+load_and_display('log/try_arbitrary_32/results/embedding_arbitrary_32_20.tif')
 
 # %%
 #| fig-cap: "Learned interaction functions (x16)"
-load_and_display('log/try_arbitrary_16/results/func_all_arbitrary_16_20.tif')
+load_and_display('log/try_arbitrary_32/results/func_all_arbitrary_32_20.tif')
 
 # %%
 #| fig-cap: "Initial random configuration for rollout"
-load_and_display('log/try_arbitrary_16/tmp_recons/Fig_arbitrary_16_0.tif')
+load_and_display('log/try_arbitrary_32/tmp_recons/Fig_arbitrary_32_0.tif')
 
 # %%
 #| fig-cap: "Final configuration in rollout, which looks qualitatively very similar to the final configuration of the data generation"
-load_and_display('log/try_arbitrary_16/tmp_recons/Fig_arbitrary_16_499.tif')
+load_and_display('log/try_arbitrary_32/tmp_recons/Fig_arbitrary_32_499.tif')
