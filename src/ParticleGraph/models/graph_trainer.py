@@ -166,7 +166,7 @@ def data_train_particles(config, config_file, erase, device):
 
     list_loss = []
     time.sleep(1)
-    for epoch in trange(n_epochs + 1):
+    for epoch in range(n_epochs + 1):
 
         batch_size = get_batch_size(epoch)
         logger.info(f'batch_size: {batch_size}')

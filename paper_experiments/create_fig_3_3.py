@@ -10,7 +10,7 @@
 
 # %% [markdown]
 # This script creates the third column of Figure 3 in the paper: we look at an attraction-repulsion system where every
-# particle has its own type, which is a continuous variable.
+# particle has its own interaction function.
 
 # %%
 #| output: false
@@ -35,7 +35,7 @@ from ParticleGraph.utils import set_device, to_numpy
 #| echo: true
 #| output: false
 config_file = 'arbitrary_3_continuous'
-figure_id = '3'
+figure_id = '3_3'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
@@ -109,6 +109,7 @@ train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
 
 data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
+data_train(config, config_file, **train_kwargs)
 if not os.path.exists(f'log/try_{config_file}'):
     data_train(config, config_file, **train_kwargs)
 data_test(config, config_file, **test_kwargs)
@@ -123,27 +124,27 @@ data_test(config, config_file, **test_kwargs)
 config_list, epoch_list = get_figures(figure_id, device=device)
 
 # %%
-#| fig-cap: "Initial configuration for data generation. The orange, blue, and green particles represent the three different particle types."
+#| fig-cap: "Initial configuration of the test training dataset. There are 4800 particles."
 load_and_display('graphs_data/graphs_arbitrary_3_continuous/Fig/Fig_0_0.tif')
 
 # %%
 #| fig-cap: "Final configuration after data generation"
-load_and_display('graphs_data/graphs_arbitrary_3_continuous/Fig/Fig_0_250.tif')
+load_and_display('graphs_data/graphs_arbitrary_3_continuous/Fig/Fig_0_1000.tif')
 
 # Don't really know what to plot here
 
 # %%
 #| fig-cap: "Learned embedding of the particle types"
-# load_and_display('log/try_arbitrary_3_continuous/results/embedding_arbitrary_3_20.tif')
+load_and_display('log/try_arbitrary_3_continuous/results/embedding_arbitrary_3_20.tif')
 
 # %%
 #| fig-cap: "Learned interaction functions"
-# load_and_display('log/try_arbitrary_3_continuous/results/func_all_arbitrary_3_20.tif')
+load_and_display('log/try_arbitrary_3_continuous/results/func_all_arbitrary_3_20.tif')
 
 # %%
 #| fig-cap: "Initial random configuration for rollout"
-# load_and_display('log/try_arbitrary_3_continuous/tmp_recons/Fig_arbitrary_3_0.tif')
+load_and_display('log/try_arbitrary_3_continuous/tmp_recons/Fig_arbitrary_3_0.tif')
 
 # %%
 #| fig-cap: "Final configuration in rollout, which looks qualitatively very similar to the final configuration of the data generation"
-# load_and_display('log/try_arbitrary_3_continuous/tmp_recons/Fig_arbitrary_3_192.tif')
+load_and_display('log/try_arbitrary_3_continuous/tmp_recons/Fig_arbitrary_3_249.tif')

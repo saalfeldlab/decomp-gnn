@@ -295,6 +295,17 @@ def data_generate_particles(
                         plt.savefig(f"graphs_data/graphs_{dataset_name}/Fig/Fig_{run}_{it}.jpg", dpi=170.7)
                         plt.close()
 
+                    elif (simulation_config.n_particle_types > 1000):
+
+                        fig, ax = fig_init(formatx="%.1f", formaty="%.1f")
+                        s_p = 100
+                        plt.scatter(to_numpy(x[:, 2]), to_numpy(x[:, 1]), s=s_p, color='k')
+                        plt.tight_layout()
+                        plt.savefig(f"graphs_data/graphs_{dataset_name}/Fig/Fig_{run}_{it}.tif", dpi=80)
+                        plt.xlim([0, 1])
+                        plt.ylim([0, 1])
+                        plt.close()
+
                     else:
                         fig, ax = fig_init(formatx="%.1f", formaty="%.1f")
                         s_p = 100
@@ -944,6 +955,7 @@ def data_generate_synaptic(config, visualize=True, run_vizualized=0, style='colo
     # for handler in logger.handlers[:]:
     #     handler.close()
     #     logger.removeHandler(handler)
+
 
 
 def data_generate_mesh(config, visualize=True, run_vizualized=0, style='color', erase=False, step=5, alpha=0.2, ratio=1,
