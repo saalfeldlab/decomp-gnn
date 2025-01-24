@@ -132,7 +132,7 @@ load_and_display('graphs_data/graphs_arbitrary_32/Fig/Fig_0_0.tif')
 load_and_display('graphs_data/graphs_arbitrary_32/Fig/Fig_0_500.tif')
 
 # %%
-#| fig-cap: "Learned laternt vectors (x4800)"
+#| fig-cap: "Learned latent vectors (x4800)"
 load_and_display('log/try_arbitrary_32/results/embedding_arbitrary_32_20.tif')
 
 # %%

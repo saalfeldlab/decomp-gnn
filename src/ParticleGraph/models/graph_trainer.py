@@ -1642,10 +1642,10 @@ def data_test(
     else:
         x_list = []
         y_list = []
-        x_list.append(torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device))
-        y_list.append(torch.load(f'graphs_data/graphs_{dataset_name}/y_list_{run}.pt', map_location=device))
-        ynorm = torch.load(f'./log/try_{config_file}/ynorm.pt', map_location=device).to(device)
-        vnorm = torch.load(f'./log/try_{config_file}/vnorm.pt', map_location=device).to(device)
+        x_list.append(torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device, weights_only=True)
+        y_list.append(torch.load(f'graphs_data/graphs_{dataset_name}/y_list_{run}.pt', map_location=device, weights_only=True)
+        ynorm = torch.load(f'./log/try_{config_file}/ynorm.pt', map_location=device, weights_only=True)
+        vnorm = torch.load(f'./log/try_{config_file}/vnorm.pt', map_location=device, weights_only=True)
         x = x_list[0][0].clone().detach()
         n_particles = int(x.shape[0] / ratio)
         config.simulation.n_particles = n_particles

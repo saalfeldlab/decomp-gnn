@@ -109,9 +109,9 @@ generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='c
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
 
-# data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
-# if not os.path.exists(f'log/try_{config_file}'):
-#     data_train(config, config_file, **train_kwargs)
+data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
+if not os.path.exists(f'log/try_{config_file}'):
+    data_train(config, config_file, **train_kwargs)
 data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]
@@ -132,7 +132,7 @@ load_and_display('graphs_data/graphs_arbitrary_16/Fig/Fig_0_0.tif')
 load_and_display('graphs_data/graphs_arbitrary_16/Fig/Fig_0_500.tif')
 
 # %%
-#| fig-cap: "Learned laternt vectors (x4800)"
+#| fig-cap: "Learned latent vectors (x4800)"
 load_and_display('log/try_arbitrary_16/results/embedding_arbitrary_16_20.tif')
 
 # %%
