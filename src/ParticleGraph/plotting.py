@@ -283,7 +283,7 @@ class Mesh_RPS_extract(MessagePassing):
 def load_training_data(dataset_name, n_runs, log_dir, device):
     x_list = []
     y_list = []
-    print('Load data ...')
+    print('load data ...')
     time.sleep(0.5)
     for run in trange(n_runs):
         x = torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device, weights_only=True)
@@ -404,13 +404,13 @@ def plot_embedding_func_cluster(model, config, config_file, embedding_cluster, c
     plt.savefig(f"./{log_dir}/results/first_embedding_{config_file}_{epoch}.tif", dpi=170.7)
     plt.close()
 
-    fig, ax = fig_init()
+
     if 'PDE_N' in config.graph_model.signal_model_name:
         model_MLP_ = model.lin_phi
     else:
         model_MLP_ = model.lin_edge
-    func_list, proj_interaction = analyze_edge_function(rr=[], vizualize=True, config=config, model_MLP=model_MLP_, model_a=model.a, type_list=to_numpy(type_list), n_particles=n_particles, dataset_number=1, ynorm=ynorm, cmap=cmap, device=device)
-    plt.close()
+    func_list, proj_interaction = analyze_edge_function(rr=[], vizualize=False, config=config, model_MLP=model_MLP_, model_a=model.a, type_list=to_numpy(type_list), n_particles=n_particles, dataset_number=1, ynorm=ynorm, cmap=cmap, device=device)
+
 
     # trans = umap.UMAP(n_neighbors=100, n_components=2, init='spectral').fit(func_list_)
     # proj_interaction = trans.transform(func_list_)
@@ -624,7 +624,7 @@ def plot_generated(config, run, style, step, device):
     for f in files:
         os.remove(f)
 
-    print('Load data ...')
+    print('load data ...')
 
     x_list = torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device, weights_only=True)
 
@@ -1558,7 +1558,6 @@ def plot_gravity_continuous(config_file, epoch_list, log_dir, logger, device):
             sys.stdout = text_trap
             popt_list = []
             for n in range(0,int(n_particles * (1 - config.training.particle_dropout))):
-                print(n)
                 model_pysrr, max_index, max_value = symbolic_regression(rr, plot_list[n])
                 # print(f'{p_list[n].squeeze()}/x0**2, {model_pysrr.sympy(max_index)}')
                 logger.info(f'{np.round(p_list[n].squeeze(),2)}/x0**2, pysrr found {model_pysrr.sympy(max_index)}')
@@ -3452,8 +3451,18 @@ def get_figures(index, *, device):
 
     epoch_list = ['20']
     match index:
-        case '3':
-            config_list = [ 'arbitrary_3']#, 'arbitrary_3_continuous', 'arbitrary_3_3', 'arbitrary_16', 'arbitrary_32','arbitrary_64']
+        case '3_1':
+            config_list = [ 'arbitrary_3']
+        case '3_3':
+            config_list = ['arbitrary_3_continuous']
+        case '3_2':
+            config_list = ['arbitrary_3_3']
+        case '3_4':
+            config_list = ['arbitrary_16']
+        case '3_5':
+            config_list = ['arbitrary_32']
+        case '3_6':
+            config_list = ['arbitrary_64']
         case '4':
             config_list = ['arbitrary_3_field_video_bison']
         case 'supp1':
@@ -3496,13 +3505,13 @@ def get_figures(index, *, device):
 
 
     match index:
-        case '3' | '4' | 'supp4' | 'supp5' | 'supp6' | 'supp7' | 'supp8' | 'supp9' | 'supp10' | 'supp11' | 'supp12' | 'supp15' |'supp16' |'supp18':
+        case '3_1' | '3_2' |'3_3' |'3_4' |'3_5' |'3_6' | '4' | 'supp4' | 'supp5' | 'supp6' | 'supp7' | 'supp8' | 'supp9' | 'supp10' | 'supp11' | 'supp12' | 'supp15' |'supp16' |'supp18':
             for config_file in config_list:
                 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
                 data_plot(config=config, config_file=config_file, epoch_list=epoch_list, device=device)
-                data_test(config=config, config_file=config_file, visualize=True, style='latex frame color', verbose=False,
-                          best_model=20, run=0, step=64, test_simulation=False,
-                          sample_embedding=False, device=device)  # config.simulation.n_frames // 7
+                # data_test(config=config, config_file=config_file, visualize=True, style='latex frame color', verbose=False,
+                #           best_model=20, run=0, step=64, test_simulation=False,
+                #           sample_embedding=False, device=device)  # config.simulation.n_frames // 7
                 print(' ')
                 print(' ')
 

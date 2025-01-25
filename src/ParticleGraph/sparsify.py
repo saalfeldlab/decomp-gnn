@@ -90,21 +90,20 @@ def sparsify_cluster(cluster_method, proj_interaction, embedding, cluster_distan
     fig,ax = fig_init()
     for n in label_list:
         pos = np.argwhere(labels == n)
-        print(len(pos))
+        # print(len(pos))
         if len(pos) > 0:
             ax.scatter(embedding[pos, 0], embedding[pos, 1], s=5)
-
     new_labels = np.ones_like(labels) * n_particle_types
     for n in range(n_particle_types):
         new_labels[labels == label_list[n]] = n
+    plt.close()
 
     computation_time = time.time() - start_time
     print(f"Clustering computation time is {computation_time} seconds.")
 
-
     fig,ax = fig_init()
     ax.scatter(proj_interaction[:, 0], proj_interaction[:, 1], c=new_labels, s=5, cmap='tab20')
-    # plt.close()
+    plt.close()
 
     return labels, n_clusters, new_labels
 

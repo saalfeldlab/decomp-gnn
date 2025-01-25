@@ -293,6 +293,15 @@ def plot_training (config, dataset_name, log_dir, epoch, N, x, index_particles, 
         fig = plt.figure(figsize=(8, 8))
         plt.savefig(f"./{log_dir}/tmp_training/field/mesh_map_{dataset_name}_{epoch}_{N}.tif",
                     dpi=87)
+    elif (simulation_config.n_particle_types > 1000):
+        fig = plt.figure(figsize=(8, 8))
+        embedding = get_embedding(model.a, 1)
+        plt.scatter(embedding[:, 0], embedding[:, 1], s=20)
+        plt.xticks([])
+        plt.yticks([])
+        plt.tight_layout()
+        plt.savefig(f"./{log_dir}/tmp_training/embedding/{dataset_name}_{epoch}_{N}.tif",dpi=87)
+        plt.close()
     else:
         fig = plt.figure(figsize=(8, 8))
         embedding = get_embedding(model.a, 1)

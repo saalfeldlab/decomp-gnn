@@ -10,7 +10,7 @@
 
 # %% [markdown]
 # This script creates the first column of Figure 3 in the paper: we look at an attraction-repulsion system with three
-# particle types.
+# particle types.  The interaction functions asymmetrically depend on the types of both particles.
 
 # %%
 #| output: false
@@ -34,8 +34,8 @@ from ParticleGraph.utils import set_device, to_numpy
 # %%
 #| echo: true
 #| output: false
-config_file = 'arbitrary_3'
-figure_id = '3_1'
+config_file = 'arbitrary_3_3'
+figure_id = '3_2'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 

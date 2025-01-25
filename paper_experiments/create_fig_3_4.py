@@ -1,6 +1,6 @@
 # %% [markdown]
 # ---
-# title: Attraction-Repulsion System with Three Particle Types
+# title: Attraction-Repulsion System with Sixteen Particle Types
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles
@@ -9,7 +9,7 @@
 # ---
 
 # %% [markdown]
-# This script creates the first column of Figure 3 in the paper: we look at an attraction-repulsion system with three
+# This script creates the fourth column of Figure 3 in the paper: we look at an attraction-repulsion system with sixteen
 # particle types.
 
 # %%
@@ -34,8 +34,8 @@ from ParticleGraph.utils import set_device, to_numpy
 # %%
 #| echo: true
 #| output: false
-config_file = 'arbitrary_3'
-figure_id = '3_1'
+config_file = 'arbitrary_16'
+figure_id = '3_4'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
@@ -124,22 +124,21 @@ data_test(config, config_file, **test_kwargs)
 config_list, epoch_list = get_figures(figure_id, device=device)
 
 # %%
-#| fig-cap: "Initial configuration of the test training dataset. There are 4800 particles. The orange, blue, and green particles represent the three different particle types."
-load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_0.tif')
+#| fig-cap: "Initial configuration of the test training dataset. There are 4800 particles. Colors indicate the particle types."
+load_and_display('graphs_data/graphs_arbitrary_16/Fig/Fig_0_0.tif')
 
 # %%
-#| fig-cap: "Final configuration at frame 250"
-load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_250.tif')
+#| fig-cap: "Final configuration at frame 500"
+load_and_display('graphs_data/graphs_arbitrary_16/Fig/Fig_0_500.tif')
 
 # %%
 #| fig-cap: "Learned latent vectors (x4800)"
-load_and_display('log/try_arbitrary_3/results/embedding_arbitrary_3_20.tif')
+load_and_display('log/try_arbitrary_16/results/embedding_arbitrary_16_20.tif')
 
 # %%
-#| fig-cap: "Learned interaction functions (x3)"
-load_and_display('log/try_arbitrary_3/results/func_all_arbitrary_3_20.tif')
-
+#| fig-cap: "Learned interaction functions (x16)"
+load_and_display('log/try_arbitrary_16/results/func_all_arbitrary_16_20.tif')
 
 # %%
-#| fig-cap: "GNN rollout inference at frame 250"
-load_and_display('log/try_arbitrary_3/tmp_recons/Fig_arbitrary_3_249.tif')
+#| fig-cap: "GNN rollout inference at frame 500"
+load_and_display('log/try_arbitrary_16/tmp_recons/Fig_arbitrary_16_499.tif')
