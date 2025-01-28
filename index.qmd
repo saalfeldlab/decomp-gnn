@@ -1,0 +1,13 @@
+---
+title: "Decomposing heterogeneous dynamical systems with graph neural networks"
+listing:
+  contents: "paper_experiments/*.py"
+  type: default
+  categories: true
+  image-align: left
+  fields: [image, title, description, categories, filename, file-modified]
+  sort-ui: [title, file-modified]
+  filter-ui: true
+---
+
+This site shows the code to generate all figures from the ["Decomposing heterogeneous dynamical systems with graph neural networks"](https://arxiv.org/abs/2407.19160) paper.

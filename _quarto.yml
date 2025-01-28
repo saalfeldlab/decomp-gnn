@@ -1,0 +1,21 @@
+project:
+  type: website
+
+website:
+  title: "Decomp-GNN"
+  navbar:
+    tools:
+      - icon: github
+        href:  https://www.github.com/saalfeldlab/decomp-gnn.git
+  page-footer: "Copyright 2024, Cédric Allier, Magdalena C. Schneider, Michael Innerberger, Larissa Heinrich, John A. Bogovic, Stephan Saalfeld"
+
+format:
+  html:
+    theme:
+      light: flatly
+      dark: darkly
+    css: styles.css
+    toc: true
+
+
+
