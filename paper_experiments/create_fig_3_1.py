@@ -1,6 +1,6 @@
 # %% [markdown]
 # ---
-# title: Attraction-Repulsion System with Three Particle Types
+# title: Attraction-repulsion system with 3 particle types
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles
@@ -10,8 +10,10 @@
 # ---
 
 # %% [markdown]
-# This script creates the first column of Figure 3 in the paper: we look at an attraction-repulsion system with three
-# particle types.
+# This script creates the first column of paper's Figure 3.
+# A GNN learns the motion rules of an attraction-repulsion system.
+# The simulation used to train the GNN consists of 4800 particles of three different types.
+# The particles interact with each other according to three different attraction-repulsion laws.
 
 # %%
 #| output: false
@@ -41,8 +43,8 @@ config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
 # %% [markdown]
-# The following model shows how the attraction-repulsion model is implemented in PyTorch Geometric.
-
+# The following model is used to simulate the attraction-repulsion system with PyTorch Geometric.
+#
 # %%
 #| echo: true
 class AttractionRepulsionModel(pyg.nn.MessagePassing):
@@ -90,10 +92,8 @@ def bc_dpos(x):
     return torch.remainder(x - 0.5, 1.0) - 0.5
 
 # %% [markdown]
-# Subsequently, the data is generated, and the model is trained and tested.
-# Since we ship the trained model with the repository, this step can be skipped if desired.
-# The training model can be found at [Interaction_particle.py](https://github.com/saalfeldlab/decomp-gnn/blob/main/src/ParticleGraph/models/Interaction_Particle.py).
-
+# The training data is generated with the above Pytorch Geometric model
+#
 # %%
 #| echo: true
 #| output: false
@@ -111,36 +111,46 @@ train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
 
 data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
+
+# %% [markdown]
+# The GNN model (see src/PArticleGraph/models/Interaction_Particle.py) is trained and tested.
+# Since we ship the trained model with the repository, this step can be skipped if desired.
+#
+# %%
+#| echo: true
+#| output: false
 if not os.path.exists(f'log/try_{config_file}'):
     data_train(config, config_file, **train_kwargs)
+
+# %% [markdown]
+# The model that has been trained in the previous step is used to generate the rollouts.
+# %%
 data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]
-# Finally, we generate the figures that are shown in the first column of Figure 3. The model that has been trained in the
-# previous step is used to generate the rollouts.
-
+# Finally, we generate the figures that are shown in Figure 3.
 # %%
 #| echo: true
 #| output: false
 config_list, epoch_list = get_figures(figure_id, device=device)
 
 # %%
-#| fig-cap: "Initial configuration of the test training dataset. There are 4800 particles. The orange, blue, and green particles represent the three different particle types."
+#| fig-cap: "<div style='text-align: center;'>Initial configuration of the test training dataset. There are 4800 particles. The orange, blue, and green particles represent the three different particle types."
 load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_0.tif')
 
 # %%
-#| fig-cap: "Final configuration at frame 250"
+#| fig-cap: "<div style='text-align: center;'>Final configuration at frame 250"
 load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_250.tif')
 
 # %%
-#| fig-cap: "Learned latent vectors (x4800)"
+#| fig-cap: "<div style='text-align: center;'>Learned latent vectors (x4800)"
 load_and_display('log/try_arbitrary_3/results/embedding_arbitrary_3_20.tif')
 
 # %%
-#| fig-cap: "Learned interaction functions (x3)"
+#| fig-cap: "<div style='text-align: center;'>Learned interaction functions (x3)"
 load_and_display('log/try_arbitrary_3/results/func_all_arbitrary_3_20.tif')
 
 
 # %%
-#| fig-cap: "GNN rollout inference at frame 250"
+#| fig-cap: "<div style='text-align: center;'>GNN rollout inference at frame 250"
 load_and_display('log/try_arbitrary_3/tmp_recons/Fig_arbitrary_3_249.tif')

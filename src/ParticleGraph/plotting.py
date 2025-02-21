@@ -970,7 +970,7 @@ def plot_attraction_repulsion_asym(config_file, epoch_list, log_dir, logger, dev
             func_list.append(func)
             plt.plot(to_numpy(rr),
                      to_numpy(func) * to_numpy(ynorm),
-                     color=cmap.color(type), linewidth=8)
+                     color=cmap.color(type), linewidth=8, alpha=0.1)
         plt.xlabel(r'$d_{ij}$', fontsize=78)
         plt.ylabel(r'$f(\mathbf{a}_i, \mathbf{a}_j, d_{ij})$', fontsize=78)
         plt.ylim(config.plotting.ylim)
