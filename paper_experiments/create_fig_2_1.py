@@ -90,6 +90,7 @@ def bc_dpos(x):
 
 # %% [markdown]
 # The data is generated with the above Pytorch Geometric model
+# Note two datasets are generated, one for training and one for validation.
 #
 # %%
 #| echo: true

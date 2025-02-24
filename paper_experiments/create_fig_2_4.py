@@ -111,7 +111,8 @@ def bc_dpos(x):
     return torch.remainder(x - 0.5, 1.0) - 0.5
 
 # %% [markdown]
-# The data is generated with the above Pytorch Geometric model
+# The data is generated with the above Pytorch Geometric model.
+# Note two datasets are generated, one for training and one for validation.
 #
 # %%
 #| echo: true
@@ -133,7 +134,7 @@ data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 #| output: false
 
 # %%
-#| fig-cap: "Initial configuration of the simulation. There are 4800 particles. The orange, blue, and green particles represent the three different particle types."
+#| fig-cap: "Initial configuration of the simulation. There are 1792 boids. The colors indicate different types."
 load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_0.tif')
 
 # %%

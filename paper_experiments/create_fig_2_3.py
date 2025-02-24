@@ -94,7 +94,8 @@ def bc_dpos(x):
     return torch.remainder(x - 0.5, 1.0) - 0.5
 
 # %% [markdown]
-# The data is generated with the above Pytorch Geometric model
+# The data is generated with the above Pytorch Geometric model.
+# Note two datasets are generated, one for training and one for validation.
 #
 # %%
 #| echo: true
@@ -117,7 +118,7 @@ data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 #| output: false
 
 # %%
-#| fig-cap: "Initial configuration of the simulation. There are 960 particles. The color indicate different mases."
+#| fig-cap: "Initial configuration of the simulation. There are 960 particles. The colors indicate different charges."
 load_and_display('graphs_data/graphs_Coulomb_3_256/Fig/Fig_0_0.tif')
 
 # %%
