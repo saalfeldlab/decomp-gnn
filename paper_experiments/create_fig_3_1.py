@@ -152,5 +152,5 @@ load_and_display('log/try_arbitrary_3/results/func_all_arbitrary_3_20.tif')
 
 
 # %%
-#| fig-cap: "<div style='text-align: center;'>GNN rollout inference at frame 250"
+#| fig-cap: "GNN rollout inference at frame 250"
 load_and_display('log/try_arbitrary_3/tmp_recons/Fig_arbitrary_3_249.tif')
