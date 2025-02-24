@@ -6,7 +6,7 @@
 #   - Particles
 # execute:
 #   echo: false
-# image: "create_fig_3_1_files/figure-html/cell-10-output-1.png"
+# image: "create_fig_3_1_files/figure-html/cell-12-output-1.png"
 # ---
 
 # %% [markdown]
@@ -135,19 +135,19 @@ data_test(config, config_file, **test_kwargs)
 config_list, epoch_list = get_figures(figure_id, device=device)
 
 # %%
-#| fig-cap: "<div style='text-align: center;'>Initial configuration of the test training dataset. There are 4800 particles. The orange, blue, and green particles represent the three different particle types."
+#| fig-cap: "Initial configuration of the test training dataset. There are 4800 particles. The orange, blue, and green particles represent the three different particle types."
 load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_0.tif')
 
 # %%
-#| fig-cap: "<div style='text-align: center;'>Final configuration at frame 250"
+#| fig-cap: "Final configuration at frame 250"
 load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_250.tif')
 
 # %%
-#| fig-cap: "<div style='text-align: center;'>Learned latent vectors (x4800)"
+#| fig-cap: "Learned latent vectors (x4800)"
 load_and_display('log/try_arbitrary_3/results/embedding_arbitrary_3_20.tif')
 
 # %%
-#| fig-cap: "<div style='text-align: center;'>Learned interaction functions (x3)"
+#| fig-cap: "Learned interaction functions (x3)"
 load_and_display('log/try_arbitrary_3/results/func_all_arbitrary_3_20.tif')
 
 

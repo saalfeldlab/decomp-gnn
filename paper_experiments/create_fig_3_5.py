@@ -1,16 +1,16 @@
 # %% [markdown]
 # ---
-# title: Attraction-Repulsion System with 32 Particle Types
+# title: Attraction-repulsion system with 32 particle types
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles
 # execute:
 #   echo: false
-# image: "create_fig_3_5_files/figure-html/cell-10-output-1.png"
+# image: "create_fig_3_5_files/figure-html/cell-12-output-1.png"
 # ---
 
 # %% [markdown]
-# This script creates the first column of paper's Figure 3.
+# This script creates the fifth column of paper's Figure 3.
 # A GNN learns the motion rules of an attraction-repulsion system.
 # The simulation used to train the GNN consists of 4800 particles of three different types.
 # The particles interact with each other according to 32 different attraction-repulsion laws.

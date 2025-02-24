@@ -1,12 +1,12 @@
 # %% [markdown]
 # ---
-# title: Assymetric attraction-repulsion System with 3 particle types
+# title: Assymetric attraction-repulsion system with 3 particle types
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles
 # execute:
 #   echo: false
-# image: "create_fig_3_2_files/figure-html/cell-10-output-1.png"
+# image: "create_fig_3_2_files/figure-html/cell-11-output-1.png"
 # ---
 
 # %% [markdown]

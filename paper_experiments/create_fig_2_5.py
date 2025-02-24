@@ -1,0 +1,156 @@
+
+# %% [markdown]
+# ---
+# title: Attraction-repulsion system with 3 particle types
+# author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
+# categories:
+#   - Particles
+# execute:
+#   echo: false
+# image: "create_fig_2_5_files/figure-html/cell-10-output-1.png"
+# ---
+
+# %% [markdown]
+# This script creates the fifth column of paper's Figure 2.
+# Simulation of wave-propagation over a mesh of 1E4 nodes with
+# variable propagation-coefficients.
+
+# %%
+#| output: false
+import os
+
+import umap
+import torch
+import torch_geometric as pyg
+import torch_geometric.utils as pyg_utils
+from torch_geometric.data import Data
+
+from ParticleGraph.config import ParticleGraphConfig
+from ParticleGraph.generators import data_generate_particles
+from ParticleGraph.models import data_train, data_test
+from ParticleGraph.plotting import get_figures, load_and_display
+from ParticleGraph.utils import set_device, to_numpy
+
+# %% [markdown]
+# First, we load the configuration file and set the device.
+
+# %%
+#| echo: true
+#| output: false
+config_file = 'wave_slit_ter'
+config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
+device = set_device("auto")
+
+# %% [markdown]
+# The following model is used to simulate the wave propagation with PyTorch Geometric.
+#
+# %%
+#| echo: true
+
+
+class WaveModel(pyg.nn.MessagePassing):
+    """Interaction Network as proposed in this paper:
+    https://proceedings.neurips.cc/paper/2016/hash/3147da8ab4a0437c15ef51a5cc7f2dc4-Abstract.html"""
+
+    """
+    Compute the Laplacian of a scalar field.
+
+    Inputs
+    ----------
+    data : a torch_geometric.data object
+    note the Laplacian coeeficients are in data.edge_attr
+
+    Returns
+    -------
+    laplacian : float
+        the Laplacian
+    """
+
+    def __init__(self, aggr_type=[], beta=[], bc_dpos=[]):
+        super(PDE_Laplacian, self).__init__(aggr='add')  # "mean" aggregation.
+
+        self.beta = beta
+        self.bc_dpos = bc_dpos
+        self.coeff = []
+
+    def forward(self, data):
+        x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+
+        # if self.coeff == []:
+        #     particle_type = to_numpy(x[:, 5])
+        #     c = self.c[particle_type]
+        #     c = c[:, None]
+        # else:
+
+        c = self.coeff
+        u = x[:, 6:7]
+
+        laplacian_u = self.propagate(edge_index, u=u, edge_attr=edge_attr)
+        dd_u = self.beta * c * laplacian_u
+
+        self.laplacian_u = laplacian_u
+
+        return dd_u
+
+        pos = to_numpy(data.x)
+        deg = pyg_utils.degree(edge_index[0], data.num_nodes)
+        plt.ion()
+        plt.scatter(pos[:,1],pos[:,2], s=20, c=to_numpy(deg),vmin=7,vmax=10)
+
+    def message(self, u_j, edge_attr):
+        L = edge_attr[:,None] * u_j
+
+        return L
+
+
+def bc_pos(x):
+    return torch.remainder(x, 1.0)
+
+
+def bc_dpos(x):
+    return torch.remainder(x - 0.5, 1.0) - 0.5
+
+# %% [markdown]
+# The data is generated with the above Pytorch Geometric model
+#
+# %%
+#| echo: true
+#| output: false
+
+model = WaveModel(aggr_type=config.graph_model.aggr_type, beta=config.simulation.beta, bc_dpos=bc_dpos)
+
+i0 = imread(f'graphs_data/{config.simulation.node_coeff_map}')
+i0 = np.flipud(i0)
+values = i0[(to_numpy(X1_mesh[:, 1]) * 255).astype(int), (to_numpy(X1_mesh[:, 0]) * 255).astype(int)]
+values = np.reshape(values, len(X1_mesh))
+mesh_model.coeff = torch.tensor(values, device=device, dtype=torch.float32)[:, None]
+
+generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', alpha=1, erase=True, save=True, step=10)
+train_kwargs = dict(device=device, erase=True)
+test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
+
+data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
+
+
+# %% [markdown]
+# Finally, we generate the figures that are shown in Figure 2.
+# %%
+#| echo: true
+#| output: false
+
+# %%
+#| fig-cap: "Initial configuration of the simulation. There are 4800 particles. The orange, blue, and green particles represent the three different particle types."
+load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_0.tif')
+
+# %%
+#| fig-cap: "Frame 2500 out of 8000"
+load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_2500.tif')
+
+# %%
+#| fig-cap: "Frame 5000 out of 8000"
+load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_5000.tif')
+
+# %%
+#| fig-cap: "Frame 7500 out of 8000"
+load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_7500.tif')
+
