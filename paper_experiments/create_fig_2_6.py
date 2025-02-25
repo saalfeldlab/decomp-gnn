@@ -1,6 +1,6 @@
 # %% [markdown]
 # <!--
-# title: Attraction-repulsion system with 3 particle types
+# title:  Reaction-diffusion propagation with different diffusion coefficients
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles

@@ -433,3 +433,11 @@ def check_and_clear_memory(
             torch.cuda.empty_cache()
             logger.debug(f"Total allocated memory: {torch.cuda.memory_allocated(device)/1024**3:.2f} GB")
             logger.debug(f"Total reserved memory:  {torch.cuda.memory_reserved(device)/1024**3:.2f} GB")
+
+def get_equidistant_points(n_points=1024):
+    indices = np.arange(0, n_points, dtype=float) + 0.5
+    r = np.sqrt(indices / n_points)
+    theta = np.pi * (1 + 5 ** 0.5) * indices
+    x, y = r * np.cos(theta), r * np.sin(theta)
+
+    return x, y

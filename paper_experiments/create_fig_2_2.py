@@ -1,6 +1,6 @@
 # %% [markdown]
 # <!--
-# title: Attraction-repulsion system with 3 particle types
+# title: Gravity-like system with system with different particxle masses
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles

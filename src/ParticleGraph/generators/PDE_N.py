@@ -29,14 +29,12 @@ class PDE_N(pyg.nn.MessagePassing):
     def forward(self, data=[], return_all=False):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
         edge_index, _ = pyg_utils.remove_self_loops(edge_index)
-        particle_type = to_numpy(x[:, 5])
+        particle_type = x[:, 5].long()
         parameters = self.p[particle_type]
         b = parameters[:, 0:1]
         c = parameters[:, 1:2]
 
         u = x[:, 6:7]
-
-        # indices = torch.arange(0, x.size(0),device=x.device)
 
         msg = self.propagate(edge_index, u=u, edge_attr=edge_attr)
 

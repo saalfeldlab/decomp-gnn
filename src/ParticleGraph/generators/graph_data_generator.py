@@ -530,32 +530,35 @@ def data_generate_synaptic(
 
         x = torch.concatenate((N1.clone().detach(), X1.clone().detach(), V1.clone().detach(), T1.clone().detach(), H1.clone().detach(), A1.clone().detach()), 1)
 
-        dataset = data.Data(x=x, pos=x[:, 1:3], edge_index=edge_index, edge_attr=edge_attr_adjacency)
-        G = to_networkx(dataset, remove_self_loops=True, to_undirected=True)
-        forceatlas2 = ForceAtlas2(
-            # Behavior alternatives
-            outboundAttractionDistribution=True,  # Dissuade hubs
-            linLogMode=False,  # NOT IMPLEMENTED
-            adjustSizes=False,  # Prevent overlap (NOT IMPLEMENTED)
-            edgeWeightInfluence=1.0,
+        # dataset = data.Data(x=x, pos=x[:, 1:3], edge_index=edge_index, edge_attr=edge_attr_adjacency)
+        # G = to_networkx(dataset, remove_self_loops=True, to_undirected=True)
+        # forceatlas2 = ForceAtlas2(
+        #     # Behavior alternatives
+        #     outboundAttractionDistribution=True,  # Dissuade hubs
+        #     linLogMode=False,  # NOT IMPLEMENTED
+        #     adjustSizes=False,  # Prevent overlap (NOT IMPLEMENTED)
+        #     edgeWeightInfluence=1.0,
+        #     # Performance
+        #     jitterTolerance=1.0,  # Tolerance
+        #     barnesHutOptimize=True,
+        #     barnesHutTheta=1.2,
+        #     multiThreaded=False,  # NOT IMPLEMENTED
+        #
+        #     # Tuning
+        #     scalingRatio=2.0,
+        #     strongGravityMode=False,
+        #     gravity=1.0,
+        #     # Log
+        #     verbose=True)
+        # positions = forceatlas2.forceatlas2_networkx_layout(G, pos=None, iterations=500)
+        # positions = np.array(list(positions.values()))
 
-            # Performance
-            jitterTolerance=1.0,  # Tolerance
-            barnesHutOptimize=True,
-            barnesHutTheta=1.2,
-            multiThreaded=False,  # NOT IMPLEMENTED
 
-            # Tuning
-            scalingRatio=2.0,
-            strongGravityMode=False,
-            gravity=1.0,
-
-            # Log
-            verbose=True)
-        positions = forceatlas2.forceatlas2_networkx_layout(G, pos=None, iterations=500)
-        positions = np.array(list(positions.values()))
-        X1 = torch.tensor(positions, dtype=torch.float32, device=device)
+        xc, yc = get_equidistant_points(n_points=n_particles)
+        X1 = torch.tensor(np.stack((xc, yc), axis=1), dtype=torch.float32, device=device) / 2
         X1 = X1 - torch.mean(X1, 0)
+        perm = torch.randperm(X1.size(0))
+        X1 = X1[perm]
 
         time.sleep(0.5)
         for it in trange(simulation_config.start_frame, n_frames + 1):
@@ -602,47 +605,21 @@ def data_generate_synaptic(
                 if 'color' in style:
 
                     matplotlib.rcParams['savefig.pad_inches'] = 0
-                    fig = plt.figure(figsize=(13, 10))
+                    fig = plt.figure(figsize=(10, 10))
+                    plt.axis('off')
                     if 'conn' in config.simulation.connectivity_mask:
-                        plt.scatter(to_numpy(X1[:, 1]), to_numpy(X1[:, 0]), s=15, c=to_numpy(H1[:, 0]), cmap='viridis', vmin=-5,vmax=5)
-                        plt.colorbar()
-                        plt.xlim([-4000, 4000])
-                        plt.ylim([-4000, 4000])
+                        plt.scatter(to_numpy(X1[:, 1]), to_numpy(X1[:, 0]), s=100, c=to_numpy(H1[:, 0]), cmap='viridis', vmin=-5,vmax=5)
+                        # plt.colorbar()
+                        # plt.xlim([-4000, 4000])
+                        # plt.ylim([-4000, 4000])
                     else:
-                        plt.scatter(to_numpy(X1[:, 1]), to_numpy(X1[:, 0]), s=20, c=to_numpy(H1[:, 0]), cmap='viridis')
-                        plt.colorbar()
-                        plt.xlim([-np.std(positions[:, 0]) / 31, np.std(positions[:, 0]) / 3])
-                        plt.ylim([-np.std(positions[:, 1]) / 3, np.std(positions[:, 1]) / 3])
+                        plt.scatter(to_numpy(X1[:, 1]), to_numpy(X1[:, 0]), s=100, c=to_numpy(H1[:, 0]), cmap='viridis', vmin=0,vmax=3)
+                        # plt.colorbar()
+                        # plt.xlim([-np.std(positions[:, 0]) / 31, np.std(positions[:, 0]) / 3])
+                        # plt.ylim([-np.std(positions[:, 1]) / 3, np.std(positions[:, 1]) / 3])
                     plt.xticks([])
                     plt.yticks([])
                     plt.tight_layout()
-
-                    # ax = fig.add_subplot(2, 2, 2)
-                    # plt.scatter(to_numpy(X1[:, 1]), to_numpy(X1[:, 0]), s=60, c=to_numpy(H1[:, 1]), cmap='viridis', vmin=-2.5, vmax=2.5)
-                    # plt.colorbar()
-                    # plt.xlim([-1.2, 1.2])
-                    # plt.ylim([-1.2, 1.2])
-                    # plt.xticks([])
-                    # plt.yticks([])
-                    # plt.title('du')
-                    # ax = fig.add_subplot(2, 2, 3)
-                    # plt.scatter(to_numpy(X1[:, 1]), to_numpy(X1[:, 0]), s=60, c=to_numpy(s_tanhu), cmap='viridis', vmin=-2.5, vmax=2.5)
-                    # plt.colorbar()
-                    # plt.xlim([-1.2, 1.2])
-                    # plt.ylim([-1.2, 1.2])
-                    # plt.xticks([])
-                    # plt.yticks([])
-                    # plt.title('s.tanh(u)')
-                    # ax = fig.add_subplot(2, 2, 4)
-                    # plt.scatter(to_numpy(X1[:, 1]), to_numpy(X1[:, 0]), s=60, c=to_numpy(msg), cmap='viridis', vmin=-2.5, vmax=2.5)
-                    # plt.colorbar()
-                    # plt.xlim([-1.2, 1.2])
-                    # plt.ylim([-1.2, 1.2])
-                    # plt.xticks([])
-                    # plt.yticks([])
-                    # plt.title('g.msg')
-
-
                     plt.savefig(f"graphs_data/graphs_{dataset_name}/Fig/Fig_{run}_{10000 + it}.tif", dpi=70)
                     plt.close()
 

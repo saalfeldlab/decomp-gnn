@@ -10,7 +10,7 @@ simulation:
     n_particle_types: 2
     n_interactions: 2
     n_frames: 1000
-    delta_t: 1
+    delta_t: 5.0E-3
     dpos_init:  0
     boundary: 'no'
     start_frame: 0
