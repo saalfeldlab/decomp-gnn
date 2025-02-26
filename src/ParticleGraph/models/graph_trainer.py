@@ -13,7 +13,7 @@ from sklearn import metrics
 from sklearn.neighbors import NearestNeighbors
 import torch_geometric.data as data
 from torch_geometric.loader import DataLoader
-from scipy.optimize import curve_fit
+import scipy
 from tqdm import trange
 import gc
 

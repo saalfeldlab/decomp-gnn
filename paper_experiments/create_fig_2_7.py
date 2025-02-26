@@ -35,7 +35,7 @@ from ParticleGraph.utils import set_device, to_numpy
 # %%
 #| echo: true
 #| output: false
-config_file = 'signal_N_100_2_b'
+config_file = 'signal_N_100_2_a'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
@@ -116,7 +116,9 @@ generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='c
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
 
-data_generate_synaptic(config, model, **generate_kwargs)
+# data_generate_synaptic(config, model, **generate_kwargs)
+
+data_train(config, config_file, **train_kwargs)
 
 
 # %% [markdown]
