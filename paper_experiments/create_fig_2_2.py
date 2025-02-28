@@ -1,13 +1,13 @@
 # %% [markdown]
-# <!--
-# title: Gravity-like system with system with different particxle masses
+# ---
+# title: Gravity-like system with system with different particle masses
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles
 # execute:
 #   echo: false
 # image: "create_fig_2_2_files/figure-html/cell-10-output-1.png"
-# -->
+# ---
 
 # %% [markdown]
 # This script creates the second column of paper's Figure 2.

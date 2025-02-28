@@ -1,5 +1,5 @@
 # %% [markdown]
-# <!--
+# ---
 # title: Coulomb-like system with different particle charges
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
@@ -7,7 +7,7 @@
 # execute:
 #   echo: false
 # image: "create_fig_2_3_files/figure-html/cell-10-output-1.png"
-# -->
+# ---
 
 # %% [markdown]
 # This script creates the third column of paper's Figure 2.

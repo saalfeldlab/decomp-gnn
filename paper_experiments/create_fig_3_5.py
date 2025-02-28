@@ -1,5 +1,5 @@
 # %% [markdown]
-# <!--
+# ---
 # title: Attraction-repulsion system with 32 particle types
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
@@ -7,7 +7,7 @@
 # execute:
 #   echo: false
 # image: "create_fig_3_5_files/figure-html/cell-12-output-1.png"
-# -->
+# ---
 
 # %% [markdown]
 # This script creates the fifth column of paper's Figure 3.
