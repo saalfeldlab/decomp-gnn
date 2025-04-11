@@ -1266,7 +1266,7 @@ def data_train_signal(config, config_file, erase, device):
     n_runs = train_config.n_runs
     is_N2 = 'signal_N2' in dataset_name
 
-    l_dir, log_dir, logger = create_log_dir(config, config_file,erase)
+    l_dir, log_dir, logger = create_log_dir(config, config_file, erase)
     print(f'Graph files N: {n_runs}')
     logger.info(f'Graph files N: {n_runs}')
 
@@ -1287,7 +1287,7 @@ def data_train_signal(config, config_file, erase, device):
 
     print('Create models ...')
     model, bc_pos, bc_dpos = choose_training_model(config, device)
-    # net = f"./log/try_{config_file}/models/best_model_with_9_graphs_8_0.pt"
+    # net = f"./log/try_{config_file}/models/best_model_with_99_graphs_20.pt"
     # state_dict = torch.load(net,map_location=device)
     # model.load_state_dict(state_dict['model_state_dict'])
 
@@ -1357,7 +1357,7 @@ def data_train_signal(config, config_file, erase, device):
     print(f'{n_frames * data_augmentation_loop // batch_size} iterations per epoch')
     logger.info(f'{n_frames * data_augmentation_loop // batch_size} iterations per epoch')
     Niter = n_frames * data_augmentation_loop // batch_size
-    print(f'plot every {Niter // 100} iterations')
+    print(f'plot every {Niter // 50} iterations')
 
     list_loss = []
     time.sleep(1)
@@ -1389,10 +1389,7 @@ def data_train_signal(config, config_file, erase, device):
                     pred = model(dataset, data_id=run, excitation=excitation[:, k:k+1])
                     y = y_list[run][k].clone().detach()
                     y = y / ynorm
-                    if is_N2:
-                        loss = (pred - y).norm(2) + model.W.norm(1) * 1E-6
-                    else:
-                        loss = (pred - y).norm(2)
+                    loss = (pred - y).norm(2)
 
                 case 2:
 
@@ -1407,58 +1404,47 @@ def data_train_signal(config, config_file, erase, device):
                     if is_N2:
                         in_features = torch.zeros((n_particles,1),device=device)
                         func_phi = model.lin_phi(in_features.float())
-                        loss = (pred1 + pred2 - y).norm(2) / 2 + model.W.norm(1) * 1E-6 + func_phi.norm(2)
+                        loss = (pred1 + pred2 - y).norm(2) / 2 + model.W.norm(1) * config.training.coeff_L1 + func_phi.norm(2)
                     else:
                         func_f = model.lin_edge(torch.zeros(1,device=device))
                         in_features = torch.cat((torch.zeros((n_particles,1),device=device),  model.a[1, :]), dim=1)
                         func_phi = model.lin_phi(in_features.float())
-                        loss = (pred1 + pred2 - y).norm(2) + model.vals.norm(1) + func_f.norm(2) + func_phi.norm(2)
+                        loss = (pred1 + pred2 - y).norm(2) / 2 + model.vals.norm(1) * config.training.coeff_L1 + func_f.norm(2) + func_phi.norm(2)
 
                 case 3:
 
                     x = x_list[run][k].clone().detach()
                     dataset = data.Data(x=x, edge_index=model.edges)
                     pred1 = model(dataset, data_id=run, excitation=excitation[:, k:k+1])
-                    x_ = x.clone().detach()
-                    x_[:, 6:7] += pred1 * delta_t
-                    dataset = data.Data(x=x_, edge_index=model.edges)
+                    x[:, 6:7] += pred1 * delta_t
+                    dataset = data.Data(x=x, edge_index=model.edges)
                     pred2 = model(dataset, data_id=run, excitation=excitation[:, k:k+1])
-                    x_ = x.clone().detach()
-                    x_[:, 6:7] += (pred1+pred2) * delta_t
-                    dataset = data.Data(x=x_, edge_index=model.edges)
+                    x[:, 6:7] += pred2 * delta_t
+                    dataset = data.Data(x=x, edge_index=model.edges)
                     pred3 = model(dataset, data_id=run, excitation=excitation[:, k:k+1])
 
                     y1 = y_list[run][k].clone().detach()/ ynorm
                     y2 = y_list[run][k+1].clone().detach()/ ynorm
                     y3 = y_list[run][k+2].clone().detach()/ ynorm
 
-                    if is_N2:
-                        in_features = torch.zeros((n_particles,1),device=device)
-                        func_phi = model.lin_phi(in_features.float())
-                        loss = (pred1 - y1).norm(2) + (pred2 - y2).norm(2) + (pred3 - y3).norm(2) + model.W.norm(1) * 1E-6 + func_phi.norm(2)
-                    else:
-                        loss = (pred1 - y1).norm(2) + (pred2 - y2).norm(2) + (pred3 - y3).norm(2)
+                    loss = (pred1 - y1).norm(2) + (pred2 - y2).norm(2) + (pred3 - y3).norm(2)
 
                 case 5:
 
                     x = x_list[run][k].clone().detach()
                     dataset = data.Data(x=x, edge_index=model.edges)
                     pred1 = model(dataset, data_id=run, excitation=excitation[:, k:k+1])
-                    x_ = x.clone().detach()
-                    x_[:, 6:7] += pred1 * delta_t
-                    dataset = data.Data(x=x_, edge_index=model.edges)
+                    x[:, 6:7] += pred1 * delta_t
+                    dataset = data.Data(x=x, edge_index=model.edges)
                     pred2 = model(dataset, data_id=run, excitation=excitation[:, k:k+1])
-                    x_ = x.clone().detach()
-                    x_[:, 6:7] += (pred1+pred2) * delta_t
-                    dataset = data.Data(x=x_, edge_index=model.edges)
+                    x[:, 6:7] += pred2 * delta_t
+                    dataset = data.Data(x=x, edge_index=model.edges)
                     pred3 = model(dataset, data_id=run, excitation=excitation[:, k:k+1])
-                    x_ = x.clone().detach()
-                    x_[:, 6:7] += (pred1+pred2+pred3) * delta_t
-                    dataset = data.Data(x=x_, edge_index=model.edges)
+                    x[:, 6:7] += pred3 * delta_t
+                    dataset = data.Data(x=x, edge_index=model.edges)
                     pred4 = model(dataset, data_id=run, excitation=excitation[:, k:k+1])
-                    x_ = x.clone().detach()
-                    x_[:, 6:7] += (pred1+pred2+pred3+pred4) * delta_t
-                    dataset = data.Data(x=x_, edge_index=model.edges)
+                    x[:, 6:7] += pred4 * delta_t
+                    dataset = data.Data(x=x, edge_index=model.edges)
                     pred5 = model(dataset, data_id=run, excitation=excitation[:, k:k+1])
 
                     y1 = y_list[run][k].clone().detach()/ ynorm
@@ -1467,12 +1453,7 @@ def data_train_signal(config, config_file, erase, device):
                     y4 = y_list[run][k+3].clone().detach()/ ynorm
                     y5 = y_list[run][k+4].clone().detach()/ ynorm
 
-                    if is_N2:
-                        in_features = torch.zeros((n_particles,1),device=device)
-                        func_phi = model.lin_phi(in_features.float())
-                        loss = (pred1 - y1).norm(2) + (pred2 - y2).norm(2) + (pred3 - y3).norm(2)+ (pred4 - y4).norm(2) + (pred5 - y5).norm(2) + model.W.norm(1) * 1E-6 + func_phi.norm(2)
-                    else:
-                        loss = (pred1 - y1).norm(2) + (pred2 - y2).norm(2) + (pred3 - y3).norm(2)+ (pred4 - y4).norm(2) + (pred5 - y5).norm(2)
+                    loss = (pred1 - y1).norm(2) + (pred2 - y2).norm(2) + (pred3 - y3).norm(2)+ (pred4 - y4).norm(2) + (pred5 - y5).norm(2)
 
             loss.backward()
             optimizer.step()
@@ -1480,9 +1461,8 @@ def data_train_signal(config, config_file, erase, device):
             total_loss += loss.item()
 
             visualize_embedding = True
-            if visualize_embedding & (((epoch < 30 ) & (N%(Niter//100) == 0)) | (N==0)):
+            if visualize_embedding & (((epoch < 30 ) & (N%(Niter//50) == 0)) | (N==0)):
                 plot_training_signal(config, dataset_name, model, adjacency, ynorm, log_dir, epoch, N, index_particles, n_particles, n_particle_types, type_list, cmap, device)
-                torch.save({'model_state_dict': model.state_dict(), 'optimizer_state_dict': optimizer.state_dict()}, os.path.join(log_dir, 'models', f'best_model_with_{n_runs - 1}_graphs_{epoch}_{N}.pt'))
 
         print("Epoch {}. Loss: {:.6f}".format(epoch, total_loss / (N + 1) / n_particles / batch_size))
         logger.info("Epoch {}. Loss: {:.6f}".format(epoch, total_loss / (N + 1) / n_particles / batch_size))
@@ -1492,15 +1472,15 @@ def data_train_signal(config, config_file, erase, device):
         list_loss.append(total_loss / (N + 1) / n_particles / batch_size)
         torch.save(list_loss, os.path.join(log_dir, 'loss.pt'))
 
-        fig = plt.figure(figsize=(20, 4))
+        fig = plt.figure(figsize=(22, 4))
 
-        ax = fig.add_subplot(1, 5, 1)
+        ax = fig.add_subplot(1, 6, 1)
         plt.plot(list_loss, color='k')
         plt.xlim([0, n_epochs])
         plt.ylabel('Loss', fontsize=12)
         plt.xlabel('Epochs', fontsize=12)
 
-        ax = fig.add_subplot(1, 5, 2)
+        ax = fig.add_subplot(1, 6, 2)
         embedding = get_embedding(model.a, 1)
         for n in range(n_particle_types):
             plt.scatter(embedding[index_particles[n], 0],
@@ -1519,37 +1499,26 @@ def data_train_signal(config, config_file, erase, device):
             A[i,j] = model.vals
             A.T[i,j] = model.vals
 
-        ax = fig.add_subplot(1, 5, 3)
-        ax = sns.heatmap(to_numpy(adjacency),center=0,square=True,cmap='bwr',cbar_kws={'fraction':0.046}, vmin=-0.001, vmax=0.001)
-        # ax.invert_yaxis()
-        plt.title('True connectivity matrix',fontsize=12);
-        plt.xticks([0,n_particles-1],[1,n_particles],fontsize=8)
-        plt.yticks([0,n_particles-1],[1,n_particles],fontsize=8)
-        ax = fig.add_subplot(1, 5, 4)
-        ax = sns.heatmap(to_numpy(A),center=0,square=True,cmap='bwr',cbar_kws={'fraction':0.046}, vmin=-1, vmax=1)
-        # ax.invert_yaxis()
-        plt.title('Learned connectivity matrix',fontsize=12);
-        plt.xticks([0,n_particles-1],[1,n_particles],fontsize=8)
-        plt.yticks([0,n_particles-1],[1,n_particles],fontsize=8 )
-
-        ax = fig.add_subplot(1, 5, 5)
+        ax = fig.add_subplot(1, 6, 3)
+        gt_weight = to_numpy(adjacency[adj_t])
+        pred_weight = to_numpy(A[adj_t])
+        plt.scatter(gt_weight, pred_weight, s=0.1,c='k')
+        plt.xlabel('gt weight', fontsize=12)
+        plt.ylabel('predicted weight', fontsize=12)
+        ax = fig.add_subplot(1, 6, 4)
         gt_weight = to_numpy(adjacency)
         pred_weight = to_numpy(A)
-        plt.scatter(gt_weight, pred_weight, s=0.1,c='k',alpha=0.01)
-        plt.xlabel('true weight', fontsize=12)
-        plt.ylabel('learned weight', fontsize=12)
-        plt.title('comparison')
+        plt.scatter(gt_weight, pred_weight, s=0.1,c='k')
+        plt.xlabel('all gt weight', fontsize=12)
+        plt.ylabel('all predicted weight', fontsize=12)
+        ax = fig.add_subplot(1, 6, 5)
+        plt.imshow(to_numpy(adjacency), cmap='viridis', vmin=0, vmax=0.01)
+        ax = fig.add_subplot(1, 6, 6)
+        plt.imshow(np.abs(to_numpy(A)), cmap='viridis', vmin=0, vmax=0.001)
 
         plt.tight_layout()
         plt.savefig(f"./{log_dir}/tmp_training/Fig_{dataset_name}_{epoch}.tif")
         plt.close()
-
-        plt.figure(figsize=(3,3))
-        ax = sns.heatmap(to_numpy(A),center=0,square=True,cmap='bwr',cbar_kws={'fraction':0.046}, vmin=-0.01, vmax=0.01)
-        ax.invert_yaxis()
-        plt.title('Random connectivity matrix',fontsize=12);
-        plt.xticks([0,n_particles-1],[1,n_particles],fontsize=10)
-        plt.yticks([0,n_particles-1],[1,n_particles],fontsize=10)
 
 
 def data_test(
