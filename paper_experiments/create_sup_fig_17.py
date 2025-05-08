@@ -114,6 +114,8 @@ def bc_dpos(x):
 #| output: false
 
 
+print('Create figure supplementary 17')
+
 
 X1_mesh, V1_mesh, T1_mesh, H1_mesh, A1_mesh, N1_mesh, mesh_data = init_mesh(config, device=device)
 
@@ -132,7 +134,7 @@ generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='c
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1)
 
-data_generate_mesh(config, model , **generate_kwargs)
+# data_generate_mesh(config, model , **generate_kwargs)
 
 # %% [markdown]
 # The  GNN model (see src/PArticleGraph/models/Mesh_RPS.py) is optimized using the 'rock-paper-scissor' data.
@@ -142,8 +144,8 @@ data_generate_mesh(config, model , **generate_kwargs)
 # %%
 #| echo: true
 #| output: false
-if not os.path.exists(f'log/try_{config_file}'):
-    data_train(config, config_file, **train_kwargs)
+# if not os.path.exists(f'log/try_{config_file}'):
+data_train(config, config_file, **train_kwargs)
 
 # %% [markdown]
 # The model that has been trained in the previous step is used to generate the rollouts.
