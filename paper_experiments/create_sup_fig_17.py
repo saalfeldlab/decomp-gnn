@@ -131,7 +131,7 @@ generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='c
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
 
-data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
+data_generate_mesh(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %% [markdown]
 # The  GNN model (see src/PArticleGraph/models/Mesh_RPS.py) is optimized using the 'rock-paper-scissor' data.
