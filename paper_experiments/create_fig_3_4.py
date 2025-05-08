@@ -43,7 +43,7 @@ config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
 # %% [markdown]
-# The following model shows how the attraction-repulsion model is implemented in PyTorch Geometric.
+z
 
 # %%
 #| echo: true

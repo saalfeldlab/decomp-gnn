@@ -67,12 +67,12 @@ class WaveModel(pyg.nn.MessagePassing):
         the Laplacian
     """
 
-    def __init__(self, aggr_type=[], beta=[], bc_dpos=[]):
+    def __init__(self, aggr_type=[], beta=[], bc_dpos=[], coeff=[]):
         super(WaveModel, self).__init__(aggr='add')  # "mean" aggregation.
 
         self.beta = beta
         self.bc_dpos = bc_dpos
-        self.coeff = []
+        self.coeff = coeff
 
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr

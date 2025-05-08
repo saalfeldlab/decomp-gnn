@@ -92,7 +92,7 @@ def bc_dpos(x):
     return torch.remainder(x - 0.5, 1.0) - 0.5
 
 # %% [markdown]
-# The training data is generated with the above Pytorch Geometric model
+# The training data is generated with the above Pytorch Geometric model.
 #
 # %%
 #| echo: true
