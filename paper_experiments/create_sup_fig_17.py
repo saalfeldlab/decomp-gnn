@@ -128,11 +128,11 @@ model = RDModel(
     bc_dpos=bc_dpos,
     coeff=values)
 
-generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', alpha=1, erase=True, save=True, step=10)
+generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', erase=False, save=True, step=10)
 train_kwargs = dict(device=device, erase=True)
-test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
+test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1)
 
-data_generate_mesh(config, model, bc_pos, bc_dpos, **generate_kwargs)
+data_generate_mesh(config, model , **generate_kwargs)
 
 # %% [markdown]
 # The  GNN model (see src/PArticleGraph/models/Mesh_RPS.py) is optimized using the 'rock-paper-scissor' data.
