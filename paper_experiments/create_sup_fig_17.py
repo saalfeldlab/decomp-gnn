@@ -113,10 +113,6 @@ def bc_dpos(x):
 #| echo: true
 #| output: false
 
-
-print('Create figure supplementary 17')
-
-
 X1_mesh, V1_mesh, T1_mesh, H1_mesh, A1_mesh, N1_mesh, mesh_data = init_mesh(config, device=device)
 
 i0 = imread(f'../ressources/{config.simulation.node_coeff_map}')

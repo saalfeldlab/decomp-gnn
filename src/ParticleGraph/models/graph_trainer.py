@@ -527,7 +527,7 @@ def data_train_mesh(config, config_file, erase, device):
         if (batch_size == 1):
             Niter = Niter // 4
 
-        for N in range(Niter):
+        for N in trange(Niter):
 
             run = 1 + np.random.randint(n_runs - 1)
 
