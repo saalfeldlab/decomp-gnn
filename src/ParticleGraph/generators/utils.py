@@ -259,11 +259,11 @@ def init_mesh(config, device):
     pos_mesh[0:n_nodes, 0:1] = x_mesh[0:n_nodes]
     pos_mesh[0:n_nodes, 1:2] = y_mesh[0:n_nodes]
 
-    i0 = imread(f'graphs_data/{node_value_map}')
+    i0 = imread(f'../ressources/{node_value_map}')
     if 'video' in simulation_config.node_value_map:
-        i0 = imread(f'graphs_data/pattern_Null.tif')
+        i0 = imread(f'../ressources/{node_value_map}')
     else:
-        i0 = imread(f'graphs_data/{node_value_map}')
+        i0 = imread(f'../ressources/{node_value_map}')
         i0 = np.flipud(i0)
     values = i0[(to_numpy(pos_mesh[:, 1]) * 255).astype(int), (to_numpy(pos_mesh[:, 0]) * 255).astype(int)]
 
