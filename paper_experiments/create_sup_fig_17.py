@@ -28,6 +28,7 @@ from tifffile import imread, imsave
 import numpy as np
 
 from ParticleGraph.config import ParticleGraphConfig
+from ParticleGraph.generators import data_generate_mesh
 from ParticleGraph.generators import data_generate_particles
 from ParticleGraph.generators import init_mesh
 from ParticleGraph.models import data_train, data_test
