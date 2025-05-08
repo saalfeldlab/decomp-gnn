@@ -143,7 +143,7 @@ def choose_mesh_model(config, X1_mesh, device):
                 mesh_model = PDE_Z(device=device)
 
 
-        i0 = imread(f'graphs_data/{config.simulation.node_coeff_map}')
+        i0 = imread(f'../ressources/{config.simulation.node_coeff_map}')
         i0 = np.flipud(i0)
         values = i0[(to_numpy(X1_mesh[:, 1]) * 255).astype(int), (to_numpy(X1_mesh[:, 0]) * 255).astype(int)]
         values = np.reshape(values,len(X1_mesh))
