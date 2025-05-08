@@ -3,7 +3,7 @@ Cédric Allier, Magdalena C. Schneider, Michael Innerberger, Larissa Heinrich, J
 
 Janelia Research Campus, Howard Hughes Medical Institute
 
-![Summary of the GNN workflow](resources/gnn-summary.png)
+![Summary of the GNN workflow](ressources/gnn-summary.png)
 
 ### Setup
 Run the following line from the terminal to create a new environment 'gnn':
@@ -25,6 +25,14 @@ Then, you should be able to import all the modules from the package in python:
 ```python
 from ParticleGraph import *
 ```
+
+To create the paper's figures run the scripts in paper_experiments.
+
+This create folder of data in paper_experimets/graphs_data.
+
+Time-lapse movies can be found in Fig folders.
+
+
 ### Citation
 ```
 @article{allier2024decompgnn,

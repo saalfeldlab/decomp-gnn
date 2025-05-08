@@ -1,18 +1,19 @@
 # %% [markdown]
 # ---
-# title: Reaction-diffusion propagation with different diffusion coefficients
+# title: Attraction-repulsion system with 3 particle types
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles
 # execute:
 #   echo: false
-# image: "create_fig_2_6_files/figure-html/cell-10-output-1.png"
+# image: "create_fig_3_1_files/figure-html/cell-12-output-1.png"
 # ---
 
 # %% [markdown]
-# This script creates the sixth column of paper's Figure 2.
-# Simulation of reaction-diffusion over a mesh of 1E4 nodes with
-# variable propagation-coefficients.
+# This script creates the figure supplementary 17.
+# A GNN learns the rules governing a reaction-diffusion system.
+# The simulation used to train the GNN consists of 10000 nodes of four different types.
+# The nodes on a mesh interact with each other according to rock-paper-scissor laws.
 
 # %%
 #| output: false
@@ -23,14 +24,16 @@ import torch
 import torch_geometric as pyg
 import torch_geometric.utils as pyg_utils
 from torch_geometric.data import Data
+from tifffile import imread, imsave
+import numpy as np
 
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.generators import data_generate_mesh
+from ParticleGraph.generators import data_generate_particles
+from ParticleGraph.generators import init_mesh
 from ParticleGraph.models import data_train, data_test
 from ParticleGraph.plotting import get_figures, load_and_display
 from ParticleGraph.utils import set_device, to_numpy
-from tifffile import imread
-import numpy as np
 
 # %% [markdown]
 # First, we load the configuration file and set the device.
@@ -39,15 +42,15 @@ import numpy as np
 #| echo: true
 #| output: false
 config_file = 'RD_RPS'
+figure_id = 'supplementary_17'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
 # %% [markdown]
-# The following model is used to simulate the reaction_diffusion propagation with PyTorch Geometric.
+# The following model is used to simulate the 'rock-paper-scissor' model with PyTorch Geometric.
 #
 # %%
 #| echo: true
-
 
 class RDModel(pyg.nn.MessagePassing):
     """Interaction Network as proposed in this paper:
@@ -95,6 +98,7 @@ class RDModel(pyg.nn.MessagePassing):
     def message(self, uvw_j, discrete_laplacian):
         return discrete_laplacian[:, None] * uvw_j
 
+
 def bc_pos(x):
     return torch.remainder(x, 1.0)
 
@@ -103,41 +107,73 @@ def bc_dpos(x):
     return torch.remainder(x - 0.5, 1.0) - 0.5
 
 # %% [markdown]
-# The data is generated with the above Pytorch Geometric model.
-# Note two datasets are generated, one for training and one for validation.
+# The coefficients of diffusion are loaded from a tif file specified in the config yaml file and the data is generated.
 #
 # %%
 #| echo: true
 #| output: false
 
-model = RDModel(aggr_type=config.graph_model.aggr_type, bc_dpos=bc_dpos)
+
+
+X1_mesh, V1_mesh, T1_mesh, H1_mesh, A1_mesh, N1_mesh, mesh_data = init_mesh(config, device=device)
+
+i0 = imread(f'../ressources/{config.simulation.node_coeff_map}')
+i0 = np.flipud(i0)
+values = i0[(to_numpy(X1_mesh[:, 1]) * 255).astype(int), (to_numpy(X1_mesh[:, 0]) * 255).astype(int)]
+values = np.reshape(values, len(X1_mesh))
+values = torch.tensor(values, device=device, dtype=torch.float32)[:, None]
+
+model = RDModel(
+    aggr_type='add',
+    bc_dpos=bc_dpos,
+    coeff=values)
 
 generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', erase=False, save=True, step=10)
 train_kwargs = dict(device=device, erase=True)
-test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
+test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1)
 
 data_generate_mesh(config, model , **generate_kwargs)
 
-
 # %% [markdown]
-# Finally, we generate the figures that are shown in Figure 2.
+# The  GNN model (see src/PArticleGraph/models/Mesh_RPS.py) is optimized using the 'rock-paper-scissor' data.
+#
+# Since we ship the trained model with the repository, this step can be skipped if desired.
+#
 # %%
 #| echo: true
 #| output: false
+if not os.path.exists(f'log/try_{config_file}'):
+    data_train(config, config_file, **train_kwargs)
+
+# %% [markdown]
+# The model that has been trained in the previous step is used to generate the rollouts.
+# %%
+data_test(config, config_file, **test_kwargs)
+
+# %% [markdown]
+# Finally, we generate the figures that are shown in Figure 3.
+# %%
+#| echo: true
+#| output: false
+config_list, epoch_list = get_figures(figure_id, device=device)
 
 # %%
-#| fig-cap: "Initial configuration of the simulation. There are 1E4 nodes. The colors indicate the node vector values."
-load_and_display('graphs_data/graphs_RD_RPS/Fig/Fig_0_0.tif')
+#| fig-cap: "Initial configuration of the test training dataset. There are 4800 particles. The orange, blue, and green particles represent the three different particle types."
+load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_0.tif')
 
 # %%
-#| fig-cap: "Frame 1250 out of 4000"
-load_and_display('graphs_data/graphs_RD_RPS/Fig/Fig_0_1250.tif')
+#| fig-cap: "Final configuration at frame 250"
+load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_250.tif')
 
 # %%
-#| fig-cap: "Frame 2500 out of 4000"
-load_and_display('graphs_data/graphs_RD_RPS/Fig/Fig_0_2500.tif')
+#| fig-cap: "Learned latent vectors (x4800)"
+load_and_display('log/try_arbitrary_3/results/embedding_arbitrary_3_20.tif')
 
 # %%
-#| fig-cap: "Frame 3750 out of 4000"
-load_and_display('graphs_data/graphs_RD_RPS/Fig/Fig_0_3750.tif')
+#| fig-cap: "Learned interaction functions (x3)"
+load_and_display('log/try_arbitrary_3/results/func_all_arbitrary_3_20.tif')
 
+
+# %%
+#| fig-cap: "GNN rollout inference at frame 250"
+load_and_display('log/try_arbitrary_3/tmp_recons/Fig_arbitrary_3_249.tif')

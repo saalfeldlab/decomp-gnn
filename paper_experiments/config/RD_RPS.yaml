@@ -14,8 +14,8 @@ simulation:
   n_frames: 4000
   delta_t: 0.05
   boundary: 'periodic'
-  node_value_map: 'pattern_10.tif'
-  node_coeff_map: 'pics_quadrants.tif'
+  node_value_map: 'pattern_Null.tif'
+  node_coeff_map: 'pattern_quadrant_coeff.tif'
   beta: 1
 
 graph_model:
