@@ -123,7 +123,7 @@ def data_train_particles(config, config_file, erase, device):
     model, bc_pos, bc_dpos = choose_training_model(config, device)
     # net = f"./log/try_{config_file}/models/best_model_with_1_graphs_0_0.pt"
     # print(f'Loading existing model {net}...')
-    # state_dict = torch.load(net,map_location=device, weights_only=True)
+    # state_dict = torch.load(net,map_location=device)
     # model.load_state_dict(state_dict['model_state_dict'])
 
     lr = train_config.learning_rate_start
@@ -475,7 +475,7 @@ def data_train_mesh(config, config_file, erase, device):
     print('Create models ...')
     model, bc_pos, bc_dpos = choose_training_model(config, device)
     # net = f"./log/try_{config_file}/models/best_model_with_1_graphs_17.pt"
-    # state_dict = torch.load(net,map_location=device, weights_only=True)
+    # state_dict = torch.load(net,map_location=device)
     # model.load_state_dict(state_dict['model_state_dict'])
 
     lr = train_config.learning_rate_start
@@ -877,7 +877,7 @@ def data_train_particle_field(config, config_file, erase, device):
     model, bc_pos, bc_dpos = choose_training_model(config, device)
     # print('Loading existing model ...')
     # net = f"./log/try_{config_file}/models/best_model_with_1_graphs_5.pt"
-    # state_dict = torch.load(net,map_location=device, weights_only=True)
+    # state_dict = torch.load(net,map_location=device)
     # model.load_state_dict(state_dict['model_state_dict'])
 
     lr = train_config.learning_rate_start
@@ -918,7 +918,7 @@ def data_train_particle_field(config, config_file, erase, device):
         model_f.train()
         optimizer_f = torch.optim.Adam(lr=1e-5, params=model_f.parameters())
         # net = f"./log/try_{config_file}/models/best_model_f_with_1_graphs_20.pt"
-        # state_dict = torch.load(net, map_location=device, weights_only=True)
+        # state_dict = torch.load(net, map_location=device)
         # model_f.load_state_dict(state_dict['model_state_dict'])
 
     if has_ghost:
@@ -1288,7 +1288,7 @@ def data_train_signal(config, config_file, erase, device):
     print('Create models ...')
     model, bc_pos, bc_dpos = choose_training_model(config, device)
     # net = f"./log/try_{config_file}/models/best_model_with_99_graphs_20.pt"
-    # state_dict = torch.load(net,map_location=device, weights_only=True)
+    # state_dict = torch.load(net,map_location=device)
     # model.load_state_dict(state_dict['model_state_dict'])
 
     lr = train_config.learning_rate_start
@@ -1579,7 +1579,7 @@ def data_test(
     if only_mesh:
         vnorm = torch.tensor(1.0, device=device)
         ynorm = torch.tensor(1.0, device=device)
-        hnorm = torch.load(f'./log/try_{config_file}/hnorm.pt', map_location=device, weights_only=True).to(device)
+        hnorm = torch.load(f'./log/try_{config_file}/hnorm.pt', map_location=device, weights_only=True)
         x_mesh_list = []
         y_mesh_list = []
         time.sleep(0.5)
@@ -1598,11 +1598,11 @@ def data_test(
         x_mesh_list = []
         x_mesh = torch.load(f'graphs_data/graphs_{dataset_name}/x_mesh_list_{run}.pt', map_location=device, weights_only=True)
         x_mesh_list.append(x_mesh)
-        hnorm = torch.load(f'./log/try_{config_file}/hnorm.pt', map_location=device, weights_only=True).to(device)
+        hnorm = torch.load(f'./log/try_{config_file}/hnorm.pt', map_location=device, weights_only=True)
         x_list.append(torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device, weights_only=True))
         y_list.append(torch.load(f'graphs_data/graphs_{dataset_name}/y_list_{run}.pt', map_location=device, weights_only=True))
-        ynorm = torch.load(f'./log/try_{config_file}/ynorm.pt', map_location=device, weights_only=True).to(device)
-        vnorm = torch.load(f'./log/try_{config_file}/vnorm.pt', map_location=device, weights_only=True).to(device)
+        ynorm = torch.load(f'./log/try_{config_file}/ynorm.pt', map_location=device, weights_only=True)
+        vnorm = torch.load(f'./log/try_{config_file}/vnorm.pt', map_location=device, weights_only=True)
         x = x_list[0][0].clone().detach()
         n_particles = x.shape[0]
         config.simulation.n_particles = n_particles
@@ -1648,7 +1648,7 @@ def data_test(
     if has_ghost:
         model_ghost = Ghost_Particles(config, n_particles, vnorm, device)
         net = f"./log/try_{config_file}/models/best_ghost_particles_with_{n_runs - 1}_graphs_20.pt"
-        state_dict = torch.load(net, map_location=device, weights_only=True)
+        state_dict = torch.load(net, map_location=device)
         model_ghost.load_state_dict(state_dict['model_state_dict'])
         model_ghost.eval()
         x_removed_list = torch.load(f'graphs_data/graphs_{dataset_name}/x_removed_list_0.pt', map_location=device, weights_only=True)
@@ -1656,7 +1656,7 @@ def data_test(
         mask_ghost = np.argwhere(mask_ghost == 1)
         mask_ghost = mask_ghost[:, 0].astype(int)
     if has_mesh:
-        hnorm = torch.load(f'./log/try_{config_file}/hnorm.pt', map_location=device, weights_only=True).to(device)
+        hnorm = torch.load(f'./log/try_{config_file}/hnorm.pt', map_location=device, weights_only=True)
 
         mesh_data = torch.load(f'graphs_data/graphs_{dataset_name}/mesh_data_{run}.pt', map_location=device, weights_only=True)
         mask_mesh = mesh_data['mask']
@@ -1700,11 +1700,11 @@ def data_test(
     else:
         if has_mesh:
             mesh_model, bc_pos, bc_dpos = choose_training_model(config, device)
-            state_dict = torch.load(net, map_location=device, weights_only=True)
+            state_dict = torch.load(net, map_location=device)
             mesh_model.load_state_dict(state_dict['model_state_dict'])
             mesh_model.eval()
         else:
-            state_dict = torch.load(net, map_location=device, weights_only=True)
+            state_dict = torch.load(net, map_location=device)
             model.load_state_dict(state_dict['model_state_dict'])
             model.eval()
             mesh_model = None
@@ -1717,7 +1717,7 @@ def data_test(
                                         hidden_layers=5, outermost_linear=True, device=device, first_omega_0=80,
                                         hidden_omega_0=80.)
                 net = f'./log/try_{config_file}/models/best_model_f_with_1_graphs_{best_model}.pt'
-                state_dict = torch.load(net, map_location=device, weights_only=True)
+                state_dict = torch.load(net, map_location=device)
                 model_f.load_state_dict(state_dict['model_state_dict'])
                 model_f.to(device=device)
                 model_f.eval()
