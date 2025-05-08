@@ -68,11 +68,11 @@ class RDModel(pyg.nn.MessagePassing):
 
     """
 
-    def __init__(self, aggr_type=[], bc_dpos=[]):
+    def __init__(self, aggr_type=[], bc_dpos=[], coeff = []):
         super(RDModel, self).__init__(aggr='add')  # "mean" aggregation.
 
         self.bc_dpos = bc_dpos
-        self.coeff = []
+        self.coeff = coeff
 
         self.a = 0.6
 

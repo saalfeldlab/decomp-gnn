@@ -3,7 +3,7 @@ Cédric Allier, Magdalena C. Schneider, Michael Innerberger, Larissa Heinrich, J
 
 Janelia Research Campus, Howard Hughes Medical Institute
 
-![Summary of the GNN workflow](resources/gnn-summary.png)
+![Summary of the GNN workflow](ressources/gnn-summary.png)
 
 ### Setup
 Run the following line from the terminal to create a new environment 'gnn':
