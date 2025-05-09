@@ -42,7 +42,7 @@ from ParticleGraph.utils import set_device, to_numpy
 #| echo: true
 #| output: false
 config_file = 'RD_RPS'
-figure_id = 'supplementary_17'
+figure_id = 'supp17'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
@@ -126,14 +126,14 @@ model = RDModel(
     bc_dpos=bc_dpos,
     coeff=values)
 
-generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', erase=False, save=True, step=10)
+generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', erase=False, save=True, step=50)
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1)
 
 # data_generate_mesh(config, model , **generate_kwargs)
 
 # %% [markdown]
-# The  GNN model (see src/PArticleGraph/models/Mesh_RPS.py) is optimized using the 'rock-paper-scissor' data.
+# The  GNN model (see src/ParticleGraph/models/Mesh_RPS.py) is optimized using the 'rock-paper-scissor' data.
 #
 # Since we ship the trained model with the repository, this step can be skipped if desired.
 #
@@ -141,37 +141,10 @@ test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, 
 #| echo: true
 #| output: false
 # if not os.path.exists(f'log/try_{config_file}'):
-data_train(config, config_file, **train_kwargs)
+# data_train(config, config_file, **train_kwargs)
 
 # %% [markdown]
 # The model that has been trained in the previous step is used to generate the rollouts.
+# The rollout visualization can be found in `paper_experiments/log/try_RD_RPS/tmp_recons`.
 # %%
 data_test(config, config_file, **test_kwargs)
-
-# %% [markdown]
-# Finally, we generate the figures that are shown in Figure 3.
-# %%
-#| echo: true
-#| output: false
-config_list, epoch_list = get_figures(figure_id, device=device)
-
-# %%
-#| fig-cap: "Initial configuration of the test training dataset. There are 4800 particles. The orange, blue, and green particles represent the three different particle types."
-load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_0.tif')
-
-# %%
-#| fig-cap: "Final configuration at frame 250"
-load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_250.tif')
-
-# %%
-#| fig-cap: "Learned latent vectors (x4800)"
-load_and_display('log/try_arbitrary_3/results/embedding_arbitrary_3_20.tif')
-
-# %%
-#| fig-cap: "Learned interaction functions (x3)"
-load_and_display('log/try_arbitrary_3/results/func_all_arbitrary_3_20.tif')
-
-
-# %%
-#| fig-cap: "GNN rollout inference at frame 250"
-load_and_display('log/try_arbitrary_3/tmp_recons/Fig_arbitrary_3_249.tif')
