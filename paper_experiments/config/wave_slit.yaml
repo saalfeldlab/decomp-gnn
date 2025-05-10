@@ -1,5 +1,5 @@
 description: 'Wave propagation'
-dataset: 'wave_slit_ter'
+dataset: 'wave_slit'
 
 simulation:
   params: [[0.2],[1.4],[2.6],[3.8],[5.0]]

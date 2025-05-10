@@ -114,6 +114,7 @@ data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %% [markdown]
 # Finally, we generate the figures that are shown in Figure 2.
+# All frames are saved in 'decomp-gnn/paper_experiments/graphs_data/gravity_16/Fig/'.
 # %%
 #| echo: true
 #| output: false

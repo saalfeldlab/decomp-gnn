@@ -38,7 +38,7 @@ import numpy as np
 # %%
 #| echo: true
 #| output: false
-config_file = 'wave_slit_ter'
+config_file = 'wave_slit'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
@@ -106,7 +106,6 @@ class WaveModel(pyg.nn.MessagePassing):
 def bc_pos(x):
     return torch.remainder(x, 1.0)
 
-
 def bc_dpos(x):
     return torch.remainder(x - 0.5, 1.0) - 0.5
 
@@ -120,7 +119,7 @@ def bc_dpos(x):
 
 model = WaveModel(aggr_type=config.graph_model.aggr_type, beta=config.simulation.beta)
 
-generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', erase=False, save=True, step=10)
+generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', erase=False, save=True, step=20)
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
 
@@ -129,23 +128,24 @@ data_generate_mesh(config, model , **generate_kwargs)
 
 # %% [markdown]
 # Finally, we generate the figures that are shown in Figure 2.
+# All frames are saved in 'decomp-gnn/paper_experiments/graphs_data/graphs_wave_slit/Fig/'.
 # %%
 #| echo: true
 #| output: false
 
 # %%
 #| fig-cap: "Initial configuration of the simulation. There are 1E4 nodes. The colors indicate the node scalar values."
-load_and_display('graphs_data/graphs_wave_slit_ter/Fig/Fig_0_0.tif')
+load_and_display('graphs_data/graphs_wave_slit/Fig/Fig_0_0.tif')
 
 # %%
 #| fig-cap: "Frame 2500 out of 8000"
-load_and_display('graphs_data/graphs_wave_slit_ter/Fig/Fig_0_2500.tif')
+load_and_display('graphs_data/graphs_wave_slit/Fig/Fig_0_2500.tif')
 
 # %%
 #| fig-cap: "Frame 5000 out of 8000"
-load_and_display('graphs_data/graphs_wave_slit_ter/Fig/Fig_0_5000.tif')
+load_and_display('graphs_data/graphs_wave_slit/Fig/Fig_0_5000.tif')
 
 # %%
 #| fig-cap: "Frame 7500 out of 8000"
-load_and_display('graphs_data/graphs_wave_slit_ter/Fig/Fig_0_7500.tif')
+load_and_display('graphs_data/graphs_wave_slit/Fig/Fig_0_7500.tif')
 

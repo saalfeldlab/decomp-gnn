@@ -118,9 +118,9 @@ test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, 
 
 data_generate_mesh(config, model , **generate_kwargs)
 
-
 # %% [markdown]
 # Finally, we generate the figures that are shown in Figure 2.
+# All frames are saved in 'decomp-gnn/paper_experiments/graphs_data/graphs_RD_RPS/Fig/'.
 # %%
 #| echo: true
 #| output: false

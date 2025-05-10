@@ -10,10 +10,10 @@
 # ---
 
 # %% [markdown]
-# This script generates Supplementary Figure 17.
-# It showcases a Graph Neural Network (GNN) learning the dynamics of a reaction-diffusion system.
-# The training simulation involves 1E4 mesh nodes observed over 4E3 frames.
-# Node interactions follow rock-paper-scissors rules with different diffusion coefficients.
+# This script generates Supplementary Figure 15.
+# It demonstrates how a Graph Neural Network (GNN) learns the rules of wave propagation.
+# The training simulation consists of 1E4 mesh observed over 8E3 frames.
+# Nodes interact via wave propagation with type-dependent coefficients.
 
 # %%
 #| output: false
@@ -41,8 +41,8 @@ from ParticleGraph.utils import set_device, to_numpy
 # %%
 #| echo: true
 #| output: false
-config_file = 'RD_RPS'
-figure_id = 'supp17'
+config_file = 'wave_slit'
+figure_id = 'supp15'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
@@ -52,51 +52,59 @@ device = set_device("auto")
 # %%
 #| echo: true
 
-class RDModel(pyg.nn.MessagePassing):
+class WaveModel(pyg.nn.MessagePassing):
     """Interaction Network as proposed in this paper:
     https://proceedings.neurips.cc/paper/2016/hash/3147da8ab4a0437c15ef51a5cc7f2dc4-Abstract.html"""
 
     """
-    Compute the reaction diffusion according to the rock paper scissor model.
+    Compute the Laplacian of a scalar field.
 
     Inputs
     ----------
     data : a torch_geometric.data object
-    Note the Laplacian coeeficients are in data.edge_attr
+    note the Laplacian coeeficients are in data.edge_attr
 
     Returns
     -------
-    increment : float
-        the first derivative of three scalar fields u, v and w
-
+    laplacian : float
+        the Laplacian
     """
 
-    def __init__(self, aggr_type=[], bc_dpos=[], coeff = []):
-        super(RDModel, self).__init__(aggr='add')  # "mean" aggregation.
+    def __init__(self, aggr_type=[], beta=[], bc_dpos=[], coeff=[]):
+        super(WaveModel, self).__init__(aggr='add')  # "mean" aggregation.
 
+        self.beta = beta
         self.bc_dpos = bc_dpos
         self.coeff = coeff
-        self.a = 0.6
 
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
 
+        # if self.coeff == []:
+        #     particle_type = to_numpy(x[:, 5])
+        #     c = self.c[particle_type]
+        #     c = c[:, None]
+        # else:
+
         c = self.coeff
+        u = x[:, 6:7]
 
-        uvw = data.x[:, 6:9]
-        laplace_uvw = c * self.propagate(data.edge_index, uvw=uvw, discrete_laplacian=data.edge_attr)
-        p = torch.sum(uvw, axis=1)
+        laplacian_u = self.propagate(edge_index, u=u, edge_attr=edge_attr)
+        dd_u = self.beta * c * laplacian_u
 
-        d_uvw = laplace_uvw + uvw * (1 - p[:, None] - self.a * uvw[:, [1, 2, 0]])
-        # This is equivalent to the nonlinear reaction diffusion equation:
-        #   du = D * laplace_u + u * (1 - p - a * v)
-        #   dv = D * laplace_v + v * (1 - p - a * w)
-        #   dw = D * laplace_w + w * (1 - p - a * u)
+        self.laplacian_u = laplacian_u
 
-        return d_uvw
+        return dd_u
 
-    def message(self, uvw_j, discrete_laplacian):
-        return discrete_laplacian[:, None] * uvw_j
+        pos = to_numpy(data.x)
+        deg = pyg_utils.degree(edge_index[0], data.num_nodes)
+        plt.ion()
+        plt.scatter(pos[:,1],pos[:,2], s=20, c=to_numpy(deg),vmin=7,vmax=10)
+
+    def message(self, u_j, edge_attr):
+        L = edge_attr[:,None] * u_j
+
+        return L
 
 
 def bc_pos(x):
@@ -113,15 +121,23 @@ def bc_dpos(x):
 #| echo: true
 #| output: false
 
-model = RDModel(
-    aggr_type='add',
-    bc_dpos=bc_dpos)
+X1_mesh, V1_mesh, T1_mesh, H1_mesh, A1_mesh, N1_mesh, mesh_data = init_mesh(config, device=device)
+
+i0 = imread(f'../ressources/{config.simulation.node_coeff_map}')
+i0 = np.flipud(i0)
+values = i0[(to_numpy(X1_mesh[:, 1]) * 255).astype(int), (to_numpy(X1_mesh[:, 0]) * 255).astype(int)]
+values = np.reshape(values, len(X1_mesh))
+values = torch.tensor(values, device=device, dtype=torch.float32)[:, None]
+
+model = WaveModel(aggr_type=config.graph_model.aggr_type, beta=config.simulation.beta)
 
 generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', erase=False, save=True, step=50)
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1)
 
 data_generate_mesh(config, model , **generate_kwargs)
+
+# data_generate_mesh(config, model , **generate_kwargs)
 
 # %% [markdown]
 # The  GNN model (see src/ParticleGraph/models/Mesh_RPS.py) is optimized using the 'rock-paper-scissor' data.

@@ -3710,4 +3710,5 @@ def load_and_display(
     plt.axis('off')
     if title:
         plt.title(title)
+    plt.tight_layout()
     plt.show()

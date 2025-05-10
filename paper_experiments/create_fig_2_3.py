@@ -41,7 +41,7 @@ device = set_device("auto")
 
 # %% [markdown]
 # The following model is used to simulate the Coulomb-like system with PyTorch Geometric.
-#
+# There are three possible charges: -1, 1, and 2.
 # %%
 #| echo: true
 
@@ -113,6 +113,7 @@ data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %% [markdown]
 # Finally, we generate the figures that are shown in Figure 2.
+# All frames are saved in 'decomp-gnn/paper_experiments/graphs_data/graphs_Coulomb_3_256/Fig/'.
 # %%
 #| echo: true
 #| output: false

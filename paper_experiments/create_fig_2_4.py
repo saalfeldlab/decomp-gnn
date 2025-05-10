@@ -11,7 +11,7 @@
 
 # %% [markdown]
 # This script creates the fourth column of paper's Figure 2.
-# Simulation of a boids, 1792 particles, 16 types.
+# Simulation of boids (https://en.wikipedia.org/wiki/Boids), 1792 particles, 16 types.
 
 # %%
 #| output: false
@@ -128,6 +128,7 @@ data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %% [markdown]
 # Finally, we generate the figures that are shown in Figure 2.
+# All frames are saved in 'decomp-gnn/paper_experiments/graphs_data/graphs_boids_16_256/Fig/'.
 # %%
 #| echo: true
 #| output: false
