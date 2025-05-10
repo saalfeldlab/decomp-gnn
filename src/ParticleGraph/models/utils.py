@@ -15,6 +15,7 @@ import time
 import tqdm
 import seaborn as sns
 from tifffile import imsave
+from scipy.optimize import curve_fit
 
 def linear_model(x, a, b):
     return a * x + b
