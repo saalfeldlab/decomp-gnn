@@ -47,7 +47,7 @@ config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
 # %% [markdown]
-# The following model is used to simulate the 'rock-paper-scissor' model with PyTorch Geometric.
+# The following model is used to simulate the wave-propagation model with PyTorch Geometric.
 #
 # %%
 #| echo: true
@@ -79,12 +79,6 @@ class WaveModel(pyg.nn.MessagePassing):
 
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
-
-        # if self.coeff == []:
-        #     particle_type = to_numpy(x[:, 5])
-        #     c = self.c[particle_type]
-        #     c = c[:, None]
-        # else:
 
         c = self.coeff
         u = x[:, 6:7]
@@ -121,14 +115,6 @@ def bc_dpos(x):
 #| echo: true
 #| output: false
 
-X1_mesh, V1_mesh, T1_mesh, H1_mesh, A1_mesh, N1_mesh, mesh_data = init_mesh(config, device=device)
-
-i0 = imread(f'../ressources/{config.simulation.node_coeff_map}')
-i0 = np.flipud(i0)
-values = i0[(to_numpy(X1_mesh[:, 1]) * 255).astype(int), (to_numpy(X1_mesh[:, 0]) * 255).astype(int)]
-values = np.reshape(values, len(X1_mesh))
-values = torch.tensor(values, device=device, dtype=torch.float32)[:, None]
-
 model = WaveModel(aggr_type=config.graph_model.aggr_type, beta=config.simulation.beta)
 
 generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', erase=False, save=True, step=50)
@@ -137,21 +123,19 @@ test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, 
 
 data_generate_mesh(config, model , **generate_kwargs)
 
-# data_generate_mesh(config, model , **generate_kwargs)
-
 # %% [markdown]
-# The  GNN model (see src/ParticleGraph/models/Mesh_RPS.py) is optimized using the 'rock-paper-scissor' data.
+# The  GNN model (see src/ParticleGraph/models/Mesh_Laplacian.py) is optimized using the simulated data.
 #
 # Since we ship the trained model with the repository, this step can be skipped if desired.
 #
 # %%
 #| echo: true
 #| output: false
-# if not os.path.exists(f'log/try_{config_file}'):
-#     data_train(config, config_file, **train_kwargs)
+if not os.path.exists(f'log/try_{config_file}'):
+    data_train(config, config_file, **train_kwargs)
 
 # %% [markdown]
 # The model that has been trained in the previous step is used to generate the rollouts.
-# The rollout visualization can be found in `paper_experiments/log/try_RD_RPS/tmp_recons`.
+# The rollout visualization can be found in `paper_experiments/log/try_wave_slit/tmp_recons`.
 # %%
 data_test(config, config_file, **test_kwargs)
