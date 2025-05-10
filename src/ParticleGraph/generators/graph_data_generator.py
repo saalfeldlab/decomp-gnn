@@ -422,7 +422,7 @@ def data_generate_synaptic(
         x_removed_list = []
 
     if 'mat' in simulation_config.connectivity_file:
-        mat = scipy.io.loadmat(simulation_config.connectivity_file)
+        mat = scipy.io.loadmat('../ressources/'+simulation_config.connectivity_file)
         adjacency = torch.tensor(mat['A'], device=device)
 
         adj_t = adjacency > 0

@@ -12,6 +12,7 @@
 # %% [markdown]
 # This script creates the seventh column of paper's Figure 2.
 # Simulation of a signaling network, 986 nodes, 17,865 edges, 2 types of nodes.
+# Note 100 of datasets are generated to test training with multiple trials.
 
 # %%
 #| output: false
@@ -35,7 +36,7 @@ from ParticleGraph.utils import set_device, to_numpy
 # %%
 #| echo: true
 #| output: false
-config_file = 'signal_N_100_2_test'
+config_file = 'signal_N_100_2'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
@@ -103,6 +104,7 @@ def bc_dpos(x):
 
 # %% [markdown]
 # The data is generated with the above Pytorch Geometric model.
+# The frames of the first six datasets are saved in 'decomp-gnn/paper_experiments/graphs_data/graphs_signal_N_100_2/Fig/'.
 #
 # %%
 #| echo: true
@@ -125,17 +127,17 @@ data_generate_synaptic(config, model, **generate_kwargs)
 
 # %%
 #| fig-cap: "Initial configuration of the simulation. There are 998 nodes. The colors indicate the node scalar values."
-load_and_display('graphs_data/graphs_signal_N_100_2_b/Fig/Fig_0_10000.tif')
+load_and_display('graphs_data/graphs_signal_N_100_2/Fig/Fig_0_10000.tif')
 
 # %%
 #| fig-cap: "Frame 300 out of 1000"
-load_and_display('graphs_data/graphs_signal_N_100_2_b/Fig/Fig_0_10250.tif')
+load_and_display('graphs_data/graphs_signal_N_100_2/Fig/Fig_0_10250.tif')
 
 # %%
 #| fig-cap: "Frame 600 out of 1000"
-load_and_display('graphs_data/graphs_signal_N_100_2_b/Fig/Fig_0_10500.tif')
+load_and_display('graphs_data/graphs_signal_N_100_2/Fig/Fig_0_10500.tif')
 
 # %%
 #| fig-cap: "Frame 900 out of 1000"
-load_and_display('graphs_data/graphs_signal_N_100_2_b/Fig/Fig_0_10750.tif')
+load_and_display('graphs_data/graphs_signal_N_100_2/Fig/Fig_0_10750.tif')
 
