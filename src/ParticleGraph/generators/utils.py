@@ -258,14 +258,6 @@ def init_mesh(config, device):
     pos_mesh[0:n_nodes, 0:1] = x_mesh[0:n_nodes]
     pos_mesh[0:n_nodes, 1:2] = y_mesh[0:n_nodes]
 
-    i0 = imread(f'../ressources/{node_value_map}')
-    if 'video' in simulation_config.node_value_map:
-        i0 = imread(f'../ressources/{node_value_map}')
-    else:
-        i0 = imread(f'../ressources/{node_value_map}')
-        i0 = np.flipud(i0)
-    values = i0[(to_numpy(pos_mesh[:, 1]) * 255).astype(int), (to_numpy(pos_mesh[:, 0]) * 255).astype(int)]
-
     mask_mesh = (x_mesh > torch.min(x_mesh) + 0.02) & (x_mesh < torch.max(x_mesh) - 0.02) & (y_mesh > torch.min(y_mesh) + 0.02) & (y_mesh < torch.max(y_mesh) - 0.02)
 
     pos_mesh = pos_mesh + torch.randn(n_nodes, 2, device=device) * mesh_size / 8
@@ -277,12 +269,16 @@ def init_mesh(config, device):
             features_mesh[:, 1] = 0.25 * torch.tensor(values / 255, device=device)
         case 'RD_FitzHugh_Nagumo_Mesh':
             features_mesh = torch.zeros((n_nodes, 2), device=device) + torch.rand((n_nodes, 2), device=device) * 0.1
-        case 'RD_RPS_Mesh' | 'RD_RPS_Mesh_bis':
+        case 'RD_RPS_Mesh':
             features_mesh = torch.rand((n_nodes, 3), device=device)
             s = torch.sum(features_mesh, dim=1)
             for k in range(3):
                 features_mesh[:, k] = features_mesh[:, k] / s
-        case '' | 'DiffMesh' | 'WaveMesh' | 'Particle_Mesh_A' | 'Particle_Mesh_B':
+        case 'DiffMesh' | 'WaveMesh' | 'Particle_Mesh_A' | 'Particle_Mesh_B':
+            i0 = imread(f'../ressources/{node_value_map}')
+            i0 = np.flipud(i0)
+            values = i0[(to_numpy(pos_mesh[:, 1]) * 255).astype(int), (to_numpy(pos_mesh[:, 0]) * 255).astype(int)]
+
             features_mesh = torch.zeros((n_nodes, 2), device=device)
             features_mesh[:, 0] = torch.tensor(values / 255 * 5000, device=device)
         case 'PDE_O_Mesh':
@@ -294,6 +290,8 @@ def init_mesh(config, device):
             features_mesh[0:n_particles, 4:5] = features_mesh[0:n_particles, 3:4]  # d_theta0
             pos_mesh[:, 0] = features_mesh[:, 0] + (3 / 8) * mesh_size * torch.cos(features_mesh[:, 2])
             pos_mesh[:, 1] = features_mesh[:, 1] + (3 / 8) * mesh_size * torch.sin(features_mesh[:, 2])
+        case _ :
+            features_mesh = torch.zeros((n_nodes, 2), device=device)
 
     # i0 = imread(f'graphs_data/{node_coeff_map}')
     # values = i0[(to_numpy(x_mesh[:, 0]) * 255).astype(int), (to_numpy(y_mesh[:, 0]) * 255).astype(int)]

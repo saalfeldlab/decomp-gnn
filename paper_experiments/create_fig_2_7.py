@@ -104,7 +104,7 @@ def bc_dpos(x):
 
 # %% [markdown]
 # The data is generated with the above Pytorch Geometric model.
-# The frames of the first six datasets are saved in 'decomp-gnn/paper_experiments/graphs_data/graphs_signal_N_100_2/Fig/'.
+# If the simulation is too large, you can decrease n_particles (multiple of 2) and n_nodes in "signal_N_100_2.yaml"
 #
 # %%
 #| echo: true
@@ -121,6 +121,7 @@ data_generate_synaptic(config, model, **generate_kwargs)
 
 # %% [markdown]
 # Finally, we generate the figures that are shown in Figure 2.
+# The frames of the first six datasets are saved in 'decomp-gnn/paper_experiments/graphs_data/graphs_signal_N_100_2/Fig/'.
 # %%
 #| echo: true
 #| output: false

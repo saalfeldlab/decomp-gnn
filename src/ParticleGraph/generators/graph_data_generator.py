@@ -846,8 +846,23 @@ def data_generate_mesh(
 
 
 
-def data_generate_particle_field(config, visualize=True, run_vizualized=0, style='color', erase=False, step=5, alpha=0.2, ratio=1,
-                  scenario='none', device=None, bSave=True):
+def data_generate_particle_field(
+        config: SimulationConfig,
+        model: torch.nn.Module,
+        bc_pos: Callable[[torch.Tensor], torch.Tensor],
+        bc_dpos: Callable[[torch.Tensor], torch.Tensor],
+        *,
+        visualize: bool = True,
+        run_vizualized: int = 0,
+        style: str = 'color',
+        erase: bool = False,
+        step: int = 5,
+        alpha: float = 0.2,
+        ratio: float = 1,
+        scenario: str = 'none',
+        device: torch.device = None,
+        save: bool = True,
+):
     simulation_config = config.simulation
     training_config = config.training
     model_config = config.graph_model
@@ -872,15 +887,13 @@ def data_generate_particle_field(config, visualize=True, run_vizualized=0, style
     if erase:
         files = glob.glob(f"{folder}/*")
         for f in files:
-            if (f[-14:] != 'generated_data') & (f != 'p.pt') & (f != 'cycle_length.pt') & (f != 'model_config.json') & (
-                    f != 'generation_code.py'):
+            if (f[-3:] != 'Fig') & (f[-14:] != 'generated_data') & (f != 'p.pt') & (f != 'cycle_length.pt') & (f != 'model_config.json') & (f != 'generation_code.py'):
                 os.remove(f)
     os.makedirs(folder, exist_ok=True)
     os.makedirs(f'./graphs_data/graphs_{dataset_name}/Fig/', exist_ok=True)
     files = glob.glob(f'./graphs_data/graphs_{dataset_name}/Fig/*')
     for f in files:
         os.remove(f)
-    copyfile(os.path.realpath(__file__), os.path.join(folder, 'generation_code.py'))
 
     model_p_p, bc_pos, bc_dpos = choose_model(config=config, device=device)
     model_f_p = model_p_p
@@ -919,7 +932,7 @@ def data_generate_particle_field(config, visualize=True, run_vizualized=0, style
 
         # initialize particle and mesh states
         X1, V1, T1, H1, A1, N1 = init_particles(config=config, scenario=scenario, ratio=ratio, device=device)
-        # X1_mesh, V1_mesh, T1_mesh, H1_mesh, A1_mesh, N1_mesh, mesh_data = init_mesh(config, model_mesh=model_f_f, device=device)
+
         X1_mesh, V1_mesh, T1_mesh, H1_mesh, A1_mesh, N1_mesh, mesh_data = init_mesh(config, device=device)
 
         # fig = plt.figure(figsize=(12, 12))
@@ -934,7 +947,7 @@ def data_generate_particle_field(config, visualize=True, run_vizualized=0, style
         for it in trange(simulation_config.start_frame, n_frames + 1):
 
             if ('siren' in model_config.field_type) & (it >= 0):
-                im = imread(f"graphs_data/{simulation_config.node_value_map}") # / 255 * 5000
+                im = imread(f"../ressources/{simulation_config.node_value_map}") # / 255 * 5000
                 im = im[it].squeeze()
                 im = np.rot90(im,3)
                 im = np.reshape(im, (n_nodes_per_axis * n_nodes_per_axis))
@@ -976,7 +989,7 @@ def data_generate_particle_field(config, visualize=True, run_vizualized=0, style
                 y = y0 + y1
 
             # append list
-            if (it >= 0) & bSave:
+            if it >= 0:
                 if has_particle_dropout:
 
                     x_ = x[inv_particle_dropout_mask].clone().detach()
@@ -1179,17 +1192,17 @@ def data_generate_particle_field(config, visualize=True, run_vizualized=0, style
                     plt.savefig(f"graphs_data/graphs_{dataset_name}/Fig/Arrow_{run}_{it}.jpg", dpi=170.7)
                     plt.close()
 
-        if bSave:
-            torch.save(x_list, f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt')
-            if has_particle_dropout:
-                torch.save(x_removed_list, f'graphs_data/graphs_{dataset_name}/x_removed_list_{run}.pt')
-                np.save(f'graphs_data/graphs_{dataset_name}/particle_dropout_mask.npy', particle_dropout_mask)
-                np.save(f'graphs_data/graphs_{dataset_name}/inv_particle_dropout_mask.npy', inv_particle_dropout_mask)
-            torch.save(y_list, f'graphs_data/graphs_{dataset_name}/y_list_{run}.pt')
-            torch.save(x_mesh_list, f'graphs_data/graphs_{dataset_name}/x_mesh_list_{run}.pt')
-            torch.save(y_mesh_list, f'graphs_data/graphs_{dataset_name}/y_mesh_list_{run}.pt')
-            torch.save(edge_p_p_list, f'graphs_data/graphs_{dataset_name}/edge_p_p_list{run}.pt')
-            torch.save(edge_f_p_list, f'graphs_data/graphs_{dataset_name}/edge_f_p_list{run}.pt')
-            torch.save(model_p_p.p, f'graphs_data/graphs_{dataset_name}/model_p.pt')
+
+        torch.save(x_list, f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt')
+        if has_particle_dropout:
+            torch.save(x_removed_list, f'graphs_data/graphs_{dataset_name}/x_removed_list_{run}.pt')
+            np.save(f'graphs_data/graphs_{dataset_name}/particle_dropout_mask.npy', particle_dropout_mask)
+            np.save(f'graphs_data/graphs_{dataset_name}/inv_particle_dropout_mask.npy', inv_particle_dropout_mask)
+        torch.save(y_list, f'graphs_data/graphs_{dataset_name}/y_list_{run}.pt')
+        torch.save(x_mesh_list, f'graphs_data/graphs_{dataset_name}/x_mesh_list_{run}.pt')
+        torch.save(y_mesh_list, f'graphs_data/graphs_{dataset_name}/y_mesh_list_{run}.pt')
+        torch.save(edge_p_p_list, f'graphs_data/graphs_{dataset_name}/edge_p_p_list{run}.pt')
+        torch.save(edge_f_p_list, f'graphs_data/graphs_{dataset_name}/edge_f_p_list{run}.pt')
+        torch.save(model_p_p.p, f'graphs_data/graphs_{dataset_name}/model_p.pt')
 
 

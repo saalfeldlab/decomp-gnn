@@ -96,7 +96,7 @@ def bc_dpos(x):
 # %% [markdown]
 # The data is generated with the above Pytorch Geometric model.
 # Note two datasets are generated, one for training and one for validation.
-#
+# If the simulation is too large, you can decrease n_particles (multiple of 3) in "Coulomb_3_256.yaml".#
 # %%
 #| echo: true
 #| output: false

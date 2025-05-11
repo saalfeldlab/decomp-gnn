@@ -111,6 +111,9 @@ def bc_dpos(x):
 # %% [markdown]
 # The coefficients of diffusion are loaded from a tif file specified in the config yaml file and the data is generated.
 #
+# Vizualizations of the wave propagation can be found in "decomp-gnn/paper_experiments/graphs_data/graphs_wave_slit/"
+#
+# If the simulation is too large, you can decrease n_particles and n_nodes in "wave_slit.yaml".
 # %%
 #| echo: true
 #| output: false

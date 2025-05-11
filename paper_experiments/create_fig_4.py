@@ -27,7 +27,7 @@ import torch_geometric.utils as pyg_utils
 from torch_geometric.data import Data
 
 from ParticleGraph.config import ParticleGraphConfig
-from ParticleGraph.generators import data_generate_particles
+from ParticleGraph.generators import data_generate_particle_field
 from ParticleGraph.models import data_train, data_test
 from ParticleGraph.plotting import get_figures, load_and_display
 from ParticleGraph.utils import set_device, to_numpy
@@ -115,6 +115,10 @@ def bc_dpos(x):
 # %% [markdown]
 # The training data is generated with the above Pytorch Geometric model
 #
+# Vizualizations of the particle motions can be found in "decomp-gnn/paper_experiments/graphs_data/graphs_arbitrary_3_field_video/"
+#
+# If the simulation is too large, you can decrease n_particles and n_nodes (multiple of 3) in "arbitrary_3_field_video.yaml"
+#
 # %%
 #| echo: true
 #| output: false
@@ -132,7 +136,7 @@ generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='c
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
 
-data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
+data_generate_particle_field(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %% [markdown]
 # The GNN model (see src/PArticleGraph/models/Interaction_Particle.py) is trained and tested.

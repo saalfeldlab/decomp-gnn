@@ -109,6 +109,9 @@ def bc_dpos(x):
 # %% [markdown]
 # The coefficients of diffusion are loaded from a tif file specified in the config yaml file and the data is generated.
 #
+# Vizualizations of the reaction diffusion can be found in "decomp-gnn/paper_experiments/graphs_data/RD_RPS/"
+#
+# If the simulation is too large, you can decrease n_particles and n_nodes in "RD_RPS.yaml".
 # %%
 #| echo: true
 #| output: false
