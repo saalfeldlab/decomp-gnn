@@ -1,6 +1,6 @@
 # %% [markdown]
 # ---
-# title: Attraction-repulsion system with 3 particle types
+# title: Boids system with 16 different particle types
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles
@@ -10,11 +10,10 @@
 # ---
 
 # %% [markdown]
-# This script creates figure of paper's Figure 4.
-# A GNN learns the motion rules of an attraction-repulsion system whose particles interact
-# The simulation used to train the GNN consists of 4800 particles of three different types.
-# The particles interact with each other according to three different attraction-repulsion laws.
-# The particle interact also with a hidden dynamical field.
+# This script generates Supplementary Figure 15.
+# A GNN learns the motion rules of boids (https://en.wikipedia.org/wiki/Boids).
+# The simulation used to train the GNN consists of 1792 particles of 16 different types.
+# The particles interact with each other according to 16 different laws.
 
 # %%
 #| output: false
@@ -27,7 +26,7 @@ import torch_geometric.utils as pyg_utils
 from torch_geometric.data import Data
 
 from ParticleGraph.config import ParticleGraphConfig
-from ParticleGraph.generators import data_generate_particle_field
+from ParticleGraph.generators import data_generate_particles
 from ParticleGraph.models import data_train, data_test
 from ParticleGraph.plotting import get_figures, load_and_display
 from ParticleGraph.utils import set_device, to_numpy
@@ -38,8 +37,8 @@ from ParticleGraph.utils import set_device, to_numpy
 # %%
 #| echo: true
 #| output: false
-config_file = 'arbitrary_3_field_video'
-figure_id = '4'
+config_file = 'boids_16_256'
+figure_id = 'supp4'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
@@ -48,15 +47,13 @@ device = set_device("auto")
 #
 # %%
 #| echo: true
-class ParticleField(pyg.nn.MessagePassing):
+class BoidsModel(pyg.nn.MessagePassing):
     """Interaction Network as proposed in this paper:
     https://proceedings.neurips.cc/paper/2016/hash/3147da8ab4a0437c15ef51a5cc7f2dc4-Abstract.html"""
 
     """
-    Compute the speed of particles as a function of their relative position according to an attraction-repulsion law.
-    The latter is defined by four parameters p = (p1, p2, p3, p4) and a parameter sigma.
-
-    See https://github.com/gpeyre/numerical-tours/blob/master/python/ml_10_particle_system.ipynb
+    Compute the acceleration of Boids as a function of their relative positions and relative positions.
+    The interaction function is defined by three parameters p = (p1, p2, p3)
 
     Inputs
     ----------
@@ -65,16 +62,21 @@ class ParticleField(pyg.nn.MessagePassing):
     Returns
     -------
     pred : float
-        the speed of the particles (dimension 2)
+        the acceleration of the Boids (dimension 2)
     """
 
-    def __init__(self, aggr_type=[], p=[], sigma=[], bc_dpos=[], dimension=2):
-        super(ParticleField, self).__init__(aggr=aggr_type)  # "mean" aggregation.
+    def __init__(self, aggr_type=[], p=[], bc_dpos=[], dimension=2):
+        super(BoidsModel, self).__init__(aggr=aggr_type)  # "mean" aggregation.
 
         self.p = p
-        self.sigma = sigma
         self.bc_dpos = bc_dpos
         self.dimension = dimension
+
+        self.a1 = 0.5E-5
+        self.a2 = 5E-4
+        self.a3 = 1E-8
+        self.a4 = 0.5E-5
+        self.a5 = 1E-8
 
     def forward(self, data=[], has_field=False):
         x, edge_index = data.x, data.edge_index
@@ -86,23 +88,20 @@ class ParticleField(pyg.nn.MessagePassing):
 
         edge_index, _ = pyg_utils.remove_self_loops(edge_index)
         particle_type = to_numpy(x[:, 1 + 2*self.dimension])
-        parameters = self.p[particle_type,:]
-        d_pos = self.propagate(edge_index, pos=x[:, 1:self.dimension+1], parameters=parameters, field=field)
-        return d_pos
+        parameters = self.p[particle_type, :]
+        d_pos = x[:, self.dimension+1:1 + 2*self.dimension].clone().detach()
+        dd_pos = self.propagate(edge_index, pos=x[:, 1:self.dimension+1], parameters=parameters, d_pos=d_pos, field=field)
 
+        return dd_pos
 
-    def message(self, pos_i, pos_j, parameters_i, field_j):
+    def message(self, pos_i, pos_j, parameters_i, d_pos_i, d_pos_j, field_j):
+        distance_squared = torch.sum(self.bc_dpos(pos_j - pos_i) ** 2, axis=1)  # distance squared
 
-        distance_squared = torch.sum(self.bc_dpos(pos_j - pos_i) ** 2, axis=1)  # squared distance
-        f = (parameters_i[:, 0] * torch.exp(-distance_squared ** parameters_i[:, 1] / (2 * self.sigma ** 2))
-               - parameters_i[:, 2] * torch.exp(-distance_squared ** parameters_i[:, 3] / (2 * self.sigma ** 2)))
-        d_pos = f[:, None] * self.bc_dpos(pos_j - pos_i) * field_j
+        cohesion = parameters_i[:,0,None] * self.a1 * self.bc_dpos(pos_j - pos_i)
+        alignment = parameters_i[:,1,None] * self.a2 * self.bc_dpos(d_pos_j - d_pos_i)
+        separation = - parameters_i[:,2,None] * self.a3 * self.bc_dpos(pos_j - pos_i) / distance_squared[:, None]
 
-        return d_pos
-
-    def psi(self, r, p):
-        return r * (p[0] * torch.exp(-r ** (2 * p[1]) / (2 * self.sigma ** 2))
-                    - p[2] * torch.exp(-r ** (2 * p[3]) / (2 * self.sigma ** 2)))
+        return (separation + alignment + cohesion) * field_j
 
 
 def bc_pos(x):
@@ -115,36 +114,29 @@ def bc_dpos(x):
 # %% [markdown]
 # The training data is generated with the above Pytorch Geometric model
 #
-# Vizualizations of the particle motions can be found in "decomp-gnn/paper_experiments/graphs_data/graphs_arbitrary_3_field_video/"
+# Vizualizations of the particle motions can be found in "decomp-gnn/paper_experiments/graphs_data/graphs_boids_16_256/"
 #
-# If the simulation is too large, you can decrease n_particles and n_nodes (multiple of 3) in "arbitrary_3_field_video.yaml"
+# If the simulation is too large, you can decrease n_particles (multiple of 16) in "boids_16_256.yaml"
 #
 # %%
 #| echo: true
 #| output: false
 p = torch.squeeze(torch.tensor(config.simulation.params))
-sigma = config.simulation.sigma
-model = ParticleField(
-    aggr_type=config.graph_model.aggr_type,
-    p=p,
-    sigma=sigma,
-    bc_dpos=bc_dpos,
-    dimension=config.simulation.dimension
-)
+model = BoidsModel(aggr_type=config.graph_model.aggr_type, p=torch.squeeze(p), bc_dpos=bc_dpos, dimension=config.simulation.dimension)
 
-generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', alpha=1, erase=True, save=True, step=4)
+generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', alpha=1, erase=True, save=True, step=10)
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
 
-# data_generate_particle_field(config, model, bc_pos, bc_dpos, **generate_kwargs)
+data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %%
-#| fig-cap: "Frame 100. The orange, blue, and green particles represent the three different particle types."
-# load_and_display('graphs_data/graphs_arbitrary_3_field_video/Fig/Fig_0_100.tif')
+#| fig-cap: "Initial configuration of the simulation. There are 1792 boids. The colors indicate different types."
+# load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_0.tif')
 
 # %%
-#| fig-cap: "Frame 100. The arrows shows the influence of the hidden field on the particles velocity field."
-# load_and_display('graphs_data/graphs_arbitrary_3_field_video/Fig/Arrow_0_100.tif')
+#| fig-cap: "Frame 7500 out of 8000"
+# load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_7500.tif')
 
 # %% [markdown]
 # The GNN model (see src/PArticleGraph/models/Interaction_Particle.py) is trained and tested.

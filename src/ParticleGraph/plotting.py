@@ -3474,6 +3474,9 @@ def get_figures(index, *, device):
             config_list = ['arbitrary_3_dropout_30', 'arbitrary_3_dropout_10', 'arbitrary_3_dropout_10_no_ghost']
         case 'supp6':
             config_list = ['arbitrary_3_field_boats']
+        case 'supp4':
+            config_list = ['boids_16_256']
+            epoch_list = ['0_0', '0_2000', '0_10000', '20']
         case 'supp7':
             config_list = ['gravity_16']
             epoch_list= ['0_0', '0_5000', '1_0', '20']
@@ -3483,9 +3486,7 @@ def get_figures(index, *, device):
             config_list = ['gravity_16_noise_0_4', 'Coulomb_3_noise_0_4', 'Coulomb_3_noise_0_3', 'gravity_16_noise_0_3']
         case 'supp10':
             config_list = ['gravity_16_dropout_10', 'gravity_16_dropout_30', 'Coulomb_3_dropout_10_no_ghost', 'Coulomb_3_dropout_10']
-        case 'supp11':
-            config_list = ['boids_16_256']
-            epoch_list = ['0_0', '0_2000', '0_10000', '20']
+
         case 'supp12':
             config_list = ['boids_16_256', 'boids_32_256', 'boids_64_256']
         case 'supp14':

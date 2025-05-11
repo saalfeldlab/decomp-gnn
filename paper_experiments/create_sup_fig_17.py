@@ -124,7 +124,15 @@ generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='c
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1)
 
-data_generate_mesh(config, model , **generate_kwargs)
+data_generate_mes(config, model , **generate_kwargs)
+
+# %%
+#| fig-cap: "Initial configuration of the simulation. There are 1E4 nodes. The colors indicate the node vector values."
+load_and_display('graphs_data/graphs_RD_RPS/Fig/Fig_0_0.tif')
+
+# %%
+#| fig-cap: "Frame 3750 out of 4000"
+load_and_display('graphs_data/graphs_RD_RPS/Fig/Fig_0_3750.tif')
 
 # %% [markdown]
 # The  GNN model (see src/ParticleGraph/models/Mesh_RPS.py) is optimized using the 'rock-paper-scissor' data.
@@ -134,8 +142,8 @@ data_generate_mesh(config, model , **generate_kwargs)
 # %%
 #| echo: true
 #| output: false
-# if not os.path.exists(f'log/try_{config_file}'):
-#     data_train(config, config_file, **train_kwargs)
+if not os.path.exists(f'log/try_{config_file}'):
+    data_train(config, config_file, **train_kwargs)
 
 # %% [markdown]
 # The model that has been trained in the previous step is used to generate the rollouts.
