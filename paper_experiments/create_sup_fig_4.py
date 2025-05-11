@@ -132,11 +132,11 @@ data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %%
 #| fig-cap: "Initial configuration of the simulation. There are 1792 boids. The colors indicate different types."
-# load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_0.tif')
+load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_0.tif')
 
 # %%
 #| fig-cap: "Frame 7500 out of 8000"
-# load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_7500.tif')
+load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_7500.tif')
 
 # %% [markdown]
 # The GNN model (see src/PArticleGraph/models/Interaction_Particle.py) is trained and tested.
@@ -145,8 +145,8 @@ data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 # %%
 #| echo: true
 #| output: false
-# if not os.path.exists(f'log/try_{config_file}'):
-data_train(config, config_file, **train_kwargs)
+if not os.path.exists(f'log/try_{config_file}'):
+    data_train(config, config_file, **train_kwargs)
 
 # %% [markdown]
 # The model that has been trained in the previous step is used to generate the rollouts.

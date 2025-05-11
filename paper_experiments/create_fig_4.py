@@ -136,15 +136,15 @@ generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='c
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
 
-# data_generate_particle_field(config, model, bc_pos, bc_dpos, **generate_kwargs)
+data_generate_particle_field(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %%
 #| fig-cap: "Frame 100. The orange, blue, and green particles represent the three different particle types."
-# load_and_display('graphs_data/graphs_arbitrary_3_field_video/Fig/Fig_0_100.tif')
+load_and_display('graphs_data/graphs_arbitrary_3_field_video/Fig/Fig_0_100.tif')
 
 # %%
 #| fig-cap: "Frame 100. The arrows shows the influence of the hidden field on the particles velocity field."
-# load_and_display('graphs_data/graphs_arbitrary_3_field_video/Fig/Arrow_0_100.tif')
+load_and_display('graphs_data/graphs_arbitrary_3_field_video/Fig/Arrow_0_100.tif')
 
 # %% [markdown]
 # The GNN model (see src/PArticleGraph/models/Interaction_Particle.py) is trained and tested.
@@ -153,8 +153,8 @@ test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, 
 # %%
 #| echo: true
 #| output: false
-# if not os.path.exists(f'log/try_{config_file}'):
-data_train(config, config_file, **train_kwargs)
+if not os.path.exists(f'log/try_{config_file}'):
+    data_train(config, config_file, **train_kwargs)
 
 # %% [markdown]
 # The model that has been trained in the previous step is used to generate the rollouts.
