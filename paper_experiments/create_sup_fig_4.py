@@ -126,9 +126,9 @@ model = BoidsModel(aggr_type=config.graph_model.aggr_type, p=torch.squeeze(p), b
 
 generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', alpha=1, erase=True, save=True, step=100)
 train_kwargs = dict(device=device, erase=True)
-test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=10, save_velocity=True)
+test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=50, save_velocity=True)
 
-data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
+# data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %%
 #| fig-cap: "Initial configuration of the simulation. There are 1792 boids. The colors indicate different types."
@@ -167,22 +167,13 @@ data_test(config, config_file, **test_kwargs)
 config_list, epoch_list = get_figures(figure_id, device=device)
 
 # %%
-#| fig-cap: "Initial configuration of the test training dataset. There are 4800 particles. The orange, blue, and green particles represent the three different particle types."
-load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_0.tif')
-
-# %%
-#| fig-cap: "Final configuration at frame 250"
-load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_250.tif')
-
-# %%
 #| fig-cap: "Learned latent vectors (x4800)"
-load_and_display('log/try_arbitrary_3/results/embedding_arbitrary_3_20.tif')
+load_and_display('log/try_boids_16_256/results/embedding_boids_16_256_20.tif')
 
 # %%
 #| fig-cap: "Learned interaction functions (x3)"
-load_and_display('log/try_arbitrary_3/results/func_all_arbitrary_3_20.tif')
-
+load_and_display('log/try_boids_16_256/results/func_all_boids_16_256_20.tif')
 
 # %%
-#| fig-cap: "GNN rollout inference at frame 250"
-load_and_display('log/try_arbitrary_3/tmp_recons/Fig_arbitrary_3_249.tif')
+#| fig-cap: "GNN rollout inference at frame 7900"
+load_and_display('log/try_boids_16_256/tmp_recons/Fig_boids_16_256_20_7900.tif')

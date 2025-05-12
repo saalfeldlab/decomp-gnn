@@ -42,7 +42,7 @@ from ParticleGraph.utils import set_device, to_numpy
 config_file = 'arbitrary_3_field_video'
 figure_id = '4'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
-device = set_device("auto")
+device = 'cuda:1'  # set_device("auto")
 
 # %% [markdown]
 # The following model is used to simulate the attraction-repulsion system with PyTorch Geometric.
@@ -137,7 +137,7 @@ generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='c
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=20, save_velocity=True)
 
-data_generate_particle_field(config, model, bc_pos, bc_dpos, **generate_kwargs)
+# data_generate_particle_field(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %%
 #| fig-cap: "Frame 100. The orange, blue, and green particles represent the three different particle types."
@@ -152,13 +152,13 @@ load_and_display('graphs_data/graphs_arbitrary_3_field_video/Fig/Arrow_0_100.tif
 # Since we ship the trained model with the repository, this step can be skipped if desired.
 #
 # During training the plots of the embedding are saved in
-# `paper_experiments/log/try_arbitrary_3_field_video/tmp_training/embedding`.
-# The plots of the interaction functions are saved in `function` and the hidden field in 'field'.
+# "paper_experiments/log/try_arbitrary_3_field_video/tmp_training/embedding".
+# The plots of the interaction functions are saved in "function" and the hidden field in "field".
 # %%
 #| echo: true
 #| output: false
-if not os.path.exists(f'log/try_{config_file}'):
-    data_train(config, config_file, **train_kwargs)
+# if not os.path.exists(f'log/try_{config_file}'):
+data_train(config, config_file, **train_kwargs)
 
 # %% [markdown]
 # The model that has been trained in the previous step is used to generate the rollouts.
