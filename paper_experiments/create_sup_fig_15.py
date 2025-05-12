@@ -150,3 +150,4 @@ if not os.path.exists(f'log/try_{config_file}'):
 # The rollout visualization can be found in `paper_experiments/log/try_wave_slit/tmp_recons`.
 # %%
 data_test(config, config_file, **test_kwargs)
+

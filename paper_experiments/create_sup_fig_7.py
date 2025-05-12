@@ -10,10 +10,10 @@
 # ---
 
 # %% [markdown]
-# This script generates Supplementary Figure 4.
-# A GNN learns the motion rules of boids (https://en.wikipedia.org/wiki/Boids).
-# The simulation used to train the GNN consists of 1792 particles of 16 different types.
-# The particles interact with each other according to 16 different laws.
+# This script generates Supplementary Figure 7.
+# A GNN learns the motion rules governing a gravity-like system
+# The simulation used to train the GNN consists of 960 particles of 16 different masses.
+# The particles interact with each other according to gravity law.
 
 # %%
 #| output: false
@@ -37,23 +37,22 @@ from ParticleGraph.utils import set_device, to_numpy
 # %%
 #| echo: true
 #| output: false
-config_file = 'boids_16_256'
-figure_id = 'supp4'
+config_file = 'gravity_16'
+figure_id = 'supp7'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
 # %% [markdown]
-# The following model is used to simulate the boids system with PyTorch Geometric.
+# The following model is used to simulate the gravity-like system with PyTorch Geometric.
 #
 # %%
 #| echo: true
-class BoidsModel(pyg.nn.MessagePassing):
+class GravityModel(pyg.nn.MessagePassing):
     """Interaction Network as proposed in this paper:
     https://proceedings.neurips.cc/paper/2016/hash/3147da8ab4a0437c15ef51a5cc7f2dc4-Abstract.html"""
 
     """
-    Compute the acceleration of Boids as a function of their relative positions and relative positions.
-    The interaction function is defined by three parameters p = (p1, p2, p3)
+    Compute the acceleration of particles as a function of their relative position according to the gravity law.
 
     Inputs
     ----------
@@ -62,46 +61,33 @@ class BoidsModel(pyg.nn.MessagePassing):
     Returns
     -------
     pred : float
-        the acceleration of the Boids (dimension 2)
+        the acceleration of the particles (dimension 2)
     """
 
-    def __init__(self, aggr_type=[], p=[], bc_dpos=[], dimension=2):
-        super(BoidsModel, self).__init__(aggr=aggr_type)  # "mean" aggregation.
+    def __init__(self, aggr_type=[], p=[], clamp=[], pred_limit=[], bc_dpos=[]):
+        super(GravityModel, self).__init__(aggr='add')  # "mean" aggregation.
 
         self.p = p
+        self.clamp = clamp
+        self.pred_limit = pred_limit
         self.bc_dpos = bc_dpos
-        self.dimension = dimension
 
-        self.a1 = 0.5E-5
-        self.a2 = 5E-4
-        self.a3 = 1E-8
-        self.a4 = 0.5E-5
-        self.a5 = 1E-8
-
-    def forward(self, data=[], has_field=False):
+    def forward(self, data):
         x, edge_index = data.x, data.edge_index
-
-        if has_field:
-            field = x[:,6:7]
-        else:
-            field = torch.ones_like(x[:,0:1])
-
         edge_index, _ = pyg_utils.remove_self_loops(edge_index)
-        particle_type = to_numpy(x[:, 1 + 2*self.dimension])
-        parameters = self.p[particle_type, :]
-        d_pos = x[:, self.dimension+1:1 + 2*self.dimension].clone().detach()
-        dd_pos = self.propagate(edge_index, pos=x[:, 1:self.dimension+1], parameters=parameters, d_pos=d_pos, field=field)
+        particle_type = to_numpy(x[:, 5])
 
+        mass = self.p[particle_type]
+        dd_pos = self.propagate(edge_index, pos=x[:, 1:3], mass=mass[:, None])
         return dd_pos
 
-    def message(self, pos_i, pos_j, parameters_i, d_pos_i, d_pos_j, field_j):
-        distance_squared = torch.sum(self.bc_dpos(pos_j - pos_i) ** 2, axis=1)  # distance squared
+    def message(self, pos_i, pos_j, mass_j):
+        distance_ij = torch.sqrt(torch.sum(self.bc_dpos(pos_j - pos_i) ** 2, axis=1))
+        distance_ij = torch.clamp(distance_ij, min=self.clamp)
+        direction_ij = self.bc_dpos(pos_j - pos_i) / distance_ij[:, None]
+        dd_pos = mass_j * direction_ij / (distance_ij[:, None] ** 2)
 
-        cohesion = parameters_i[:,0,None] * self.a1 * self.bc_dpos(pos_j - pos_i)
-        alignment = parameters_i[:,1,None] * self.a2 * self.bc_dpos(d_pos_j - d_pos_i)
-        separation = - parameters_i[:,2,None] * self.a3 * self.bc_dpos(pos_j - pos_i) / distance_squared[:, None]
-
-        return (separation + alignment + cohesion) * field_j
+        return torch.clamp(dd_pos, max=self.pred_limit)
 
 
 def bc_pos(x):
@@ -122,7 +108,8 @@ def bc_dpos(x):
 #| echo: true
 #| output: false
 p = torch.squeeze(torch.tensor(config.simulation.params))
-model = BoidsModel(aggr_type=config.graph_model.aggr_type, p=torch.squeeze(p), bc_dpos=bc_dpos, dimension=config.simulation.dimension)
+model = GravityModel(aggr_type=config.graph_model.aggr_type, p=torch.squeeze(p), clamp=config.training.clamp,
+              pred_limit=config.training.pred_limit, bc_dpos=bc_dpos)
 
 generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', alpha=1, erase=True, save=True, step=10)
 train_kwargs = dict(device=device, erase=True)
@@ -131,12 +118,13 @@ test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, 
 data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %%
-#| fig-cap: "Initial configuration of the simulation. There are 1792 boids. The colors indicate different types."
-load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_0.tif')
+#| fig-cap: "Initial configuration of the simulation. There are 960 particles. The colors indicate different masses."
+load_and_display('graphs_data/graphs_gravity_16/Fig/Fig_0_0.tif')
 
 # %%
-#| fig-cap: "Frame 7500 out of 8000"
-load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_7500.tif')
+#| fig-cap: "Frame 1800 out of 2000"
+load_and_display('graphs_data/graphs_gravity_16/Fig/Fig_0_1800.tif')
+
 
 # %% [markdown]
 # The GNN model (see src/PArticleGraph/models/Interaction_Particle.py) is trained and tested.
@@ -150,17 +138,17 @@ if not os.path.exists(f'log/try_{config_file}'):
 
 # %% [markdown]
 # During training the embedding is saved in
-# "paper_experiments/log/try_boids_16_256/tmp_training/embedding"
+# "paper_experiments/log/try_gravity_16/tmp_training/embedding"
 # The plot of the pairwise interactions is saved in
-# "paper_experiments/log/try_boids_16_256/tmp_training/function"
+# "paper_experiments/log/try_gravity_16/tmp_training/function"
 #
 # The model that has been trained in the previous step is used to generate the rollouts.
-# The rollout visualization can be found in `paper_experiments/log/try_boids_16_256/tmp_recons`.
+# The rollout visualization can be found in `paper_experiments/log/try_gravity_16/tmp_recons`.
 # %%
 data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]
-# Finally, we generate the figures that are shown in Supplementary Figure 4.
+# Finally, we generate the figures that are shown in Supplementary Figure 7.
 # %%
 #| echo: true
 #| output: false
@@ -181,7 +169,6 @@ load_and_display('log/try_arbitrary_3/results/embedding_arbitrary_3_20.tif')
 # %%
 #| fig-cap: "Learned interaction functions (x3)"
 load_and_display('log/try_arbitrary_3/results/func_all_arbitrary_3_20.tif')
-
 
 # %%
 #| fig-cap: "GNN rollout inference at frame 250"

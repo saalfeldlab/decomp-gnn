@@ -3468,12 +3468,12 @@ def get_figures(index, *, device):
         case 'supp1':
             config_list = ['arbitrary_3']
             epoch_list= ['0_0', '0_200', '0_1000', '20']
-        case 'supp4':
-            config_list = ['arbitrary_16', 'arbitrary_16_noise_0_3', 'arbitrary_16_noise_0_4', 'arbitrary_16_noise_0_5']
-        case 'supp5':
-            config_list = ['arbitrary_3_dropout_30', 'arbitrary_3_dropout_10', 'arbitrary_3_dropout_10_no_ghost']
-        case 'supp6':
-            config_list = ['arbitrary_3_field_boats']
+        # case 'supp4':
+        #     config_list = ['arbitrary_16', 'arbitrary_16_noise_0_3', 'arbitrary_16_noise_0_4', 'arbitrary_16_noise_0_5']
+        # case 'supp5':
+        #     config_list = ['arbitrary_3_dropout_30', 'arbitrary_3_dropout_10', 'arbitrary_3_dropout_10_no_ghost']
+        # case 'supp6':
+        #     config_list = ['arbitrary_3_field_boats']
         case 'supp4':
             config_list = ['boids_16_256']
             epoch_list = ['0_0', '0_2000', '0_10000', '20']
