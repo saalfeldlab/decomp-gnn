@@ -6,14 +6,14 @@
 #   - Particles
 # execute:
 #   echo: false
-# image: "create_supp_fig_4_files/figure-html/cell-supp_fig4-output-1.png"
+# image: "create_fig_boids_files/figure-html/cell-fig_boids-output-1.png"
 # ---
 
 # %% [markdown]
-# This script generates Supplementary Figure 4.
+# This script generates figures shown in Supplementary Figures 4, 11 and 12.
 # A GNN learns the motion rules of boids (https://en.wikipedia.org/wiki/Boids).
 # The simulation used to train the GNN consists of 1792 particles of 16 different types.
-# The particles interact with each other according to 16 different laws.
+# The boids interact with each other according to 16 different laws.
 
 # %%
 #| output: false
@@ -114,7 +114,7 @@ def bc_dpos(x):
 # %% [markdown]
 # The training data is generated with the above Pytorch Geometric model
 #
-# Vizualizations of the particle motions can be found in "decomp-gnn/paper_experiments/graphs_data/graphs_boids_16_256/"
+# Vizualizations of the boids motion can be found in "decomp-gnn/paper_experiments/graphs_data/graphs_boids_16_256/Fig/"
 #
 # If the simulation is too large, you can decrease n_particles (multiple of 16) in "boids_16_256.yaml"
 #
@@ -132,11 +132,11 @@ test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, 
 
 # %%
 #| fig-cap: "Initial configuration of the simulation. There are 1792 boids. The colors indicate different types."
-# load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_0.tif')
+load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_0.tif')
 
 # %%
 #| fig-cap: "Frame 7500 out of 8000"
-# load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_7500.tif')
+load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_7500.tif')
 
 # %% [markdown]
 # The GNN model (see src/PArticleGraph/models/Interaction_Particle.py) is trained and tested.
@@ -157,10 +157,10 @@ if not os.path.exists(f'log/try_{config_file}'):
 # The model that has been trained in the previous step is used to generate the rollouts.
 # The rollout visualization can be found in `paper_experiments/log/try_boids_16_256/tmp_recons`.
 # %%
-# data_test(config, config_file, **test_kwargs)
+data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]
-# Finally, we generate the figures that are shown in Supplementary Figure 4.
+# Finally, we generate figures from the post-analysis of the GNN.
 # %%
 #| echo: true
 #| output: false
@@ -168,12 +168,26 @@ config_list, epoch_list = get_figures(figure_id, device=device)
 
 # %%
 #| fig-cap: "Learned latent vectors (x4800)"
-load_and_display('log/try_boids_16_256/results/embedding_boids_16_256_20.tif')
+load_and_display('log/try_boids_16_256/results/first_embedding_boids_16_256_20.tif')
 
 # %%
-#| fig-cap: "Learned interaction functions (x3)"
-load_and_display('log/try_boids_16_256/results/func_all_boids_16_256_20.tif')
+#| fig-cap: "Learned interaction functions (x16)"
+load_and_display('log/try_boids_16_256/results/func_dij_boids_16_256_20.tif')
 
 # %%
-#| fig-cap: "GNN rollout inference at frame 7900"
-load_and_display('log/try_boids_16_256/tmp_recons/Fig_boids_16_256_20_7900.tif')
+#| fig-cap: "Learned cohesion parameters"
+load_and_display('log/try_boids_16_256/results/cohesion_boids_16_256_20.tif')
+
+# %%
+#| fig-cap: "Learned alignment parameters"
+load_and_display('log/try_boids_16_256/results/alignment_boids_16_256_20.tif')
+
+# %%
+#| fig-cap: "Learned separation parameters"
+load_and_display('log/try_boids_16_256/results/separation_boids_16_256_20.tif')
+
+# %%
+#| fig-cap: "GNN rollout inference at frame 7950"
+load_and_display('log/try_boids_16_256/tmp_recons/Fig_boids_16_256_7950.tif')
+
+

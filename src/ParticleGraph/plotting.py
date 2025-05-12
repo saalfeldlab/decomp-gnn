@@ -21,6 +21,7 @@ from ParticleGraph.sparsify import *
 from ParticleGraph.utils import to_numpy, CustomColorMap
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.models.Siren_Network import *
+import torch_geometric.data as data
 
 class Interaction_Particle_extract(MessagePassing):
     """Interaction Network as proposed in this paper:
@@ -1843,7 +1844,6 @@ def plot_boids(config_file, epoch_list, log_dir, logger, device):
     min_radius = config.simulation.min_radius
     n_particle_types = config.simulation.n_particle_types
     n_runs = config.training.n_runs
-    has_cell_division = config.simulation.has_cell_division
     cmap = CustomColorMap(config=config)
     n_frames = config.simulation.n_frames
     dimension = config.simulation.dimension
@@ -1865,13 +1865,6 @@ def plot_boids(config_file, epoch_list, log_dir, logger, device):
     index_particles = get_index_particles(x, n_particle_types, dimension)
     type_list = get_type_list(x, dimension)
     n_particles = x.shape[0]
-    if has_cell_division:
-        T1_list = []
-        T1_list.append(torch.load(f'graphs_data/graphs_{dataset_name}/T1_list_1.pt', map_location=device, weights_only=True))
-        n_particles_max = np.load(os.path.join(log_dir, 'n_particles_max.npy'))
-        config.simulation.n_particles_max = n_particles_max
-        type_list = T1_list[0]
-        n_particles = len(type_list)
 
     for epoch in epoch_list:
 
@@ -1894,9 +1887,6 @@ def plot_boids(config_file, epoch_list, log_dir, logger, device):
             f'final result     accuracy: {np.round(accuracy, 2)}    n_clusters: {n_clusters}    obtained with  method: {config.training.cluster_method}   threshold: {config.training.cluster_distance_threshold}')
         logger.info(
             f'final result     accuracy: {np.round(accuracy, 2)}    n_clusters: {n_clusters}    obtained with  method: {config.training.cluster_method}   threshold: {config.training.cluster_distance_threshold}')
-
-        if has_cell_division:
-            plot_cell_rates(config, device, log_dir, n_particle_types, type_list, x_list, new_labels, cmap, logger)
 
         print('compare reconstructed interaction with ground truth...')
 
@@ -3477,7 +3467,7 @@ def get_figures(index, *, device):
         #     config_list = ['arbitrary_3_field_boats']
         case 'supp4':
             config_list = ['boids_16_256']
-            epoch_list = ['0_0', '0_2000', '0_10000', '20']
+            epoch_list = ['20']
         case 'supp7':
             config_list = ['gravity_16']
             epoch_list= ['0_0', '0_5000', '1_0', '20']
