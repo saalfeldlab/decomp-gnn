@@ -398,7 +398,7 @@ def plot_embedding_func_cluster(model, config, config_file, embedding_cluster, c
             pos = torch.argwhere(type_list == n)
             pos = to_numpy(pos)
             if len(pos) > 0:
-                plt.scatter(embedding[pos, 0], embedding[pos, 1], s=100, alpha=alpha)
+                plt.scatter(embedding[pos, 0], embedding[pos, 1], s=100, alpha=alpha, c=cmap.color(n))
     plt.xlabel(r'$\mathbf{a}_{i0}$', fontsize=78)
     plt.ylabel(r'$\mathbf{a}_{i1}$', fontsize=78)
     plt.tight_layout()
@@ -1299,8 +1299,6 @@ def plot_gravity(config_file, epoch_list, log_dir, logger, device):
             logger.info(f'mass relative error: {np.round(np.mean(-popt_list[:, 1]), 2)}+/-{np.round(np.std(-popt_list[:, 1]), 2)}')
 
 
-
-
 def plot_gravity_continuous(config_file, epoch_list, log_dir, logger, device):
 
     config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
@@ -1574,7 +1572,6 @@ def plot_Coulomb(config_file, epoch_list, log_dir, logger, device):
         model.load_state_dict(state_dict['model_state_dict'])
         model.eval()
 
-
         config.training.cluster_method = 'distance_plot'
         config.training.cluster_distance_threshold = 0.1
         alpha=0.5
@@ -1668,99 +1665,100 @@ def plot_Coulomb(config_file, epoch_list, log_dir, logger, device):
         print("all function RMS error: {:.1e}+/-{:.1e}".format(np.mean(rmserr_list), np.std(rmserr_list)))
         logger.info("all function RMS error: {:.1e}+/-{:.1e}".format(np.mean(rmserr_list), np.std(rmserr_list)))
 
-        if os.path.exists(f"./{log_dir}/results/coeff_pysrr.npy"):
-            popt_list = np.load(f"./{log_dir}/results/coeff_pysrr.npy")
+        if False:
 
-        else:
-            print('curve fitting ...')
-            text_trap = StringIO()
-            sys.stdout = text_trap
-            popt_list = []
-            qiqj_list = np.array(qiqj_list)
-            for n in range(0,edges.shape[1],5):
-                model_pysrr, max_index, max_value = symbolic_regression(rr, func_list[n])
-                print(f'{-qiqj_list[n]}/x0**2, {model_pysrr.sympy(max_index)}')
-                logger.info(f'{-qiqj_list[n]}/x0**2, pysrr found {model_pysrr.sympy(max_index)}')
+            if os.path.exists(f"./{log_dir}/results/coeff_pysrr.npy"):
+                popt_list = np.load(f"./{log_dir}/results/coeff_pysrr.npy")
 
-                expr = model_pysrr.sympy(max_index).as_terms()[0]
-                popt_list.append(-expr[0][1][0][0])
+            else:
+                print('curve fitting ...')
+                text_trap = StringIO()
+                sys.stdout = text_trap
+                popt_list = []
+                qiqj_list = np.array(qiqj_list)
+                for n in range(0,edges.shape[1],5):
+                    model_pysrr, max_index, max_value = symbolic_regression(rr, func_list[n])
+                    print(f'{-qiqj_list[n]}/x0**2, {model_pysrr.sympy(max_index)}')
+                    logger.info(f'{-qiqj_list[n]}/x0**2, pysrr found {model_pysrr.sympy(max_index)}')
+                    expr = model_pysrr.sympy(max_index).as_terms()[0]
+                    popt_list.append(-expr[0][1][0][0])
 
-            np.save(f"./{log_dir}/results/coeff_pysrr.npy", popt_list)
-            np.save(f"./{log_dir}/results/qiqj.npy", qiqj_list)
+                np.save(f"./{log_dir}/results/coeff_pysrr.npy", popt_list)
+                np.save(f"./{log_dir}/results/qiqj.npy", qiqj_list)
 
-        qiqj_list = np.load(f"./{log_dir}/results/qiqj.npy")
-        qiqj = []
-        for n in range(0, len(qiqj_list), 5):
-            qiqj.append(qiqj_list[n])
-        qiqj_list = np.array(qiqj)
+            qiqj_list = np.load(f"./{log_dir}/results/qiqj.npy")
+            qiqj = []
+            for n in range(0, len(qiqj_list), 5):
+                qiqj.append(qiqj_list[n])
+            qiqj_list = np.array(qiqj)
 
-        threshold = 1
+            threshold = 1
 
-        fig, ax = fig_init(formatx='%.0f', formaty='%.0f')
-        x_data = qiqj_list.squeeze()
-        y_data = popt_list.squeeze()
-        lin_fit, r_squared, relative_error, not_outliers, x_data, y_data = linear_fit(x_data, y_data, threshold)
-        plt.plot(x_data, linear_model(x_data, lin_fit[0], lin_fit[1]), color='r', linewidth=4)
-        plt.scatter(qiqj_list, popt_list, color='k', s=200, alpha=0.1)
-        plt.xlim([-2.5, 5])
-        plt.ylim([-2.5, 5])
-        plt.ylabel(r'Learned $q_i q_j$', fontsize=64)
-        plt.xlabel(r'True $q_i q_j$', fontsize=64)
-        plt.tight_layout()
-        plt.savefig(f"./{log_dir}/results/qiqj_{config_file}_{epoch}.tif", dpi=170)
-        plt.close()
+            fig, ax = fig_init(formatx='%.0f', formaty='%.0f')
+            x_data = qiqj_list.squeeze()
+            y_data = popt_list.squeeze()
+            lin_fit, r_squared, relative_error, not_outliers, x_data, y_data = linear_fit(x_data, y_data, threshold)
+            plt.plot(x_data, linear_model(x_data, lin_fit[0], lin_fit[1]), color='r', linewidth=4)
+            plt.scatter(qiqj_list, popt_list, color='k', s=200, alpha=0.1)
+            plt.xlim([-2.5, 5])
+            plt.ylim([-2.5, 5])
+            plt.ylabel(r'Learned $q_i q_j$', fontsize=64)
+            plt.xlabel(r'True $q_i q_j$', fontsize=64)
+            plt.tight_layout()
+            plt.savefig(f"./{log_dir}/results/qiqj_{config_file}_{epoch}.tif", dpi=170)
+            plt.close()
 
-        print(f'slope: {np.round(lin_fit[0], 2)}  R^2$: {np.round(r_squared, 3)}  outliers: {np.sum(relative_error > threshold)}   threshold: {threshold} ')
-        logger.info(f'slope: {np.round(lin_fit[0], 2)}  R^2$: {np.round(r_squared, 3)}  outliers: {np.sum(relative_error > threshold)}   threshold: {threshold} ')
+            print(f'slope: {np.round(lin_fit[0], 2)}  R^2$: {np.round(r_squared, 3)}  outliers: {np.sum(relative_error > threshold)}   threshold: {threshold} ')
+            logger.info(f'slope: {np.round(lin_fit[0], 2)}  R^2$: {np.round(r_squared, 3)}  outliers: {np.sum(relative_error > threshold)}   threshold: {threshold} ')
 
-        print(f'pysrr_qiqj relative error: {100*np.round(np.mean(relative_error), 2)}+/-{100*np.round(np.std(relative_error), 2)}')
-        print(f'pysrr_qiqj relative error wo outliers: {100*np.round(np.mean(relative_error[not_outliers[:, 0]]), 2)}+/-{100*np.round(np.std(relative_error[not_outliers[:, 0]]), 2)}')
-        logger.info(f'pysrr_qiqj relative error: {100*np.round(np.mean(relative_error), 2)}+/-{100*np.round(np.std(relative_error), 2)}')
-        logger.info(f'pysrr_qiqj relative error wo outliers: {100*np.round(np.mean(relative_error[not_outliers[:, 0]]), 2)}+/-{100*np.round(np.std(relative_error[not_outliers[:, 0]]), 2)}')
+            print(f'pysrr_qiqj relative error: {100*np.round(np.mean(relative_error), 2)}+/-{100*np.round(np.std(relative_error), 2)}')
+            print(f'pysrr_qiqj relative error wo outliers: {100*np.round(np.mean(relative_error[not_outliers[:, 0]]), 2)}+/-{100*np.round(np.std(relative_error[not_outliers[:, 0]]), 2)}')
+            logger.info(f'pysrr_qiqj relative error: {100*np.round(np.mean(relative_error), 2)}+/-{100*np.round(np.std(relative_error), 2)}')
+            logger.info(f'pysrr_qiqj relative error wo outliers: {100*np.round(np.mean(relative_error[not_outliers[:, 0]]), 2)}+/-{100*np.round(np.std(relative_error[not_outliers[:, 0]]), 2)}')
 
-        # qi retrieval
-
-
-        qiqj = torch.tensor(popt_list, device=device)[:, None]
-        qiqj = qiqj[not_outliers[:, 0]]
-
-        model_qs = model_qiqj(3, device)
-        optimizer = torch.optim.Adam(model_qs.parameters(), lr=1E-2)
-        qiqj_list = []
-        loss_list = []
-        for it in trange(20000):
-
-            sample = np.random.randint(0, qiqj.shape[0] - 10)
-            qiqj_ = qiqj[sample:sample + 10]
-
-            optimizer.zero_grad()
-            qs = model_qs()
-            distance = torch.sum((qiqj_[:, None] - qs[None, :]) ** 2, dim=2)
-            result = distance.min(dim=1)
-            min_value = result.values
-            min_index = result.indices
-            loss = torch.mean(min_value) + torch.max(min_value)
-            loss.backward()
-            optimizer.step()
-            if it % 100 == 0:
-                qiqj_list.append(to_numpy(model_qs.qiqj))
-                loss_list.append(to_numpy(loss))
-        qiqj_list = np.array(qiqj_list).squeeze()
+            # qi retrieval
 
 
-        print('qi')
-        print(np.round(to_numpy(model_qs.qiqj[2].squeeze()),3), np.round(to_numpy(model_qs.qiqj[1].squeeze()),3),np.round(to_numpy(model_qs.qiqj[0].squeeze()),3) )
-        logger.info('qi')
-        logger.info(f'{np.round(to_numpy(model_qs.qiqj[2].squeeze()),3)}, {np.round(to_numpy(model_qs.qiqj[1].squeeze()),3)}, {np.round(to_numpy(model_qs.qiqj[0].squeeze()),3)}' )
+            qiqj = torch.tensor(popt_list, device=device)[:, None]
+            qiqj = qiqj[not_outliers[:, 0]]
 
-        fig, ax = fig_init()
-        plt.plot(qiqj_list[:, 0], linewidth=4)
-        plt.plot(qiqj_list[:, 1], linewidth=4)
-        plt.plot(qiqj_list[:, 2], linewidth=4)
-        plt.xlabel('iteration',fontsize=78)
-        plt.ylabel(r'$q_i$',fontsize=78)
-        plt.tight_layout()
-        plt.savefig(f"./{log_dir}/results/qi_{config_file}_{epoch}.tif", dpi=170)
+            model_qs = model_qiqj(3, device)
+            optimizer = torch.optim.Adam(model_qs.parameters(), lr=1E-2)
+            qiqj_list = []
+            loss_list = []
+            for it in trange(20000):
+
+                sample = np.random.randint(0, qiqj.shape[0] - 10)
+                qiqj_ = qiqj[sample:sample + 10]
+
+                optimizer.zero_grad()
+                qs = model_qs()
+                distance = torch.sum((qiqj_[:, None] - qs[None, :]) ** 2, dim=2)
+                result = distance.min(dim=1)
+                min_value = result.values
+                min_index = result.indices
+                loss = torch.mean(min_value) + torch.max(min_value)
+                loss.backward()
+                optimizer.step()
+                if it % 100 == 0:
+                    qiqj_list.append(to_numpy(model_qs.qiqj))
+                    loss_list.append(to_numpy(loss))
+            qiqj_list = np.array(qiqj_list).squeeze()
+
+
+            print('qi')
+            print(np.round(to_numpy(model_qs.qiqj[2].squeeze()),3), np.round(to_numpy(model_qs.qiqj[1].squeeze()),3),np.round(to_numpy(model_qs.qiqj[0].squeeze()),3) )
+            logger.info('qi')
+            logger.info(f'{np.round(to_numpy(model_qs.qiqj[2].squeeze()),3)}, {np.round(to_numpy(model_qs.qiqj[1].squeeze()),3)}, {np.round(to_numpy(model_qs.qiqj[0].squeeze()),3)}' )
+
+            fig, ax = fig_init()
+            plt.plot(qiqj_list[:, 0], linewidth=4)
+            plt.plot(qiqj_list[:, 1], linewidth=4)
+            plt.plot(qiqj_list[:, 2], linewidth=4)
+            plt.xlabel('iteration',fontsize=78)
+            plt.ylabel(r'$q_i$',fontsize=78)
+            plt.tight_layout()
+            plt.savefig(f"./{log_dir}/results/qi_{config_file}_{epoch}.tif", dpi=170)
 
 
 def plot_boids(config_file, epoch_list, log_dir, logger, device):
@@ -3400,7 +3398,8 @@ def get_figures(index, *, device):
             config_list = ['gravity_16']
             epoch_list= ['20']
         case 'supp8':
-            config_list = ['gravity_16', 'gravity_continuous', 'Coulomb_3_256']
+            config_list = ['Coulomb_3_256']
+            epoch_list= ['20']
         case 'supp9':
             config_list = ['gravity_16_noise_0_4', 'Coulomb_3_noise_0_4', 'Coulomb_3_noise_0_3', 'gravity_16_noise_0_3']
         case 'supp10':
