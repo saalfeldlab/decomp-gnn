@@ -11,7 +11,7 @@
 
 # %% [markdown]
 # This script creates figure of paper's Figure 4.
-# A GNN learns the motion rules of an attraction-repulsion system whose particles interact
+# A GNN learns the motion rules of an attraction-repulsion system.
 # The simulation used to train the GNN consists of 4800 particles of three different types.
 # The particles interact with each other according to three different attraction-repulsion laws.
 # The particle interact also with a hidden dynamical field.
@@ -117,7 +117,7 @@ def bc_dpos(x):
 #
 # Vizualizations of the particle motions can be found in "decomp-gnn/paper_experiments/graphs_data/graphs_arbitrary_3_field_video/"
 #
-# If the simulation is too large, you can decrease n_particles and n_nodes (multiple of 3) in "arbitrary_3_field_video.yaml"
+# If the simulation is too large, you can decrease n_particles (multiple of 3) and n_nodes  in "arbitrary_3_field_video.yaml"
 #
 # %%
 #| echo: true
@@ -132,11 +132,11 @@ model = ParticleField(
     dimension=config.simulation.dimension
 )
 
-generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', alpha=1, erase=True, save=True, step=4)
+generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', alpha=1, erase=True, save=True, step=20)
 train_kwargs = dict(device=device, erase=True)
-test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
+test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='2_0', run=0, step=20, save_velocity=True)
 
-data_generate_particle_field(config, model, bc_pos, bc_dpos, **generate_kwargs)
+# data_generate_particle_field(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %%
 #| fig-cap: "Frame 100. The orange, blue, and green particles represent the three different particle types."
@@ -150,15 +150,17 @@ load_and_display('graphs_data/graphs_arbitrary_3_field_video/Fig/Arrow_0_100.tif
 # The GNN model (see src/PArticleGraph/models/Interaction_Particle.py) is trained and tested.
 # Since we ship the trained model with the repository, this step can be skipped if desired.
 #
+# During training the embedding vizualization is saved in `paper_experiments/log/try_arbitrary_3_field_video/tmp_training/embedding`.
+# The interaction functions are saved in `function` and the hidden field in 'field'.
 # %%
 #| echo: true
 #| output: false
-if not os.path.exists(f'log/try_{config_file}'):
-    data_train(config, config_file, **train_kwargs)
+# if not os.path.exists(f'log/try_{config_file}'):
+data_train(config, config_file, **train_kwargs)
 
 # %% [markdown]
 # The model that has been trained in the previous step is used to generate the rollouts.
-# The rollout visualization can be found in `paper_experiments/log/try_arbitrary_3/tmp_recons`.
+# The rollout visualization can be found in `paper_experiments/log/try_arbitrary_3_field_video/tmp_recons`.
 # %%
 data_test(config, config_file, **test_kwargs)
 

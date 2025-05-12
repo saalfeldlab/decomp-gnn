@@ -1,8 +1,15 @@
 name: gnn
 channels:
+  - pytorch
+  - nvidia
   - conda-forge
 dependencies:
-  - astropy=6.1.4
+  - python=3.11.0
+  - pip=24.3.1
+  - numpy=2.0.2
+  - pytorch=2.4.0
+  - pytorch-cuda=12.1
+  - torchvision=0.19.1
   - gputil=1.4.0
   - h5py=3.12.1
   - imageio=2.36.0
@@ -11,24 +18,20 @@ dependencies:
   - jupytext=1.16.4
   - matplotlib=3.9.2
   - networkx=3.4.2
-  - numpy=2.0.2
   - pandas=2.2.3
-  - pip=24.3.1
   - prettytable=3.12.0
   - pydantic=2.9.2
   - pysr=0.19.3
-  - python=3.12.7
-  - pytorch=2.4.1
   - pyyaml=6.0.2
   - scikit-image=0.24.0
   - scikit-learn=1.5.2
   - scipy=1.14.1
   - seaborn=0.13.2
   - tifffile=2024.9.20
-  - torchvision=0.19.1
   - tqdm=4.66.6
   - umap-learn=0.5.7
   - vispy=0.14.3
+  - astropy=6.1.4
   - pip:
     - geomloss==0.2.6
     - torch-geometric==2.6.1

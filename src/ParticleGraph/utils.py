@@ -148,6 +148,7 @@ def choose_boundary_values(bc_name):
     def shifted_periodic(x):
         return torch.remainder(x - 0.5, 1.0) - 0.5  # in [-0.5, 0.5)
 
+
     def shifted_periodic_special(x):
         return torch.remainder(x - 0.5, 1.0) - 0.5 + (x > 10) * 10  # to discard dead cells set at x=10
 

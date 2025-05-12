@@ -1149,7 +1149,7 @@ def data_generate_particle_field(
                         plt.xticks([])
                         plt.yticks([])
                     plt.tight_layout()
-                    plt.savefig(f"graphs_data/graphs_{dataset_name}/Fig/Fig_{run}_{it}.jpg", dpi=170.7)
+                    plt.savefig(f"graphs_data/graphs_{dataset_name}/Fig/Fig_{run}_{it}.tif", dpi=170.7)
                     plt.close()
 
                     matplotlib.rcParams['savefig.pad_inches'] = 0
@@ -1189,7 +1189,7 @@ def data_generate_particle_field(
                         plt.xticks([])
                         plt.yticks([])
                     plt.tight_layout()
-                    plt.savefig(f"graphs_data/graphs_{dataset_name}/Fig/Arrow_{run}_{it}.jpg", dpi=170.7)
+                    plt.savefig(f"graphs_data/graphs_{dataset_name}/Fig/Arrow_{run}_{it}.tif", dpi=170.7)
                     plt.close()
 
 

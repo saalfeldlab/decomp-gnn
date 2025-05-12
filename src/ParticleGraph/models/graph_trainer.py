@@ -967,8 +967,14 @@ def data_train_particle_field(config, config_file, erase, device):
 
         total_loss = 0
         Niter = n_frames * data_augmentation_loop // batch_size
+        plot_frequency = int(Niter // 10)
 
-        for N in range(Niter):
+        if epoch==0:
+            print(f'{Niter} iterations per epoch')
+            logger.info(f'{Niter} iterations per epoch')
+            print(f'plot every {plot_frequency} iterations')
+
+        for N in trange(Niter):
 
             phi = torch.randn(1, dtype=torch.float32, requires_grad=False, device=device) * np.pi * 2
             cos_phi = torch.cos(phi)
@@ -1071,7 +1077,7 @@ def data_train_particle_field(config, config_file, erase, device):
             total_loss += loss.item()
 
             visualize_embedding = True
-            if visualize_embedding & (((epoch < 30 ) & (N%(Niter//50) == 0)) | (N==0)):
+            if visualize_embedding & (((epoch < 30 ) & (N%plot_frequency == 0)) | (N==0)):
                 plot_training_particle_field(config=config, has_siren=has_siren, has_siren_time=has_siren_time, model_f=model_f, dataset_name=dataset_name, n_frames=n_frames, model_name=model_config.particle_model_name, log_dir=log_dir,
                               epoch=epoch, N=N, x=x, x_mesh=x_mesh, model_field=model.field, model=model, n_nodes=0, n_node_types=0, index_nodes=0, dataset_num=1,
                               index_particles=index_particles, n_particles=n_particles,
@@ -1796,41 +1802,42 @@ def data_test(
                 x[mask_mesh.squeeze(), 6:9] += pred[mask_mesh.squeeze()] * hnorm * delta_t
                 x[mask_mesh.squeeze(), 6:9] = torch.clamp(x[mask_mesh.squeeze(), 6:9], 0, 1)
         elif has_field:
-            match model_config.field_type:
-                case 'tensor':
-                    x_mesh[:, 6:7] = model.field[run]
-                case 'siren':
-                    x_mesh[:, 6:7] = model_f() ** 2
-                case 'siren_with_time':
-                    x_mesh[:, 6:7] = model_f(time=it / n_frames) ** 2
-            x_particle_field = torch.concatenate((x_mesh, x), dim=0)
-
-            distance = torch.sum(bc_dpos(x[:, None, 1:dimension+1] - x[None, :, 1:dimension+1]) ** 2, dim=2)
-            adj_t = ((distance < max_radius ** 2) & (distance > min_radius ** 2)).float() * 1
-            edge_index = adj_t.nonzero().t().contiguous()
-            dataset_p_p = data.Data(x=x, pos=x[:, 1:3], edge_index=edge_index, field=[])
-
-            distance = torch.sum(bc_dpos(x_particle_field[:, None, 1:dimension+1] - x_particle_field[None, :, 1:dimension+1]) ** 2, dim=2)
-            adj_t = ((distance < (max_radius/2) ** 2) & (distance > min_radius ** 2)).float() * 1
-            edge_index = adj_t.nonzero().t().contiguous()
-            pos = torch.argwhere((edge_index[1,:]>=n_nodes) & (edge_index[0,:]<n_nodes))
-            pos = to_numpy(pos[:,0])
-            edge_index = edge_index[:,pos]
-            dataset_f_p = data.Data(x=x_particle_field, pos=x_particle_field[:, 1:3], edge_index=edge_index, field=x_particle_field[:,6:7])
-
             with torch.no_grad():
+                match model_config.field_type:
+                    case 'tensor':
+                        x_mesh[:, 6:7] = model.field[run]
+                    case 'siren':
+                        x_mesh[:, 6:7] = model_f() ** 2
+                    case 'siren_with_time':
+                        x_mesh[:, 6:7] = model_f(time=it / n_frames) ** 2
+                x_particle_field = torch.concatenate((x_mesh, x), dim=0)
+
+                distance = torch.sum(bc_dpos(x[:, None, 1:dimension+1] - x[None, :, 1:dimension+1]) ** 2, dim=2)
+                adj_t = ((distance < max_radius ** 2) & (distance > min_radius ** 2)).float() * 1
+                edge_index = adj_t.nonzero().t().contiguous()
+                dataset_p_p = data.Data(x=x, pos=x[:, 1:3], edge_index=edge_index, field=[])
+
+                distance = torch.sum(bc_dpos(x_particle_field[:, None, 1:dimension+1] - x_particle_field[None, :, 1:dimension+1]) ** 2, dim=2)
+                adj_t = ((distance < (max_radius/2) ** 2) & (distance > min_radius ** 2)).float() * 1
+                edge_index = adj_t.nonzero().t().contiguous()
+                pos = torch.argwhere((edge_index[1,:]>=n_nodes) & (edge_index[0,:]<n_nodes))
+                pos = to_numpy(pos[:,0])
+                edge_index = edge_index[:,pos]
+                dataset_f_p = data.Data(x=x_particle_field, pos=x_particle_field[:, 1:3], edge_index=edge_index, field=x_particle_field[:,6:7])
+
                 y0 = model(dataset_p_p,data_id=1, training=False, vnorm=vnorm, phi=torch.zeros(1, device=device),has_field=False)
                 y1 = model_f_p(dataset_f_p,data_id=1, training=False, vnorm=vnorm,phi=torch.zeros(1, device=device),has_field=True)[n_nodes:]
                 y = y0 + y1
 
-            if model_config.prediction == '2nd_derivative':
-                y = y * ynorm * delta_t
-                x[:, 3:5] = x[:, 3:5] + y  # speed update
-            else:
-                y = y * vnorm
-                x[:, 3:5] = y
+                if model_config.prediction == '2nd_derivative':
+                    y = y * ynorm * delta_t
+                    x[:, 3:5] = x[:, 3:5] + y  # speed update
+                else:
+                    y = y * vnorm
+                    x[:, 3:5] = y
 
-            x[:, 1:3] = bc_pos(x[:, 1:3] + x[:, 3:5] * delta_t)
+                x[:, 1:3] = bc_pos(x[:, 1:3] + x[:, 3:5] * delta_t)
+
         else:
 
             if save_velocity:

@@ -5,9 +5,8 @@ simulation:
   params: [[1.6233, 1.0413, 1.6012, 1.5615], [1.7667, 1.8308, 1.0855, 1.9055], [1.7226, 1.7850, 1.0584, 1.8579]]
   min_radius: 0
   max_radius: 0.075
-  n_particles: 2700
+  n_particles: 4800
   n_particle_types: 3
-  n_interactions: 3
   n_frames: 256
   sigma: 0.005
   delta_t: 0.1
@@ -43,7 +42,7 @@ training:
   batch_size: 8
   small_init_batch_size: False
   n_runs: 2
-  sparsity: 'replace_embedding'
+  sparsity: 'none'
   cluster_method: 'distance_plot'
   data_augmentation: True
   data_augmentation_loop: 200

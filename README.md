@@ -28,9 +28,9 @@ from ParticleGraph import *
 
 To create the paper's figures run the scripts in paper_experiments.
 
-This create folder of data in paper_experimets/graphs_data.
+This create folder of data in paper_experiments/graphs_data.
 
-Time-lapse movies can be found in Fig folders.
+Time-lapse movies can be found in paper_experiments/graphs_data/Fig.
 
 
 ### Citation
