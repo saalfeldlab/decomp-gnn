@@ -7,8 +7,10 @@ paper_experiments/log
 *.quarto_ipynb
 *.png
 *.sh
-site_libs/
-
+*.html
+*.css
+*.woff
+*.js
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
