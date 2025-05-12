@@ -1,6 +1,7 @@
 import sys
 from io import StringIO
 
+import numpy as np
 import torch_geometric.utils as pyg_utils
 from matplotlib import rc
 from matplotlib.ticker import FormatStrFormatter
@@ -2611,7 +2612,7 @@ def plot_RD_RPS(config_file, epoch_list, log_dir, logger, cc, device):
 
     x_mesh = x_mesh_list[1][0].clone().detach()
 
-    i0 = imread(f'graphs_data/{config.simulation.node_coeff_map}')
+    i0 = imread(f'../ressources/{config.simulation.node_coeff_map}')
     coeff = i0[(to_numpy(x_mesh[:, 2]) * 255).astype(int), (to_numpy(x_mesh[:, 1]) * 255).astype(int)]
     coeff = np.reshape(coeff, (n_nodes_per_axis, n_nodes_per_axis))
     vm = np.max(coeff)
@@ -2663,7 +2664,7 @@ def plot_RD_RPS(config_file, epoch_list, log_dir, logger, cc, device):
         plt.ylabel(r'$y$', fontsize=78)
         plt.tight_layout()
         plt.savefig(f"./{log_dir}/results/labels_map_{config_file}_cbar.tif", dpi=300)
-        plt.close
+        plt.close()
 
         fig, ax = fig_init()
         for nodes_type in np.unique(labels[labels <5]):
@@ -2675,46 +2676,46 @@ def plot_RD_RPS(config_file, epoch_list, log_dir, logger, cc, device):
         plt.savefig(f"./{log_dir}/results/embedding_{config_file}_{epoch}.tif", dpi=300)
         plt.close()
 
-        if True:
+        k = 2400
 
-            k = 2400
+        # collect data
+        x_mesh = x_mesh_list[1][k].clone().detach()
+        dataset = data.Data(x=x_mesh, edge_index=edge_index_mesh, edge_attr=edge_weight_mesh, device=device)
+        with torch.no_grad():
+            pred, laplacian_uvw, uvw, embedding, input_phi = model(dataset, data_id=1, return_all=True)
+        pred = pred * hnorm
+        y = y_mesh_list[1][k].clone().detach()
 
-            # collect data
-            x_mesh = x_mesh_list[1][k].clone().detach()
-            dataset = data.Data(x=x_mesh, edge_index=edge_index_mesh, edge_attr=edge_weight_mesh, device=device)
-            with torch.no_grad():
-                pred, laplacian_uvw, uvw, embedding, input_phi = model(dataset, data_id=1, return_all=True)
-            pred = pred * hnorm
-            y = y_mesh_list[1][k].clone().detach()
+        # RD_RPS_model :
+        c_ = torch.zeros(n_node_types, 1, device=device)
+        for n in range(n_node_types):
+            c_[n] = torch.tensor(config.simulation.diffusion_coefficients[n])
+        c = c_[to_numpy(dataset.x[:, 5])].squeeze()
+        c = torch.tensor(np.reshape(coeff,(n_nodes_per_axis*n_nodes_per_axis)),device=device)
+        u = uvw[:, 0]
+        v = uvw[:, 1]
+        w = uvw[:, 2]
+        # laplacian = mesh_model.beta * c * self.propagate(edge_index, x=(x, x), edge_attr=edge_attr)
+        laplacian_u = c * laplacian_uvw[:, 0]
+        laplacian_v = c * laplacian_uvw[:, 1]
+        laplacian_w = c * laplacian_uvw[:, 2]
+        a = 0.6
+        p = u + v + w
+        du = laplacian_u + u * (1 - p - a * v)
+        dv = laplacian_v + v * (1 - p - a * w)
+        dw = laplacian_w + w * (1 - p - a * u)
+        increment = torch.cat((du[:, None], dv[:, None], dw[:, None]), dim=1)
+        increment = increment.squeeze()
 
-            # RD_RPS_model :
-            c_ = torch.zeros(n_node_types, 1, device=device)
-            for n in range(n_node_types):
-                c_[n] = torch.tensor(config.simulation.diffusion_coefficients[n])
-            c = c_[to_numpy(dataset.x[:, 5])].squeeze()
-            c = torch.tensor(np.reshape(coeff,(n_nodes_per_axis*n_nodes_per_axis)),device=device)
-            u = uvw[:, 0]
-            v = uvw[:, 1]
-            w = uvw[:, 2]
-            # laplacian = mesh_model.beta * c * self.propagate(edge_index, x=(x, x), edge_attr=edge_attr)
-            laplacian_u = c * laplacian_uvw[:, 0]
-            laplacian_v = c * laplacian_uvw[:, 1]
-            laplacian_w = c * laplacian_uvw[:, 2]
-            a = 0.6
-            p = u + v + w
-            du = laplacian_u + u * (1 - p - a * v)
-            dv = laplacian_v + v * (1 - p - a * w)
-            dw = laplacian_w + w * (1 - p - a * u)
-            increment = torch.cat((du[:, None], dv[:, None], dw[:, None]), dim=1)
-            increment = increment.squeeze()
-
-            lin_fit_true = np.zeros((len(np.unique(labels))-1, 3, 10))
-            lin_fit_reconstructed = np.zeros((len(np.unique(labels))-1, 3, 10))
-            eq_list = ['u', 'v', 'w']
-            # class 0 is discarded (borders)
-            for n in np.unique(labels)[1:]-1:
+        lin_fit_true = np.zeros((4, 3, 10))
+        lin_fit_reconstructed = np.zeros((4, 3, 10))
+        eq_list = ['u', 'v', 'w']
+        # class 0 is discarded (borders)
+        id = 0
+        for n in np.unique(labels):
+            pos = np.argwhere((labels == n) & (to_numpy(mask_mesh.squeeze()) == 1))
+            if len(pos) > 500:
                 print(n)
-                pos = np.argwhere((labels == n+1) & (to_numpy(mask_mesh.squeeze()) == 1))
                 pos = pos[:, 0].astype(int)
                 for it, eq in enumerate(eq_list):
                     fitting_model = reaction_diffusion_model(eq)
@@ -2730,119 +2731,122 @@ def plot_RD_RPS(config_file, epoch_list, log_dir, logger, cc, device):
                     p0 = np.ones((10, 1))
                     lin_fit, lin_fitv = curve_fit(fitting_model, np.squeeze(x_data), np.squeeze(y_data),
                                                   p0=np.squeeze(p0), method='trf')
-                    lin_fit_true[n, it] = lin_fit
+                    lin_fit_true[id, it] = lin_fit
+                    print(id,it)
+                    print (np.round(lin_fit,2))
+                    print(np.round(lin_fit_true[id, it], 2))
                     y_data = to_numpy(pred[pos, it:it + 1])
                     lin_fit, lin_fitv = curve_fit(fitting_model, np.squeeze(x_data), np.squeeze(y_data),
                                                   p0=np.squeeze(p0), method='trf')
-                    lin_fit_reconstructed[n, it] = lin_fit
+                    lin_fit_reconstructed[id, it] = lin_fit
 
-            coeff_reconstructed = np.round(np.median(lin_fit_reconstructed, axis=0), 2)
-            diffusion_coeff_reconstructed = np.round(np.median(lin_fit_reconstructed, axis=1), 2)[:, 9]
-            coeff_true = np.round(np.median(lin_fit_true, axis=0), 2)
-            diffusion_coeff_true = np.round(np.median(lin_fit_true, axis=1), 2)[:, 9]
+                id += 1
 
-            print(f'frame {k}')
-            print(f'coeff_reconstructed: {coeff_reconstructed}')
-            print(f'diffusion_coeff_reconstructed: {diffusion_coeff_reconstructed}')
-            print(f'coeff_true: {coeff_true}')
-            print(f'diffusion_coeff_true: {diffusion_coeff_true}')
+        coeff_reconstructed = np.round(np.median(lin_fit_reconstructed, axis=0), 2)
+        diffusion_coeff_reconstructed = np.round(np.median(lin_fit_reconstructed, axis=1), 2)[:, 9]
+        coeff_true = np.round(np.median(lin_fit_true, axis=0), 2)
+        diffusion_coeff_true = np.round(np.median(lin_fit_true, axis=1), 2)[:, 9]
 
-            cp = ['uu', 'uv', 'uw', 'vv', 'vw', 'ww', 'u', 'v', 'w']
-            results = {
-                'True': coeff_true[0, 0:9],
-                'Learned': coeff_reconstructed[0, 0:9],
-            }
-            x = np.arange(len(cp))  # the label locations
-            width = 0.25  # the width of the bars
-            multiplier = 0
-            fig, ax = fig_init()
-            for attribute, measurement in results.items():
-                offset = width * multiplier
-                rects = ax.bar(x + offset, measurement, width, label=attribute)
-                multiplier += 1
-            ax.set_ylabel('Polynomial coefficient', fontsize=78)
-            ax.set_xticks(x + width, cp, fontsize=36)
-            plt.title('First equation', fontsize=56)
-            plt.tight_layout()
-            plt.savefig(f"./{log_dir}/results/first_equation_{config_file}_{epoch}.tif", dpi=300)
-            plt.close()
-            cp = ['uu', 'uv', 'uw', 'vv', 'vw', 'ww', 'u', 'v', 'w']
-            results = {
-                'True': coeff_true[1, 0:9],
-                'Learned': coeff_reconstructed[1, 0:9],
-            }
-            x = np.arange(len(cp))  # the label locations
-            width = 0.25  # the width of the bars
-            multiplier = 0
-            fig, ax = fig_init()
-            for attribute, measurement in results.items():
-                offset = width * multiplier
-                rects = ax.bar(x + offset, measurement, width, label=attribute)
-                multiplier += 1
-            ax.set_ylabel('Polynomial coefficient', fontsize=78)
-            ax.set_xticks(x + width, cp, fontsize=36)
-            plt.title('Second equation', fontsize=56)
-            plt.tight_layout()
-            plt.savefig(f"./{log_dir}/results/second_equation_{config_file}_{epoch}.tif", dpi=300)
-            plt.close()
-            cp = ['uu', 'uv', 'uw', 'vv', 'vw', 'ww', 'u', 'v', 'w']
-            results = {
-                'True': coeff_true[2, 0:9],
-                'Learned': coeff_reconstructed[2, 0:9],
-            }
-            x = np.arange(len(cp))  # the label locations
-            width = 0.25  # the width of the bars
-            multiplier = 0
-            fig, ax = fig_init()
-            for attribute, measurement in results.items():
-                offset = width * multiplier
-                rects = ax.bar(x + offset, measurement, width, label=attribute)
-                multiplier += 1
-            ax.set_ylabel('Polynomial coefficient', fontsize=78)
-            ax.set_xticks(x + width, cp, fontsize=36)
-            plt.title('Third equation', fontsize=56)
-            plt.tight_layout()
-            plt.savefig(f"./{log_dir}/results/third_equation_{config_file}_{epoch}.tif", dpi=300)
-            plt.close()
+        print(f'frame {k}')
+        print(f'coeff_reconstructed: {coeff_reconstructed}')
+        print(f'diffusion_coeff_reconstructed: {diffusion_coeff_reconstructed}')
+        print(f'coeff_true: {coeff_true}')
+        print(f'diffusion_coeff_true: {diffusion_coeff_true}')
 
-            true_diffusion_coeff = [0.01, 0.02, 0.03, 0.04]
+        cp = ['uu', 'uv', 'uw', 'vv', 'vw', 'ww', 'u', 'v', 'w']
+        results = {
+            'True': coeff_true[0, 0:9],
+            'Learned': coeff_reconstructed[0, 0:9],
+        }
+        x = np.arange(len(cp))  # the label locations
+        width = 0.25  # the width of the bars
+        multiplier = 0
+        fig, ax = fig_init()
+        for attribute, measurement in results.items():
+            offset = width * multiplier
+            rects = ax.bar(x + offset, measurement, width, label=attribute)
+            multiplier += 1
+        ax.set_ylabel('Polynomial coefficient', fontsize=68)
+        ax.set_xticks(x + width, cp, fontsize=36)
+        plt.title('First equation', fontsize=56)
+        plt.tight_layout()
+        plt.savefig(f"./{log_dir}/results/first_equation_{epoch}.tif", dpi=300)
+        plt.close()
+        cp = ['uu', 'uv', 'uw', 'vv', 'vw', 'ww', 'u', 'v', 'w']
+        results = {
+            'True': coeff_true[1, 0:9],
+            'Learned': coeff_reconstructed[1, 0:9],
+        }
+        x = np.arange(len(cp))  # the label locations
+        width = 0.25  # the width of the bars
+        multiplier = 0
+        fig, ax = fig_init()
+        for attribute, measurement in results.items():
+            offset = width * multiplier
+            rects = ax.bar(x + offset, measurement, width, label=attribute)
+            multiplier += 1
+        ax.set_ylabel('Polynomial coefficient', fontsize=68)
+        ax.set_xticks(x + width, cp, fontsize=36)
+        plt.title('Second equation', fontsize=56)
+        plt.tight_layout()
+        plt.savefig(f"./{log_dir}/results/second_equation_{epoch}.tif", dpi=300)
+        plt.close()
+        cp = ['uu', 'uv', 'uw', 'vv', 'vw', 'ww', 'u', 'v', 'w']
+        results = {
+            'True': coeff_true[2, 0:9],
+            'Learned': coeff_reconstructed[2, 0:9],
+        }
+        x = np.arange(len(cp))  # the label locations
+        width = 0.25  # the width of the bars
+        multiplier = 0
+        fig, ax = fig_init()
+        for attribute, measurement in results.items():
+            offset = width * multiplier
+            rects = ax.bar(x + offset, measurement, width, label=attribute)
+            multiplier += 1
+        ax.set_ylabel('Polynomial coefficient', fontsize=68)
+        ax.set_xticks(x + width, cp, fontsize=36)
+        plt.title('Third equation', fontsize=56)
+        plt.tight_layout()
+        plt.savefig(f"./{log_dir}/results/third_equation_{epoch}.tif", dpi=300)
+        plt.close()
 
-            fig, ax = fig_init(formatx='%.3f', formaty='%.3f')
-            x_data = np.array(true_diffusion_coeff)
-            y_data = diffusion_coeff_reconstructed
-            plt.scatter(x_data, y_data, c='k', s=400)
-            plt.ylabel(r'Learned diffusion coeff.', fontsize=64)
-            plt.xlabel(r'True diffusion coeff.', fontsize=64)
-            plt.xlim([0, vm * 1.1])
-            plt.ylim([0, vm * 1.1])
-            lin_fit, lin_fitv = curve_fit(linear_model, x_data, y_data)
-            residuals = y_data - linear_model(x_data, *lin_fit)
-            ss_res = np.sum(residuals ** 2)
-            ss_tot = np.sum((y_data - np.mean(y_data)) ** 2)
-            r_squared = 1 - (ss_res / ss_tot)
-            plt.plot(x_data, linear_model(x_data, lin_fit[0], lin_fit[1]), color='r', linewidth=4)
-            plt.tight_layout()
-            plt.savefig(f"./{log_dir}/results/scatter_{config_file}_{epoch}.tif", dpi=300)
-            plt.close()
+        true_diffusion_coeff = [0.03, 0.05, 0.08, 0.1]
 
-            print(f"R^2$: {np.round(r_squared, 3)}  Slope: {np.round(lin_fit[0], 2)}")
+        fig, ax = fig_init(formatx='%.3f', formaty='%.3f')
+        x_data = np.array(true_diffusion_coeff)
+        y_data = np.sort(diffusion_coeff_reconstructed)
+        plt.scatter(x_data, y_data, c='k', s=400)
+        plt.ylabel(r'Learned diffusion coeff.', fontsize=64)
+        plt.xlabel(r'True diffusion coeff.', fontsize=64)
+        plt.xlim([0, 0.12])
+        plt.ylim([0, 0.12])
+        lin_fit, lin_fitv = curve_fit(linear_model, x_data, y_data)
+        residuals = y_data - linear_model(x_data, *lin_fit)
+        ss_res = np.sum(residuals ** 2)
+        ss_tot = np.sum((y_data - np.mean(y_data)) ** 2)
+        r_squared = 1 - (ss_res / ss_tot)
+        plt.plot(x_data, linear_model(x_data, lin_fit[0], lin_fit[1]), color='r', linewidth=4)
+        plt.tight_layout()
+        plt.savefig(f"./{log_dir}/results/scatter_{epoch}.tif", dpi=300)
+        plt.close()
 
+        print(f"R^2$: {np.round(r_squared, 3)}  Slope: {np.round(lin_fit[0], 2)}")
 
-
-            fig, ax = fig_init(formatx='%.3f', formaty='%.3f')
-            x_data = coeff_true.flatten()
-            y_data = coeff_reconstructed.flatten()
-            plt.scatter(x_data, y_data, c='k', s=400)
-            plt.ylabel(r'Learned coeff.', fontsize=64)
-            plt.xlabel(r'True  coeff.', fontsize=64)
-            lin_fit, lin_fitv = curve_fit(linear_model, x_data, y_data)
-            residuals = y_data - linear_model(x_data, *lin_fit)
-            ss_res = np.sum(residuals ** 2)
-            ss_tot = np.sum((y_data - np.mean(y_data)) ** 2)
-            r_squared = 1 - (ss_res / ss_tot)
-            plt.plot(x_data, linear_model(x_data, lin_fit[0], lin_fit[1]), color='r', linewidth=4)
-            plt.tight_layout()
-            print(f"R^2$: {np.round(r_squared, 3)}  Slope: {np.round(lin_fit[0], 2)}")
+        fig, ax = fig_init(formatx='%.3f', formaty='%.3f')
+        x_data = coeff_true.flatten()
+        y_data = coeff_reconstructed.flatten()
+        plt.scatter(x_data, y_data, c=mc, s=400)
+        plt.ylabel(r'Learned coeff.', fontsize=64)
+        plt.xlabel(r'True  coeff.', fontsize=64)
+        lin_fit, lin_fitv = curve_fit(linear_model, x_data, y_data)
+        residuals = y_data - linear_model(x_data, *lin_fit)
+        ss_res = np.sum(residuals ** 2)
+        ss_tot = np.sum((y_data - np.mean(y_data)) ** 2)
+        r_squared = 1 - (ss_res / ss_tot)
+        plt.plot(x_data, linear_model(x_data, lin_fit[0], lin_fit[1]), color='r', linewidth=4)
+        plt.tight_layout()
+        print(f"R^2$: {np.round(r_squared, 3)}  Slope: {np.round(lin_fit[0], 2)}")
 
 
 def plot_signal(config_file, epoch_list, log_dir, logger, cc, device):
@@ -3420,13 +3424,13 @@ def get_figures(index, *, device):
             config_list = ['RD_RPS']
             epoch_list = ['20']
         case 'supp18':
-            config_list = ['signal_N_100_2_a']
+            config_list = ['signal_N_100_2']
         case _:
             config_list = ['arbitrary_3']
 
 
     match index:
-        case '3_1' | '3_2' |'3_3' |'3_4' |'3_5' |'3_6' | '4' | 'supp4' | 'supp5' | 'supp6' | 'supp7' | 'supp8' | 'supp9' | 'supp10' | 'supp11' | 'supp12' | 'supp15' |'supp16' |'supp18':
+        case '3_1' | '3_2' |'3_3' |'3_4' |'3_5' |'3_6' | '4' | 'supp4' | 'supp5' | 'supp6' | 'supp7' | 'supp8' | 'supp9' | 'supp10' | 'supp11' | 'supp12' | 'supp15' | 'supp16' | 'supp17' |'supp18':
             for config_file in config_list:
                 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
                 data_plot(config=config, config_file=config_file, epoch_list=epoch_list, device=device)

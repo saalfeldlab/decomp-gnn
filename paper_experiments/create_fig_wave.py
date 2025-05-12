@@ -151,7 +151,7 @@ if not os.path.exists(f'log/try_{config_file}'):
 data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]
-# Finally, we generate the figures that are shown in Supplementary Figure 7.
+# Finally, we generate the figures that are shown in Supplementary Figure 15.
 # The results of the GNN post-analysis are saved into 'decomp-gnn/paper_experiments/log/try_wave_slit/results'.
 # %%
 #| echo: true

@@ -122,9 +122,9 @@ model = RDModel(
 
 generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', erase=False, save=True, step=50)
 train_kwargs = dict(device=device, erase=True)
-test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1)
+test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=20)
 
-data_generate_mes(config, model , **generate_kwargs)
+# data_generate_mesh(config, model , **generate_kwargs)
 
 # %%
 #| fig-cap: "Initial configuration of the simulation. There are 1E4 nodes. The colors indicate the node vector values."
@@ -149,4 +149,15 @@ if not os.path.exists(f'log/try_{config_file}'):
 # The model that has been trained in the previous step is used to generate the rollouts.
 # The rollout visualization can be found in `paper_experiments/log/try_RD_RPS/tmp_recons`.
 # %%
-data_test(config, config_file, **test_kwargs)
+# data_test(config, config_file, **test_kwargs)
+
+
+# %% [markdown]
+# Finally, we generate the figures that are shown in Supplementary Figure 17.
+# The results of the GNN post-analysis are saved into 'decomp-gnn/paper_experiments/log/try_RD_RPS/results'.
+# %%
+#| echo: true
+#| output: false
+config_list, epoch_list = get_figures(figure_id, device=device)
+
+
