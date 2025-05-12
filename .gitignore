@@ -5,6 +5,8 @@ paper_experiments/log
 # Exclude all notebooks (only py:percent files should be committed)
 *.ipynb
 *.quarto_ipynb
+*.png
+*.sh
 site_libs/
 
 # Byte-compiled / optimized / DLL files

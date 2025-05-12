@@ -151,7 +151,6 @@ load_and_display('log/try_arbitrary_3/results/embedding_arbitrary_3_20.tif')
 #| fig-cap: "Learned interaction functions (x3)"
 load_and_display('log/try_arbitrary_3/results/func_all_arbitrary_3_20.tif')
 
-
 # %%
 #| fig-cap: "GNN rollout inference at frame 250"
 load_and_display('log/try_arbitrary_3/tmp_recons/Fig_arbitrary_3_249.tif')

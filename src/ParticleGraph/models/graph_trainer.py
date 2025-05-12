@@ -21,7 +21,7 @@ from ParticleGraph.models.utils import *
 from ParticleGraph.models.Siren_Network import *
 from ParticleGraph.models.Ghost_Particles import *
 from ParticleGraph.sparsify import EmbeddingCluster, sparsify_cluster, sparsify_cluster_state
-
+from scipy.spatial import Delaunay
 
 def data_train(
         config: SimulationConfig,
