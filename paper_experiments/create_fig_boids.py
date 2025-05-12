@@ -155,12 +155,12 @@ if not os.path.exists(f'log/try_{config_file}'):
 # "paper_experiments/log/try_boids_16_256/tmp_training/function"
 #
 # The model that has been trained in the previous step is used to generate the rollouts.
-# The rollout visualization can be found in `paper_experiments/log/try_boids_16_256/tmp_recons`.
 # %%
 data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]
 # Finally, we generate figures from the post-analysis of the GNN.
+# The results of the GNN post-analysis are saved into 'decomp-gnn/paper_experiments/log/try_boids_16_256/results'.
 # %%
 #| echo: true
 #| output: false

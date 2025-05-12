@@ -21,6 +21,7 @@ from ParticleGraph.sparsify import *
 from ParticleGraph.utils import to_numpy, CustomColorMap
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.models.Siren_Network import *
+from ParticleGraph.generators.utils import *
 import torch_geometric.data as data
 
 class Interaction_Particle_extract(MessagePassing):
@@ -2056,7 +2057,7 @@ def plot_wave(config_file, epoch_list, log_dir, logger, cc, device):
     n_frames = config.simulation.n_frames
     n_runs = config.training.n_runs
 
-    hnorm = torch.load(f'./log/try_{config_file}/hnorm.pt', map_location=device).to(device, weights_only=True)
+    hnorm = torch.load(f'./log/try_{config_file}/hnorm.pt', map_location=device, weights_only=True)
 
     x_mesh_list = []
     y_mesh_list = []
@@ -3410,13 +3411,14 @@ def get_figures(index, *, device):
         case 'supp14':
             config_list = ['boids_16_noise_0_3', 'boids_16_noise_0_4', 'boids_16_dropout_10', 'boids_16_dropout_10_no_ghost']
         case 'supp15':
-            config_list = ['wave_slit_ter']
-            epoch_list = ['20', '0_1600', '1', '5']
+            config_list = ['wave_slit']
+            epoch_list = ['20']
         case 'supp16':
             config_list = ['wave_boat_ter']
             epoch_list = ['20', '0_1600', '1', '5']
         case 'supp17':
             config_list = ['RD_RPS']
+            epoch_list = ['20']
         case 'supp18':
             config_list = ['signal_N_100_2_a']
         case _:

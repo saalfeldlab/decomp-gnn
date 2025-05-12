@@ -162,13 +162,12 @@ data_train(config, config_file, **train_kwargs)
 
 # %% [markdown]
 # The model that has been trained in the previous step is used to generate the rollouts.
-# The rollout visualization can be found in `paper_experiments/log/try_arbitrary_3_field_video/tmp_recons`.
 # %%
 data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]
 # Finally, we generate the figures that are shown in Figure 4.
-# The resulsts of the GNN post-analysis are saved into 'decomp-gnn/paper_experiments/log/try_arbitrary_3_field_video/results'.
+# The results of the GNN post-analysis are saved into 'decomp-gnn/paper_experiments/log/try_arbitrary_3_field_video/results'.
 # %%
 #| echo: true
 #| output: false
