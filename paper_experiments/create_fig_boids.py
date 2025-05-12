@@ -190,4 +190,10 @@ load_and_display('log/try_boids_16_256/results/separation_boids_16_256_20.tif')
 #| fig-cap: "GNN rollout inference at frame 7950"
 load_and_display('log/try_boids_16_256/tmp_recons/Fig_boids_16_256_7950.tif')
 
+# %% [markdown]
+# All frames can be found in "decomp-gnn/paper_experiments/log/try_boids_16_256/tmp_recons/"
+# %%
+#| echo: true
+#| output: false
+
 

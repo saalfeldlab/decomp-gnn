@@ -115,7 +115,7 @@ generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='c
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=20, save_velocity=True)
 
-# data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
+data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %%
 #| fig-cap: "Initial configuration of the simulation. There are 960 particles. The colors indicate different masses."
@@ -124,7 +124,6 @@ load_and_display('graphs_data/graphs_gravity_16/Fig/Fig_0_0.tif')
 # %%
 #| fig-cap: "Frame 1800 out of 2000"
 load_and_display('graphs_data/graphs_gravity_16/Fig/Fig_0_1800.tif')
-
 
 # %% [markdown]
 # The GNN model (see src/PArticleGraph/models/Interaction_Particle.py) is trained and tested.
@@ -155,25 +154,23 @@ data_test(config, config_file, **test_kwargs)
 config_list, epoch_list = get_figures(figure_id, device=device)
 
 # %%
-#| fig-cap: "Learned latent vectors (x4800)"
-load_and_display('log/try_gravity_16/results/first_embedding_boids_16_256_20.tif')
+#| fig-cap: "Learned latent vectors (x960)"
+load_and_display('log/try_gravity_16/results/first_embedding_gravity_16_20.tif')
 
 # %%
 #| fig-cap: "Learned interaction functions (x16)"
-load_and_display('log/try_gravity_16/results/func_dij_boids_16_256_20.tif')
+load_and_display('log/try_gravity_16/results/func_all_gravity_16_20.tif')
 
 # %%
-#| fig-cap: "Learned cohesion parameters"
-load_and_display('log/try_gravity_16/results/cohesion_boids_16_256_20.tif')
+#| fig-cap: "Learned masses (x16)"
+load_and_display('log/try_gravity_16/results/mass_gravity_16.tif')
 
 # %%
-#| fig-cap: "Learned alignment parameters"
-load_and_display('log/try_gravity_16/results/alignment_boids_16_256_20.tif')
+#| fig-cap: "GNN rollout inference at frame 1980"
+load_and_display('log/try_gravity_16/tmp_recons/Fig_gravity_16_1980.tif')
 
+# %% [markdown]
+# All frames can be found in "decomp-gnn/paper_experiments/log/try_gravity_16/tmp_recons/"
 # %%
-#| fig-cap: "Learned separation parameters"
-load_and_display('log/try_gravity_16/results/separation_boids_16_256_20.tif')
-
-# %%
-#| fig-cap: "GNN rollout inference at frame 7950"
-load_and_display('log/try_gravity_16/tmp_recons/Fig_boids_16_256_7950.tif')
+#| echo: true
+#| output: false

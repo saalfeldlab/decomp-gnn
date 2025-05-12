@@ -198,3 +198,9 @@ load_and_display('log/try_arbitrary_3_field_video/results/video/field/reconstruc
 # %%
 #| fig-cap: "Comparison betwween true and learned hidden field values"
 load_and_display('log/try_arbitrary_3_field_video/results/cues_scatter_20_0.tif')
+
+# %% [markdown]
+# All frames can be found in "decomp-gnn/paper_experiments/log/try_arbitrary_3_field_video/tmp_recons/"
+# %%
+#| echo: true
+#| output: false
