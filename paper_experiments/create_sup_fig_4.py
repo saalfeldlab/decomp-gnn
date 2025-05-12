@@ -6,7 +6,7 @@
 #   - Particles
 # execute:
 #   echo: false
-# image: ""
+# image: "create_supp_fig_4_files/figure-html/cell-supp_fig4-output-1.png"
 # ---
 
 # %% [markdown]
@@ -124,9 +124,9 @@ def bc_dpos(x):
 p = torch.squeeze(torch.tensor(config.simulation.params))
 model = BoidsModel(aggr_type=config.graph_model.aggr_type, p=torch.squeeze(p), bc_dpos=bc_dpos, dimension=config.simulation.dimension)
 
-generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', alpha=1, erase=True, save=True, step=10)
+generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', alpha=1, erase=True, save=True, step=100)
 train_kwargs = dict(device=device, erase=True)
-test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
+test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=10, save_velocity=True)
 
 data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
@@ -149,9 +149,9 @@ if not os.path.exists(f'log/try_{config_file}'):
     data_train(config, config_file, **train_kwargs)
 
 # %% [markdown]
-# During training the embedding is saved in
+# During training the plot of the embedding are saved in
 # "paper_experiments/log/try_boids_16_256/tmp_training/embedding"
-# The plot of the pairwise interactions is saved in
+# The plot of the pairwise interactions are saved in
 # "paper_experiments/log/try_boids_16_256/tmp_training/function"
 #
 # The model that has been trained in the previous step is used to generate the rollouts.

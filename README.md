@@ -26,11 +26,8 @@ Then, you should be able to import all the modules from the package in python:
 from ParticleGraph import *
 ```
 
-To create the paper's figures run the scripts in paper_experiments.
+To create the paper's figures run the scripts in decomp_gnn/paper_experiments.
 
-This create folder of data in paper_experiments/graphs_data.
-
-Time-lapse movies can be found in paper_experiments/graphs_data/Fig.
 
 
 ### Citation

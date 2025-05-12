@@ -6,7 +6,7 @@
 #   - Particles
 # execute:
 #   echo: false
-# image: ""
+# image: "create_fig_4_files/figure-html/cell-fig4-output-1.png"
 # ---
 
 # %% [markdown]
@@ -31,6 +31,7 @@ from ParticleGraph.generators import data_generate_particle_field
 from ParticleGraph.models import data_train, data_test
 from ParticleGraph.plotting import get_figures, load_and_display
 from ParticleGraph.utils import set_device, to_numpy
+
 
 # %% [markdown]
 # First, we load the configuration file and set the device.
@@ -134,9 +135,9 @@ model = ParticleField(
 
 generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', alpha=1, erase=True, save=True, step=20)
 train_kwargs = dict(device=device, erase=True)
-test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='2_0', run=0, step=20, save_velocity=True)
+test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=20, save_velocity=True)
 
-# data_generate_particle_field(config, model, bc_pos, bc_dpos, **generate_kwargs)
+data_generate_particle_field(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %%
 #| fig-cap: "Frame 100. The orange, blue, and green particles represent the three different particle types."
@@ -150,13 +151,14 @@ load_and_display('graphs_data/graphs_arbitrary_3_field_video/Fig/Arrow_0_100.tif
 # The GNN model (see src/PArticleGraph/models/Interaction_Particle.py) is trained and tested.
 # Since we ship the trained model with the repository, this step can be skipped if desired.
 #
-# During training the embedding vizualization is saved in `paper_experiments/log/try_arbitrary_3_field_video/tmp_training/embedding`.
-# The interaction functions are saved in `function` and the hidden field in 'field'.
+# During training the plots of the embedding are saved in
+# `paper_experiments/log/try_arbitrary_3_field_video/tmp_training/embedding`.
+# The plots of the interaction functions are saved in `function` and the hidden field in 'field'.
 # %%
 #| echo: true
 #| output: false
-# if not os.path.exists(f'log/try_{config_file}'):
-data_train(config, config_file, **train_kwargs)
+if not os.path.exists(f'log/try_{config_file}'):
+    data_train(config, config_file, **train_kwargs)
 
 # %% [markdown]
 # The model that has been trained in the previous step is used to generate the rollouts.
@@ -165,29 +167,34 @@ data_train(config, config_file, **train_kwargs)
 data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]
-# Finally, we generate the figures that are shown in Figure 3.
+# Finally, we generate the figures that are shown in Figure 4.
+# The resulsts of the GNN post-analysis are saved into 'decomp-gnn/paper_experiments/log/try_arbitrary_3_field_video/results'.
 # %%
 #| echo: true
 #| output: false
 config_list, epoch_list = get_figures(figure_id, device=device)
 
 # %%
-#| fig-cap: "Initial configuration of the test training dataset. There are 4800 particles. The orange, blue, and green particles represent the three different particle types."
-load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_0.tif')
-
-# %%
-#| fig-cap: "Final configuration at frame 250"
-load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_250.tif')
-
 # %%
 #| fig-cap: "Learned latent vectors (x4800)"
-load_and_display('log/try_arbitrary_3/results/embedding_arbitrary_3_20.tif')
+load_and_display('log/try_arbitrary_3_field_video/results/first_embedding_arbitrary_3_field_video_20_0.tif')
 
 # %%
 #| fig-cap: "Learned interaction functions (x3)"
-load_and_display('log/try_arbitrary_3/results/func_all_arbitrary_3_20.tif')
-
+load_and_display('log/try_arbitrary_3_field_video/results/func_all_arbitrary_3_field_video_20_0.tif')
 
 # %%
-#| fig-cap: "GNN rollout inference at frame 250"
-load_and_display('log/try_arbitrary_3/tmp_recons/Fig_arbitrary_3_249.tif')
+#| fig-cap: "UMAP projection of the learned interaction functions (x3)"
+load_and_display('log/try_arbitrary_3_field_video/results/UMAP_arbitrary_3_field_video_20_0.tif')
+
+# %%
+#| fig-cap: "GNN rollout inference at frame 100"
+load_and_display('log/try_arbitrary_3_field_video/tmp_recons/Fig_arbitrary_3_field_video_100.tif')
+
+# %%
+#| fig-cap: "Reconstructed field at frame 100"
+load_and_display('log/try_arbitrary_3_field_video/results/video/field/reconstructed_field_20_0_100.tif')
+
+# %%
+#| fig-cap: "Comparison betwween true and learned hidden field values"
+load_and_display('log/try_arbitrary_3_field_video/results/cues_scatter_20_0.tif')

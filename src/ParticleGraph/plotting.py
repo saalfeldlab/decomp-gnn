@@ -20,7 +20,7 @@ from ParticleGraph.models.utils import *
 from ParticleGraph.sparsify import *
 from ParticleGraph.utils import to_numpy, CustomColorMap
 from ParticleGraph.config import ParticleGraphConfig
-
+from ParticleGraph.models.Siren_Network import *
 
 class Interaction_Particle_extract(MessagePassing):
     """Interaction Network as proposed in this paper:
@@ -2345,7 +2345,7 @@ def plot_particle_field(config_file, epoch_list, log_dir, logger, cc, device):
     mask_mesh = mask_mesh.repeat(batch_size, 1)
 
     x_mesh = x_mesh_list[0][0].clone().detach()
-    i0 = imread(f'graphs_data/{node_value_map}')
+    i0 = imread(f'../ressources/{node_value_map}')
     if has_video:
         i0 = i0[0]
         target = i0[(to_numpy(x_mesh[:, 2]) * 100).astype(int), (to_numpy(x_mesh[:, 1]) * 100).astype(int)]
@@ -2467,15 +2467,15 @@ def plot_particle_field(config_file, epoch_list, log_dir, logger, cc, device):
 
             case 'siren_with_time' | 'siren':
 
-                os.makedirs(f"./{log_dir}/results/rotation", exist_ok=True)
-                os.makedirs(f"./{log_dir}/results/rotation/generated1", exist_ok=True)
-                os.makedirs(f"./{log_dir}/results/rotation/generated2", exist_ok=True)
-                os.makedirs(f"./{log_dir}/results/rotation/target", exist_ok=True)
-                os.makedirs(f"./{log_dir}/results/rotation/field", exist_ok=True)
+                os.makedirs(f"./{log_dir}/results/video", exist_ok=True)
+                os.makedirs(f"./{log_dir}/results/video/generated1", exist_ok=True)
+                os.makedirs(f"./{log_dir}/results/video/generated2", exist_ok=True)
+                os.makedirs(f"./{log_dir}/results/video/target", exist_ok=True)
+                os.makedirs(f"./{log_dir}/results/video/field", exist_ok=True)
                 s_p = 100
 
                 x_mesh = x_mesh_list[0][0].clone().detach()
-                i0 = imread(f'graphs_data/{node_value_map}')
+                i0 = imread(f'../ressources/{node_value_map}')
 
                 print('Output per frame ...')
 
@@ -3465,6 +3465,7 @@ def get_figures(index, *, device):
             config_list = ['arbitrary_64']
         case '4':
             config_list = ['arbitrary_3_field_video']
+            epoch_list = ['4_0']
         case 'supp1':
             config_list = ['arbitrary_3']
             epoch_list= ['0_0', '0_200', '0_1000', '20']

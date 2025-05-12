@@ -6,7 +6,7 @@
 #   - Particles
 # execute:
 #   echo: false
-# image: "create_fig"
+# image: "create_supp_fig_15_files/figure-html/cell-supp_fig15-output-1.png"
 # ---
 
 # %% [markdown]
