@@ -1,6 +1,6 @@
 # %% [markdown]
 # ---
-# title: Boids system with 16 different particle types
+# title: Boids system
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles

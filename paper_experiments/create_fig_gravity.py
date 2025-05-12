@@ -1,12 +1,12 @@
 # %% [markdown]
 # ---
-# title: Boids system with 16 different particle types
+# title: Gravity-like system
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles
 # execute:
 #   echo: false
-# image: "create_supp_fig_7_files/figure-html/cell-supp_fig7-output-1.png"
+# image: "create_fig_gravity_files/figure-html/cell-gravity-output-1.png"
 # ---
 
 # %% [markdown]
@@ -100,9 +100,9 @@ def bc_dpos(x):
 # %% [markdown]
 # The training data is generated with the above Pytorch Geometric model
 #
-# Vizualizations of the particle motions can be found in "decomp-gnn/paper_experiments/graphs_data/graphs_boids_16_256/"
+# Vizualizations of the particle motions can be found in "decomp-gnn/paper_experiments/graphs_data/gravity_16/"
 #
-# If the simulation is too large, you can decrease n_particles (multiple of 16) in "boids_16_256.yaml"
+# If the simulation is too large, you can decrease n_particles (multiple of 16) in "gravity_16.yaml"
 #
 # %%
 #| echo: true
@@ -113,9 +113,9 @@ model = GravityModel(aggr_type=config.graph_model.aggr_type, p=torch.squeeze(p),
 
 generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', alpha=1, erase=True, save=True, step=10)
 train_kwargs = dict(device=device, erase=True)
-test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
+test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=20, save_velocity=True)
 
-data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
+# data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %%
 #| fig-cap: "Initial configuration of the simulation. There are 960 particles. The colors indicate different masses."
@@ -155,21 +155,25 @@ data_test(config, config_file, **test_kwargs)
 config_list, epoch_list = get_figures(figure_id, device=device)
 
 # %%
-#| fig-cap: "Initial configuration of the test training dataset. There are 4800 particles. The orange, blue, and green particles represent the three different particle types."
-load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_0.tif')
-
-# %%
-#| fig-cap: "Final configuration at frame 250"
-load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_250.tif')
-
-# %%
 #| fig-cap: "Learned latent vectors (x4800)"
-load_and_display('log/try_arbitrary_3/results/embedding_arbitrary_3_20.tif')
+load_and_display('log/try_gravity_16/results/first_embedding_boids_16_256_20.tif')
 
 # %%
-#| fig-cap: "Learned interaction functions (x3)"
-load_and_display('log/try_arbitrary_3/results/func_all_arbitrary_3_20.tif')
+#| fig-cap: "Learned interaction functions (x16)"
+load_and_display('log/try_gravity_16/results/func_dij_boids_16_256_20.tif')
 
 # %%
-#| fig-cap: "GNN rollout inference at frame 250"
-load_and_display('log/try_arbitrary_3/tmp_recons/Fig_arbitrary_3_249.tif')
+#| fig-cap: "Learned cohesion parameters"
+load_and_display('log/try_gravity_16/results/cohesion_boids_16_256_20.tif')
+
+# %%
+#| fig-cap: "Learned alignment parameters"
+load_and_display('log/try_gravity_16/results/alignment_boids_16_256_20.tif')
+
+# %%
+#| fig-cap: "Learned separation parameters"
+load_and_display('log/try_gravity_16/results/separation_boids_16_256_20.tif')
+
+# %%
+#| fig-cap: "GNN rollout inference at frame 7950"
+load_and_display('log/try_gravity_16/tmp_recons/Fig_boids_16_256_7950.tif')

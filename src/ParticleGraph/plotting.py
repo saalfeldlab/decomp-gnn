@@ -1236,73 +1236,69 @@ def plot_gravity(config_file, epoch_list, log_dir, logger, device):
         y_data = popt_list[:, 0]
         lin_fit, lin_fitv = curve_fit(linear_model, x_data, y_data)
 
-        if epoch=='20':
+        threshold = 0.4
+        relative_error = np.abs(y_data - x_data) / x_data
+        pos = np.argwhere(relative_error < threshold)
+        pos_outliers = np.argwhere(relative_error > threshold)
 
-            threshold = 0.4
-            relative_error = np.abs(y_data - x_data) / x_data
-            pos = np.argwhere(relative_error < threshold)
-            pos_outliers = np.argwhere(relative_error > threshold)
+        if len(pos)>0:
+            x_data_ = x_data[pos[:, 0]]
+            y_data_ = y_data[pos[:, 0]]
+            lin_fit, lin_fitv = curve_fit(linear_model, x_data_, y_data_)
+            residuals = y_data_ - linear_model(x_data_, *lin_fit)
+            ss_res = np.sum(residuals ** 2)
+            ss_tot = np.sum((y_data - np.mean(y_data_)) ** 2)
+            r_squared = 1 - (ss_res / ss_tot)
+            print(f'R^2$: {np.round(r_squared, 2)}  Slope: {np.round(lin_fit[0], 2)}  outliers: {np.sum(relative_error > threshold)}  ')
+            logger.info(f'R^2$: {np.round(r_squared, 2)}  Slope: {np.round(lin_fit[0], 2)}  outliers: {np.sum(relative_error > threshold)}  ')
 
-            if len(pos)>0:
-                x_data_ = x_data[pos[:, 0]]
-                y_data_ = y_data[pos[:, 0]]
-                lin_fit, lin_fitv = curve_fit(linear_model, x_data_, y_data_)
-                residuals = y_data_ - linear_model(x_data_, *lin_fit)
-                ss_res = np.sum(residuals ** 2)
-                ss_tot = np.sum((y_data - np.mean(y_data_)) ** 2)
-                r_squared = 1 - (ss_res / ss_tot)
-                print(f'R^2$: {np.round(r_squared, 2)}  Slope: {np.round(lin_fit[0], 2)}  outliers: {np.sum(relative_error > threshold)}  ')
-                logger.info(f'R^2$: {np.round(r_squared, 2)}  Slope: {np.round(lin_fit[0], 2)}  outliers: {np.sum(relative_error > threshold)}  ')
+            fig, ax = fig_init()
+            csv_ = []
+            csv_.append(p_list)
+            csv_.append(popt_list[:, 0])
+            plt.plot(p_list, linear_model(x_data, lin_fit[0], lin_fit[1]), color='r', linewidth=4)
+            plt.scatter(p_list, popt_list[:, 0], color='k', s=50, alpha=0.5)
+            plt.scatter(p_list[pos_outliers[:, 0]], popt_list[pos_outliers[:, 0], 0], color='r', s=50)
+            plt.xlabel(r'True mass ', fontsize=64)
+            plt.ylabel(r'Learned mass ', fontsize=64)
+            plt.xlim([0, 5.5])
+            plt.ylim([0, 5.5])
+            plt.tight_layout()
+            plt.savefig(f"./{log_dir}/results/mass_{config_file}.tif", dpi=170)
+            # csv_ = np.array(csv_)
+            # np.save(f"./{log_dir}/results/mass_{config_file}.npy", csv_)
+            # np.savetxt(f"./{log_dir}/results/mass_{config_file}.txt", csv_)
+            plt.close()
 
-                fig, ax = fig_init()
-                csv_ = []
-                csv_.append(p_list)
-                csv_.append(popt_list[:, 0])
-                plt.plot(p_list, linear_model(x_data, lin_fit[0], lin_fit[1]), color='r', linewidth=4)
-                plt.scatter(p_list, popt_list[:, 0], color='k', s=50, alpha=0.5)
-                plt.scatter(p_list[pos_outliers[:, 0]], popt_list[pos_outliers[:, 0], 0], color='r', s=50)
-                plt.xlabel(r'True mass ', fontsize=64)
-                plt.ylabel(r'Learned mass ', fontsize=64)
-                plt.xlim([0, 5.5])
-                plt.ylim([0, 5.5])
-                plt.tight_layout()
-                plt.savefig(f"./{log_dir}/results/mass_{config_file}.tif", dpi=170)
-                # csv_ = np.array(csv_)
-                # np.save(f"./{log_dir}/results/mass_{config_file}.npy", csv_)
-                # np.savetxt(f"./{log_dir}/results/mass_{config_file}.txt", csv_)
-                plt.close()
+            relative_error = np.abs(popt_list[:, 0] - p_list.squeeze()) / p_list.squeeze() * 100
 
-                relative_error = np.abs(popt_list[:, 0] - p_list.squeeze()) / p_list.squeeze() * 100
-
-                print(f'mass relative error: {np.round(np.mean(relative_error), 2)}+/-{np.round(np.std(relative_error), 2)}')
-                print(f'mass relative error wo outliers: {np.round(np.mean(relative_error[pos[:, 0]]), 2)}+/-{np.round(np.std(relative_error[pos[:, 0]]), 2)}')
-                logger.info(f'mass relative error: {np.round(np.mean(relative_error), 2)}+/-{np.round(np.std(relative_error), 2)}')
-                logger.info(f'mass relative error wo outliers: {np.round(np.mean(relative_error[pos[:, 0]]), 2)}+/-{np.round(np.std(relative_error[pos[:, 0]]), 2)}')
+            print(f'mass relative error: {np.round(np.mean(relative_error), 2)}+/-{np.round(np.std(relative_error), 2)}')
+            print(f'mass relative error wo outliers: {np.round(np.mean(relative_error[pos[:, 0]]), 2)}+/-{np.round(np.std(relative_error[pos[:, 0]]), 2)}')
+            logger.info(f'mass relative error: {np.round(np.mean(relative_error), 2)}+/-{np.round(np.std(relative_error), 2)}')
+            logger.info(f'mass relative error wo outliers: {np.round(np.mean(relative_error[pos[:, 0]]), 2)}+/-{np.round(np.std(relative_error[pos[:, 0]]), 2)}')
 
 
-                fig, ax = fig_init()
-                csv_ = []
-                csv_.append(p_list.squeeze())
-                csv_.append(-popt_list[:, 1])
-                csv_ = np.array(csv_)
-                plt.plot(p_list, linear_model(x_data, lin_fit[0], lin_fit[1]), color='r', linewidth=4)
-                plt.scatter(p_list, -popt_list[:, 1], color='k', s=50, alpha=0.5)
-                plt.xlim([0, 5.5])
-                plt.ylim([-4, 0])
-                plt.xlabel(r'True mass', fontsize=78)
-                plt.ylabel(r'Learned exponent', fontsize=78)
-                plt.tight_layout()
-                plt.savefig(f"./{log_dir}/results/exponent_{config_file}.tif", dpi=170)
-                np.save(f"./{log_dir}/results/exponent_{config_file}.npy", csv_)
-                np.savetxt(f"./{log_dir}/results/exponent_{config_file}.txt", csv_)
-                plt.close()
+            fig, ax = fig_init()
+            csv_ = []
+            csv_.append(p_list.squeeze())
+            csv_.append(-popt_list[:, 1])
+            csv_ = np.array(csv_)
+            plt.plot(p_list, linear_model(x_data, lin_fit[0], lin_fit[1]), color='r', linewidth=4)
+            plt.scatter(p_list, -popt_list[:, 1], color='k', s=50, alpha=0.5)
+            plt.xlim([0, 5.5])
+            plt.ylim([-4, 0])
+            plt.xlabel(r'True mass', fontsize=78)
+            plt.ylabel(r'Learned exponent', fontsize=78)
+            plt.tight_layout()
+            plt.savefig(f"./{log_dir}/results/exponent_{config_file}.tif", dpi=170)
+            np.save(f"./{log_dir}/results/exponent_{config_file}.npy", csv_)
+            np.savetxt(f"./{log_dir}/results/exponent_{config_file}.txt", csv_)
+            plt.close()
 
-                print(f'exponent: {np.round(np.mean(-popt_list[:, 1]), 2)}+/-{np.round(np.std(-popt_list[:, 1]), 2)}')
-                logger.info(f'mass relative error: {np.round(np.mean(-popt_list[:, 1]), 2)}+/-{np.round(np.std(-popt_list[:, 1]), 2)}')
+            print(f'exponent: {np.round(np.mean(-popt_list[:, 1]), 2)}+/-{np.round(np.std(-popt_list[:, 1]), 2)}')
+            logger.info(f'mass relative error: {np.round(np.mean(-popt_list[:, 1]), 2)}+/-{np.round(np.std(-popt_list[:, 1]), 2)}')
 
-            else:
-                print('no fit')
-                logger.info('no fit')
+
 
             if os.path.exists(f"./{log_dir}/results/coeff_pysrr.npy"):
                 popt_list = np.load(f"./{log_dir}/results/coeff_pysrr.npy")
@@ -3470,7 +3466,7 @@ def get_figures(index, *, device):
             epoch_list = ['20']
         case 'supp7':
             config_list = ['gravity_16']
-            epoch_list= ['0_0', '0_5000', '1_0', '20']
+            epoch_list= ['20']
         case 'supp8':
             config_list = ['gravity_16', 'gravity_continuous', 'Coulomb_3_256']
         case 'supp9':
