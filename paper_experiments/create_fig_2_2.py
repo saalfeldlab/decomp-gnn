@@ -11,7 +11,7 @@
 
 # %% [markdown]
 # This script creates the second column of paper's Figure 2.
-# Simulation of gravity-like system, 960 particles, 16 different masses.
+# Simulation of a gravity-like system, 960 particles, 16 different masses.
 
 # %%
 #| output: false

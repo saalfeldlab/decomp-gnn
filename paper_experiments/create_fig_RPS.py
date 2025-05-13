@@ -149,7 +149,9 @@ if not os.path.exists(f'log/try_{config_file}'):
 # The model that has been trained in the previous step is used to generate the rollouts.
 # The rollout visualization can be found in `paper_experiments/log/try_RD_RPS/tmp_recons`.
 # %%
-# data_test(config, config_file, **test_kwargs)
+#| echo: true
+#| output: false
+data_test(config, config_file, **test_kwargs)
 
 
 # %% [markdown]

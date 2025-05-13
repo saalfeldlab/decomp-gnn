@@ -43,7 +43,7 @@ config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
 # %% [markdown]
-z
+# The following model is used to simulate the attraction-repulsion system with PyTorch Geometric.
 #
 # %%
 #| echo: true
@@ -96,6 +96,7 @@ def bc_dpos(x):
 # %%
 #| echo: true
 #| output: false
+
 p = torch.squeeze(torch.tensor(config.simulation.params))
 sigma = config.simulation.sigma
 model = AttractionRepulsionModel(
@@ -112,7 +113,8 @@ test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, 
 data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %% [markdown]
-# The GNN model (see src/PArticleGraph/models/Interaction_Particle.py) is trained and tested.
+# The GNN model (see src/ParticleGraph/models/Interaction_Particle.py) is trained and tested.
+#
 # Since we ship the trained model with the repository, this step can be skipped if desired.
 #
 # %%
@@ -125,10 +127,12 @@ if not os.path.exists(f'log/try_{config_file}'):
 # The model that has been trained in the previous step is used to generate the rollouts.
 # The rollout visualization can be found in `paper_experiments/log/try_arbitrary_3_continuous/tmp_recons`.
 # %%
+#| echo: true
+#| output: false
 data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]
-# # Finally, we generate the figures that are shown in Figure 3.
+# Finally, we generate the figures that are shown in Figure 3.
 # %%
 #| echo: true
 #| output: false

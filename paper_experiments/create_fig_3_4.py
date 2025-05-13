@@ -111,7 +111,8 @@ train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
 
 # %% [markdown]
-# The GNN model (see src/PArticleGraph/models/Interaction_Particle.py) is trained and tested.
+# The GNN model (see src/ParticleGraph/models/Interaction_Particle.py) is trained and tested.
+#
 # Since we ship the trained model with the repository, this step can be skipped if desired.
 #
 # %%
@@ -125,6 +126,8 @@ if not os.path.exists(f'log/try_{config_file}'):
 # The model that has been trained in the previous step is used to generate the rollouts.
 # The rollout visualization can be found in `paper_experiments/log/try_arbitrary_16/tmp_recons`.
 # %%
+#| echo: true
+#| output: false
 data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]

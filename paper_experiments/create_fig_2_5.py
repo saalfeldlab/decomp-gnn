@@ -77,12 +77,6 @@ class WaveModel(pyg.nn.MessagePassing):
     def forward(self, data):
         x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
 
-        # if self.coeff == []:
-        #     particle_type = to_numpy(x[:, 5])
-        #     c = self.c[particle_type]
-        #     c = c[:, None]
-        # else:
-
         c = self.coeff
         u = x[:, 6:7]
 
@@ -92,11 +86,6 @@ class WaveModel(pyg.nn.MessagePassing):
         self.laplacian_u = laplacian_u
 
         return dd_u
-
-        pos = to_numpy(data.x)
-        deg = pyg_utils.degree(edge_index[0], data.num_nodes)
-        plt.ion()
-        plt.scatter(pos[:,1],pos[:,2], s=20, c=to_numpy(deg),vmin=7,vmax=10)
 
     def message(self, u_j, edge_attr):
         L = edge_attr[:,None] * u_j

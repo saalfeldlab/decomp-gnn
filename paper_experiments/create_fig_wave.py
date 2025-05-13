@@ -148,6 +148,8 @@ if not os.path.exists(f'log/try_{config_file}'):
 # %% [markdown]
 # The model that has been trained in the previous step is used to generate the rollouts.
 # %%
+#| echo: true
+#| output: false
 data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]

@@ -13,8 +13,8 @@
 # This script creates the second column of paper's Figure 3.
 # A GNN learns the motion rules of an assymetric attraction-repulsion system
 # The simulation used to train the GNN consists of 4800 particles of three different types.
-# The particles interact with each other according to different attraction-repulsion laws.
-# the interaction functions asymmetrically depend on the types of both particles.
+# The particles interact with each other according to 9 different attraction-repulsion laws.
+# The interaction functions asymmetrically depend on the types of both particles.
 
 
 # %%
@@ -113,7 +113,8 @@ test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, 
 data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %% [markdown]
-# The GNN model (see src/PArticleGraph/models/Interaction_Particle.py) is trained and tested.
+# The GNN model (see src/ParticleGraph/models/Interaction_Particle.py) is trained and tested.
+#
 # Since we ship the trained model with the repository, this step can be skipped if desired.
 #
 # %%
@@ -126,6 +127,8 @@ if not os.path.exists(f'log/try_{config_file}'):
 # The model that has been trained in the previous step is used to generate the rollouts.
 # The rollout visualization can be found in `paper_experiments/log/try_arbitrary_3_3/tmp_recons`.
 # %
+#| echo: true
+#| output: false
 data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]

@@ -86,9 +86,9 @@ class RDModel(pyg.nn.MessagePassing):
 
         d_uvw = laplace_uvw + uvw * (1 - p[:, None] - self.a * uvw[:, [1, 2, 0]])
         # This is equivalent to the nonlinear reaction diffusion equation:
-        #   du = D * laplace_u + u * (1 - p - a * v)
-        #   dv = D * laplace_v + v * (1 - p - a * w)
-        #   dw = D * laplace_w + w * (1 - p - a * u)
+        #   du = c * laplace_u + u * (1 - p - a * v)
+        #   dv = c * laplace_v + v * (1 - p - a * w)
+        #   dw = c * laplace_w + w * (1 - p - a * u)
 
         return d_uvw
 

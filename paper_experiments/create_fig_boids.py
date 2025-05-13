@@ -139,7 +139,8 @@ load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_0.tif')
 load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_7500.tif')
 
 # %% [markdown]
-# The GNN model (see src/PArticleGraph/models/Interaction_Particle.py) is trained and tested.
+# The GNN model (see src/ParticleGraph/models/Interaction_Particle.py) is trained and tested.
+#
 # Since we ship the trained model with the repository, this step can be skipped if desired.
 #
 # %%
@@ -156,6 +157,8 @@ if not os.path.exists(f'log/try_{config_file}'):
 #
 # The model that has been trained in the previous step is used to generate the rollouts.
 # %%
+#| echo: true
+#| output: false
 data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]

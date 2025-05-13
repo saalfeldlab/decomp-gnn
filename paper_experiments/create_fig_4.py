@@ -148,7 +148,8 @@ load_and_display('graphs_data/graphs_arbitrary_3_field_video/Fig/Fig_0_100.tif')
 load_and_display('graphs_data/graphs_arbitrary_3_field_video/Fig/Arrow_0_100.tif')
 
 # %% [markdown]
-# The GNN model (see src/PArticleGraph/models/Interaction_Particle.py) is trained and tested.
+# The GNN model (see src/ParticleGraph/models/Interaction_Particle.py) is trained and tested.
+#
 # Since we ship the trained model with the repository, this step can be skipped if desired.
 #
 # During training the plots of the embedding are saved in
@@ -163,6 +164,8 @@ data_train(config, config_file, **train_kwargs)
 # %% [markdown]
 # The model that has been trained in the previous step is used to generate the rollouts.
 # %%
+#| echo: true
+#| output: false
 data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]

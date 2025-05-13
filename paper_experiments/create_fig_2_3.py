@@ -11,7 +11,7 @@
 
 # %% [markdown]
 # This script creates the third column of paper's Figure 2.
-# Simulation of Coulomb-like: 960 particles, 3 different charges.
+# Simulation of a Coulomb-like system: 960 particles, 3 different charges.
 
 # %%
 #| output: false
