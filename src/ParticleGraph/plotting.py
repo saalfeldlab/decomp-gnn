@@ -3386,7 +3386,6 @@ def get_figures(index, *, device):
             config_list = ['arbitrary_64']
         case '4':
             config_list = ['arbitrary_3_field_video']
-            epoch_list = ['4_0']
         case 'supp1':
             config_list = ['arbitrary_3']
             epoch_list= ['0_0', '0_200', '0_1000', '20']
@@ -3548,15 +3547,15 @@ def get_figures(index, *, device):
                       best_model=20, run=1, step=config.simulation.n_frames // 7, test_simulation=False,
                       sample_embedding=True, device=device)
 
-            for n in range(16):
-                copyfile(f'./config/boids_16_256.yaml', f'./config/boids_16_256_{n}.yaml')
-                config_file = f'boids_16_256_{n}'
-                config = ParticleGraphConfig.from_yaml(f'./config/boids_16_256_{n}.yaml')
-                data_generate(config, device=device, visualize=True, run_vizualized=1, style='no_ticks color', alpha=1, erase=True,
-                              scenario=f'uniform {n}', ratio=4, bSave=True, step=config.simulation.n_frames // 3)
-                data_test(config=config, config_file=config_file, visualize=True, style='no_ticks color', verbose=False,
-                          best_model=20, run=1, step=config.simulation.n_frames // 3, test_simulation=False,
-                          sample_embedding=True, device=device)
+            # for n in range(16):
+            #     copyfile(f'./config/boids_16_256.yaml', f'./config/boids_16_256_{n}.yaml')
+            #     config_file = f'boids_16_256_{n}'
+            #     config = ParticleGraphConfig.from_yaml(f'./config/boids_16_256_{n}.yaml')
+            #     data_generate(config, device=device, visualize=True, run_vizualized=1, style='no_ticks color', alpha=1, erase=True,
+            #                   scenario=f'uniform {n}', ratio=4, bSave=True, step=config.simulation.n_frames // 3)
+            #     data_test(config=config, config_file=config_file, visualize=True, style='no_ticks color', verbose=False,
+            #               best_model=20, run=1, step=config.simulation.n_frames // 3, test_simulation=False,
+            #               sample_embedding=True, device=device)
 
         case 'supp15':
             config = ParticleGraphConfig.from_yaml(f'./config/wave_slit_ter.yaml')

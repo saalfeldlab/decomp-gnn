@@ -1632,7 +1632,66 @@ def data_test(
                 index_particles.append(index)
                 n_particle_types = 3
 
+
+    model, bc_pos, bc_dpos = choose_training_model(config, device)
+    table = PrettyTable(["Modules", "Parameters"])
+    total_params = 0
+    for name, parameter in model.named_parameters():
+        if not parameter.requires_grad:
+            continue
+        param = parameter.numel()
+        table.add_row([name, param])
+        total_params += param
+    if test_simulation:
+        model, bc_pos, bc_dpos = choose_model(config, device=device)
+    else:
+        if has_mesh:
+            mesh_model, bc_pos, bc_dpos = choose_training_model(config, device)
+            state_dict = torch.load(net, map_location=device)
+            mesh_model.load_state_dict(state_dict['model_state_dict'])
+            mesh_model.eval()
+        else:
+            state_dict = torch.load(net, map_location=device)
+            model.load_state_dict(state_dict['model_state_dict'])
+            model.eval()
+            mesh_model = None
+        if has_field:
+            model_f_p = model
+
+            image_width = int(np.sqrt(n_nodes))
+            if has_siren_time:
+                model_f = Siren_Network(image_width=image_width, in_features=3, out_features=1, hidden_features=128,
+                                        hidden_layers=5, outermost_linear=True, device=device, first_omega_0=80,
+                                        hidden_omega_0=80.)
+                net = f'./log/try_{config_file}/models/best_model_f_with_1_graphs_{best_model}.pt'
+                state_dict = torch.load(net, map_location=device)
+                model_f.load_state_dict(state_dict['model_state_dict'])
+                model_f.to(device=device)
+                model_f.eval()
+                table = PrettyTable(["Modules", "Parameters"])
+                total_params = 0
+                for name, parameter in model_f.named_parameters():
+                    if not parameter.requires_grad:
+                        continue
+                    param = parameter.numel()
+                    table.add_row([name, param])
+                    total_params += param
+                if verbose:
+                    print(table)
+                    print(f"Total Trainable Params: {total_params}")
+            else:
+                t = model.field[run].reshape(image_width, image_width)
+                t = torch.rot90(t)
+                t = torch.flipud(t)
+                t = t.reshape(image_width * image_width,1)
+                with torch.no_grad():
+                    model.a = a_.clone().detach()
+                    model.field[run] = t.clone().detach()
+
+
+
     if ratio > 1:
+        first_embedding = model.a[1].clone().detach()
         new_nparticles = int(n_particles * ratio)
         model.a = nn.Parameter(
             torch.tensor(np.ones((n_runs, int(new_nparticles), 2)), device=device, dtype=torch.float32, requires_grad=False))
@@ -1692,60 +1751,7 @@ def data_test(
         print(table)
         print(f"Total Trainable Params: {total_params}")
 
-    model, bc_pos, bc_dpos = choose_training_model(config, device)
-    table = PrettyTable(["Modules", "Parameters"])
-    total_params = 0
-    for name, parameter in model.named_parameters():
-        if not parameter.requires_grad:
-            continue
-        param = parameter.numel()
-        table.add_row([name, param])
-        total_params += param
-    if test_simulation:
-        model, bc_pos, bc_dpos = choose_model(config, device=device)
-    else:
-        if has_mesh:
-            mesh_model, bc_pos, bc_dpos = choose_training_model(config, device)
-            state_dict = torch.load(net, map_location=device)
-            mesh_model.load_state_dict(state_dict['model_state_dict'])
-            mesh_model.eval()
-        else:
-            state_dict = torch.load(net, map_location=device)
-            model.load_state_dict(state_dict['model_state_dict'])
-            model.eval()
-            mesh_model = None
-        if has_field:
-            model_f_p = model
 
-            image_width = int(np.sqrt(n_nodes))
-            if has_siren_time:
-                model_f = Siren_Network(image_width=image_width, in_features=3, out_features=1, hidden_features=128,
-                                        hidden_layers=5, outermost_linear=True, device=device, first_omega_0=80,
-                                        hidden_omega_0=80.)
-                net = f'./log/try_{config_file}/models/best_model_f_with_1_graphs_{best_model}.pt'
-                state_dict = torch.load(net, map_location=device)
-                model_f.load_state_dict(state_dict['model_state_dict'])
-                model_f.to(device=device)
-                model_f.eval()
-                table = PrettyTable(["Modules", "Parameters"])
-                total_params = 0
-                for name, parameter in model_f.named_parameters():
-                    if not parameter.requires_grad:
-                        continue
-                    param = parameter.numel()
-                    table.add_row([name, param])
-                    total_params += param
-                if verbose:
-                    print(table)
-                    print(f"Total Trainable Params: {total_params}")
-            else:
-                t = model.field[run].reshape(image_width, image_width)
-                t = torch.rot90(t)
-                t = torch.flipud(t)
-                t = t.reshape(image_width * image_width,1)
-                with torch.no_grad():
-                    model.a = a_.clone().detach()
-                    model.field[run] = t.clone().detach()
 
     rmserr_list= []
     gloss = SamplesLoss(loss="sinkhorn", p=2, blur=.05)
