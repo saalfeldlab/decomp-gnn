@@ -137,7 +137,7 @@ generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='c
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=20, save_velocity=True)
 
-# data_generate_particle_field(config, model, bc_pos, bc_dpos, **generate_kwargs)
+data_generate_particle_field(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %%
 #| fig-cap: "Frame 100. The orange, blue, and green particles represent the three different particle types."
