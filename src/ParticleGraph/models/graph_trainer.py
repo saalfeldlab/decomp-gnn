@@ -1342,7 +1342,7 @@ def data_train_signal(config, config_file, erase, device):
 
 
     if 'mat' in simulation_config.connectivity_file:
-        mat = scipy.io.loadmat(simulation_config.connectivity_file)
+        mat = scipy.io.loadmat('../ressources/' + simulation_config.connectivity_file)
         adjacency = torch.tensor(mat['A'], device=device)
         adj_t = adjacency > 0
         edge_index = adj_t.nonzero().t().contiguous()

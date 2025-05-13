@@ -36,7 +36,7 @@ plotting:
     arrow_length: 1
 
 training:
-    n_epochs: 1
+    n_epochs: 20
     recursive_loop: 2
     batch_size: 1
     small_init_batch_size: False
