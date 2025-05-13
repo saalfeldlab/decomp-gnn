@@ -1,6 +1,6 @@
 # %% [markdown]
 # ---
-# title: Boids system
+# title: Training GNN on boids (16 types)
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles

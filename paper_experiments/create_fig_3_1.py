@@ -1,6 +1,6 @@
 # %% [markdown]
 # ---
-# title: Attraction-repulsion system with 3 particle types
+# title: Training GNN on attraction-repulsion (3 particle types)
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles

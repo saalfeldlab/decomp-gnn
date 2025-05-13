@@ -1,6 +1,6 @@
 # %% [markdown]
 # ---
-# title: Gravity-like system
+# title: Training GNN on Coulomb-like system
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles

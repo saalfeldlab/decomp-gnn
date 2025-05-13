@@ -1,6 +1,6 @@
 # %% [markdown]
 # ---
-# title: Attraction-repulsion system with continuous pairwise interaction fucntions
+# title: Training GNN on attraction-repulsion (continuous function domain)
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles

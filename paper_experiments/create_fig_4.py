@@ -1,6 +1,6 @@
 # %% [markdown]
 # ---
-# title: Attraction-repulsion system
+# title: Training GNN on attraction-repulsion (hidden field)
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles
