@@ -3,10 +3,10 @@
 # title: Training GNN on wave propagation
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles
+#   - Mesh
 # execute:
 #   echo: false
-# image: "create_fig_wave_files/figure-html/cell-4-output-1.png"
+# image: "create_fig_wave_files/figure-html/cell-7-output-1.png"
 # ---
 
 # %% [markdown]

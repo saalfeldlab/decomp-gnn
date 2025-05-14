@@ -11,7 +11,7 @@
 
 # %% [markdown]
 # This script creates the first column of paper's Figure 2.
-# Simulation of an attraction-repulsion system, 4,800 particles, 3 particle types.
+# Simulation of an attraction-repulsion system, 4800 particles, 3 particle types.
 
 # %%
 #| output: false

@@ -3,7 +3,7 @@
 # title: Reaction-diffusion propagation with different diffusion coefficients
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles
+#   - Mesh
 # execute:
 #   echo: false
 # image: "create_fig_2_6_files/figure-html/cell-10-output-1.png"

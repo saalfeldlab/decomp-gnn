@@ -3,7 +3,7 @@
 # title: Training GNN on signaling
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles
+#   - Signaling
 # execute:
 #   echo: false
 # image: "create_fig_signal_files/figure-html/cell-16-output-1.png"
