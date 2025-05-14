@@ -1765,8 +1765,8 @@ def data_test(
             # errors = errors[errors < percentile_95th]
             # rmserr_95 = torch.sqrt(torch.mean(errors))
             #
-            fig, ax = plt.subplots()
-            plt.scatter(to_numpy(x0[mask_mesh.squeeze(), 6:7]), to_numpy(x[mask_mesh.squeeze(), 6:7]), s=2, c='r')
+            # fig, ax = plt.subplots()
+            # plt.scatter(to_numpy(x0[mask_mesh.squeeze(), 6:7]), to_numpy(x[mask_mesh.squeeze(), 6:7]), s=2, c='r')
             # fig, ax = plt.subplots()
             # errors = (x[mask_mesh.squeeze(), 6:7] - x0[mask_mesh.squeeze(), 6:7]) ** 2
             # plt.plot(to_numpy(torch.sqrt(errors)), c='k')

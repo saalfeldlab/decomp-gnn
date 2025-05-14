@@ -321,7 +321,7 @@ def init_mesh(config, device):
 
     print('Removal of skinny faces ...')
     sleep(0.5)
-    for k in trange(face.shape[0]):
+    for k in range(face.shape[0]):
         # compute edge distances
         x1 = pos[face[k, 0], :]
         x2 = pos[face[k, 1], :]
