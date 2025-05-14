@@ -124,7 +124,7 @@ generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='c
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=20)
 
-# data_generate_mesh(config, model , **generate_kwargs)
+data_generate_mesh(config, model , **generate_kwargs)
 
 # %%
 #| fig-cap: "Initial configuration of the simulation. There are 1E4 nodes. The colors indicate the node vector values."
@@ -162,4 +162,40 @@ data_test(config, config_file, **test_kwargs)
 #| output: false
 config_list, epoch_list = get_figures(figure_id, device=device)
 
+# %%
+# %%
+#| fig-cap: "Learned latent vectors (x1E4)"
+load_and_display('log/try_RD_RPS/results/embedding_RD_RPS_20.tif')
+
+# %%
+#| fig-cap: "Learned map of of node type"
+load_and_display('log/try_RD_RPS/results/labels_map_RD_RPS_cbar.tif')
+
+
+# %%
+#| fig-cap: "Comparison between true and learned coefficients of diffusion"
+load_and_display('log/try_RD_RPS/results/scatter_20.tif')
+
+
+# %%
+#| fig-cap: "Comparison between true (blue) and learned (orange) polynomial coefficients of the first governing equation"
+load_and_display('log/try_RD_RPS/results/first_equation_20.tif')
+
+# %%
+#| fig-cap: "Comparison between true (blue) and learned (orange) polynomial coefficients of the second governing equation"
+load_and_display('log/try_RD_RPS/results/second_equation_20.tif')
+
+# %%
+#| fig-cap: "Comparison between true (blue) and learned (orange) polynomial coefficients of the third gooverning equation"
+load_and_display('log/try_RD_RPS/results/third_equation_20.tif')
+
+# %%
+#| fig-cap: "GNN rollout inference at frame 3980"
+load_and_display('log/try_RD_RPS/tmp_recons/Fig_RD_RPS_3980.tif')
+
+# %% [markdown]
+# All frames can be found in "decomp-gnn/paper_experiments/log/try_RD_RPS/tmp_recons/"
+# %%
+#| echo: true
+#| output: false
 
