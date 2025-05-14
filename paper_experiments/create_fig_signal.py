@@ -1,12 +1,12 @@
 # %% [markdown]
 # ---
-# title: Signaling system with 998 nodes
+# title: Training GNN on signaling
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles
 # execute:
 #   echo: false
-# image: "create_fig_2_7_files/figure-html/cell-10-output-1.png"
+# image: "create_fig_signal_files/figure-html/cell-4-output-1.png"
 # ---
 
 # %% [markdown]
@@ -37,6 +37,7 @@ from ParticleGraph.utils import set_device, to_numpy
 #| echo: true
 #| output: false
 config_file = 'signal_N_100_2'
+figure_id = 'supp18'
 config = ParticleGraphConfig.from_yaml(f'./config/{config_file}.yaml')
 device = set_device("auto")
 
@@ -114,9 +115,9 @@ model = SignalingNetwork(aggr_type=config.graph_model.aggr_type, p=torch.squeeze
 
 generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', alpha=1, erase=True, save=True, step=10)
 train_kwargs = dict(device=device, erase=True)
-test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=1, save_velocity=True)
+test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='7', run=0, step=10, save_velocity=True)
 
-# data_generate_synaptic(config, model, **generate_kwargs)
+data_generate_synaptic(config, model, **generate_kwargs)
 
 
 # %% [markdown]
@@ -128,19 +129,19 @@ test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, 
 
 # %%
 #| fig-cap: "Initial configuration of the simulation. There are 998 nodes. The colors indicate the node scalar values."
-# load_and_display('graphs_data/graphs_signal_N_100_2/Fig/Fig_0_10000.tif')
+load_and_display('graphs_data/graphs_signal_N_100_2/Fig/Fig_0_10000.tif')
 
 # %%
 #| fig-cap: "Frame 300 out of 1000"
-# load_and_display('graphs_data/graphs_signal_N_100_2/Fig/Fig_0_10250.tif')
+load_and_display('graphs_data/graphs_signal_N_100_2/Fig/Fig_0_10250.tif')
 
 # %%
 #| fig-cap: "Frame 600 out of 1000"
-# load_and_display('graphs_data/graphs_signal_N_100_2/Fig/Fig_0_10500.tif')
+load_and_display('graphs_data/graphs_signal_N_100_2/Fig/Fig_0_10500.tif')
 
 # %%
 #| fig-cap: "Frame 900 out of 1000"
-# load_and_display('graphs_data/graphs_signal_N_100_2/Fig/Fig_0_10750.tif')
+load_and_display('graphs_data/graphs_signal_N_100_2/Fig/Fig_0_10750.tif')
 
 # %% [markdown]
 # The GNN model (see src/ParticleGraph/models/Signal_Propagation.py) is trained and tested.
@@ -150,6 +151,65 @@ test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, 
 # %%
 #| echo: true
 #| output: false
-# if not os.path.exists(f'log/try_{config_file}'):
-data_train(config, config_file, **train_kwargs)
+if not os.path.exists(f'log/try_{config_file}'):
+    data_train(config, config_file, **train_kwargs)
+
+
+# %% [markdown]
+# During training the plot of the embedding are saved in
+# "paper_experiments/log/try_signal_N_100_2/tmp_training/embedding"
+# The plot of the pairwise interactions are saved in
+# "paper_experiments/log/try_signal_N_100_2/tmp_training/function"
+#
+# The model that has been trained in the previous step is used to generate the rollouts.
+# %%
+#| echo: true
+#| output: false
+data_test(config, config_file, **test_kwargs)
+
+# %%
+#| fig-cap: "Frame 0 out of 1000"
+load_and_display('log/try_signal_N_100_2/tmp_recons/Fig_signal_N_100_2_0.tif')
+
+# %%
+#| fig-cap: "Frame 250 out of 1000"
+load_and_display('log/try_signal_N_100_2/tmp_recons/Fig_signal_N_100_2_250.tif')
+
+# %%
+#| fig-cap: "Frame 500 out of 1000"
+load_and_display('log/try_signal_N_100_2/tmp_recons/Fig_signal_N_100_2_500.tif')
+
+# %%
+#| fig-cap: "Frame 750 out of 1000"
+load_and_display('log/try_signal_N_100_2/tmp_recons/Fig_signal_N_100_2_750.tif')
+
+
+# %% [markdown]
+# Finally, we generate figures from the post-analysis of the GNN.
+# The results of the GNN post-analysis are saved into 'decomp-gnn/paper_experiments/log/try_signal_N_100_2/results'.
+# %%
+#| echo: true
+#| output: false
+config_list, epoch_list = get_figures(figure_id, device=device)
+
+# %%
+#| fig-cap: "Comparison between the learned and the true connectivity matrix values"
+load_and_display('log/try_signal_N_100_2/results/all_Aij_signal_N_100_2_20.tif')
+
+# %%
+#| fig-cap: "Comparison between the learned and the true transfert functions"
+load_and_display('log/try_signal_N_100_2/results/comparison_f_u_signal_N_100_2_20.tif')
+
+# %%
+#| fig-cap: "Comparison between the learned and the true update functions (neuron type 1)"
+load_and_display('log/try_signal_N_100_2/results/comparison_phi_0_signal_N_100_2_20.tif')
+
+# %%
+#| fig-cap: "Comparison between the learned and the true update functions (neuron type 2)"
+load_and_display('log/try_signal_N_100_2/results/comparison_phi_1_signal_N_100_2_20.tif')
+
+
+
+
+
 

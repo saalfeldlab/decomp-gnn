@@ -10,7 +10,6 @@ from scipy.stats import pearsonr
 from sklearn import metrics
 from torch_geometric.nn import MessagePassing
 import torch.nn as nn
-from tqdm import trange
 import matplotlib.pyplot as plt
 from imageio.v3 import imread
 
@@ -24,6 +23,7 @@ from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.models.Siren_Network import *
 from ParticleGraph.generators.utils import *
 import torch_geometric.data as data
+import scipy
 
 class Interaction_Particle_extract(MessagePassing):
     """Interaction Network as proposed in this paper:
@@ -288,7 +288,7 @@ def load_training_data(dataset_name, n_runs, log_dir, device):
     y_list = []
     print('load data ...')
     time.sleep(0.5)
-    for run in trange(n_runs):
+    for run in range(n_runs):
         x = torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device, weights_only=True)
         y = torch.load(f'graphs_data/graphs_{dataset_name}/y_list_{run}.pt', map_location=device, weights_only=True)
         x_list.append(x)
@@ -400,7 +400,7 @@ def plot_embedding_func_cluster(model, config, config_file, embedding_cluster, c
             pos = torch.argwhere(type_list == n)
             pos = to_numpy(pos)
             if len(pos) > 0:
-                plt.scatter(embedding[pos, 0], embedding[pos, 1], s=100, alpha=alpha, c=cmap.color(n))
+                plt.scatter(embedding[pos, 0], embedding[pos, 1], s=100, alpha=alpha, color=cmap.color(n))
     plt.xlabel(r'$\mathbf{a}_{i0}$', fontsize=78)
     plt.ylabel(r'$\mathbf{a}_{i1}$', fontsize=78)
     plt.tight_layout()
@@ -632,7 +632,7 @@ def plot_generated(config, run, style, step, device):
     x_list = torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device, weights_only=True)
 
 
-    for it in trange(0,n_frames,step):
+    for it in range(0,n_frames,step):
 
         x = x_list[it].clone().detach()
 
@@ -959,7 +959,7 @@ def plot_attraction_repulsion_asym(config_file, epoch_list, log_dir, logger, dev
         fig, ax = fig_init()
         rr = torch.tensor(np.linspace(0, max_radius, 1000)).to(device)
         func_list = []
-        for n in trange(edges.shape[1]):
+        for n in range(edges.shape[1]):
             embedding_1 = model.a[1, edges[0, n], :] * torch.ones((1000, config.graph_model.embedding_dim),
                                                                   device=device)
             embedding_2 = model.a[1, edges[1, n], :] * torch.ones((1000, config.graph_model.embedding_dim),
@@ -998,7 +998,7 @@ def plot_attraction_repulsion_asym(config_file, epoch_list, log_dir, logger, dev
         plt.close()
 
         true_func_list = []
-        for k in trange(edges.shape[1]):
+        for k in range(edges.shape[1]):
             n = type_list[to_numpy(edges[0, k])].astype(int)
             m = type_list[to_numpy(edges[1, k])].astype(int)
             true_func_list.append(true_func[3 * n.squeeze() + m.squeeze()])
@@ -1615,7 +1615,7 @@ def plot_Coulomb(config_file, epoch_list, log_dir, logger, device):
         tmp = np.array([-2, -1, 1, 2, 4])
         table_qiqj[tmp.astype(int)+2]=np.arange(5)[:,None]
         qiqj_list=[]
-        for n in trange(edges.shape[1]):
+        for n in range(edges.shape[1]):
             embedding_1 = model.a[1, edges[0, n], :] * torch.ones((1000, config.graph_model.embedding_dim), device=device)
             embedding_2 = model.a[1, edges[1, n], :] * torch.ones((1000, config.graph_model.embedding_dim), device=device)
             qiqj = p[type_list[to_numpy(edges[0, n])].astype(int).squeeze()] * p[type_list[to_numpy(edges[1, n])].astype(int).squeeze()]
@@ -1643,7 +1643,7 @@ def plot_Coulomb(config_file, epoch_list, log_dir, logger, device):
         csv_ = []
         csv_.append(to_numpy(rr))
         true_func_list = []
-        for n in trange(edges.shape[1]):
+        for n in range(edges.shape[1]):
             temp = model.psi(rr, p[type_list[to_numpy(edges[0, n])].astype(int).squeeze()], p[type_list[to_numpy(edges[1, n])].astype(int).squeeze()] )
             true_func_list.append(temp)
             type = p[type_list[to_numpy(edges[0, n])].astype(int).squeeze()] * p[type_list[to_numpy(edges[1, n])].astype(int).squeeze()]
@@ -1728,7 +1728,7 @@ def plot_Coulomb(config_file, epoch_list, log_dir, logger, device):
             optimizer = torch.optim.Adam(model_qs.parameters(), lr=1E-2)
             qiqj_list = []
             loss_list = []
-            for it in trange(20000):
+            for it in range(20000):
 
                 sample = np.random.randint(0, qiqj.shape[0] - 10)
                 qiqj_ = qiqj[sample:sample + 10]
@@ -2063,7 +2063,7 @@ def plot_wave(config_file, epoch_list, log_dir, logger, cc, device):
     x_mesh_list = []
     y_mesh_list = []
     time.sleep(0.5)
-    for run in trange(n_runs):
+    for run in range(n_runs):
         x_mesh = torch.load(f'graphs_data/graphs_{dataset_name}/x_mesh_list_{run}.pt', map_location=device, weights_only=True)
         x_mesh_list.append(x_mesh)
         h = torch.load(f'graphs_data/graphs_{dataset_name}/y_mesh_list_{run}.pt', map_location=device, weights_only=True)
@@ -2140,7 +2140,7 @@ def plot_wave(config_file, epoch_list, log_dir, logger, cc, device):
         coeff = np.clip(coeff, a_min=0, a_max=1)
         popt_list = []
         func_list = []
-        for n in trange(n_nodes):
+        for n in range(n_nodes):
             embedding_ = mesh_model.a[1, n, :] * torch.ones((200, 2), device=device)
             in_features = torch.cat((rr[:, None], embedding_), dim=1)
             with torch.no_grad():
@@ -2400,7 +2400,7 @@ def plot_particle_field(config_file, epoch_list, log_dir, logger, cc, device):
                 RMSE_list = []
                 PSNR_list = []
                 SSIM_list = []
-                for frame in trange(0, n_frames):
+                for frame in range(0, n_frames):
                     x = x_list[0][frame].clone().detach()
                     fig, ax = fig_init(formatx='%.1f', formaty='%.1f')
                     plt.xlabel(r'$x$', fontsize=78)
@@ -2596,7 +2596,7 @@ def plot_RD_RPS(config_file, epoch_list, log_dir, logger, cc, device):
     x_mesh_list = []
     y_mesh_list = []
     time.sleep(0.5)
-    for run in trange(n_runs):
+    for run in range(n_runs):
         x_mesh = torch.load(f'graphs_data/graphs_{dataset_name}/x_mesh_list_{run}.pt', map_location=device, weights_only=True)
         x_mesh_list.append(x_mesh)
         h = torch.load(f'graphs_data/graphs_{dataset_name}/y_mesh_list_{run}.pt', map_location=device, weights_only=True)
@@ -2836,7 +2836,7 @@ def plot_RD_RPS(config_file, epoch_list, log_dir, logger, cc, device):
         fig, ax = fig_init(formatx='%.3f', formaty='%.3f')
         x_data = coeff_true.flatten()
         y_data = coeff_reconstructed.flatten()
-        plt.scatter(x_data, y_data, c=mc, s=400)
+        plt.scatter(x_data, y_data, c='k', s=400)
         plt.ylabel(r'Learned coeff.', fontsize=64)
         plt.xlabel(r'True  coeff.', fontsize=64)
         lin_fit, lin_fitv = curve_fit(linear_model, x_data, y_data)
@@ -2865,7 +2865,7 @@ def plot_signal(config_file, epoch_list, log_dir, logger, cc, device):
 
     x_list = []
     y_list = []
-    for run in trange(2):
+    for run in range(2):
         x = torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device, weights_only=True)
         y = torch.load(f'graphs_data/graphs_{dataset_name}/y_list_{run}.pt', map_location=device, weights_only=True)
         x_list.append(x)
@@ -2883,10 +2883,10 @@ def plot_signal(config_file, epoch_list, log_dir, logger, cc, device):
     config.simulation.n_particles = n_particles
 
     if 'mat' in config.simulation.connectivity_file:
-        mat = scipy.io.loadmat(config.simulation.connectivity_file)
+        mat = scipy.io.loadmat('../ressources/' + config.simulation.connectivity_file)
         adjacency = torch.tensor(mat['A'], device=device)
     else:
-        adjacency = torch.load(config.simulation.connectivity_file, map_location=device, weights_only=True)
+        adjacency = torch.load('../ressources/' + config.simulation.connectivity_file, map_location=device, weights_only=True)
     adj_t = adjacency > 0
     edge_index = adj_t.nonzero().t().contiguous()
 
@@ -2988,30 +2988,32 @@ def plot_signal(config_file, epoch_list, log_dir, logger, cc, device):
         uu = uu.to(dtype=torch.float32)
         func = func.to(dtype=torch.float32)
 
-        text_trap = StringIO()
-        sys.stdout = text_trap
+        # text_trap = StringIO()
+        # sys.stdout = text_trap
+        #
+        # model_pysrr = PySRRegressor(
+        #     niterations=30,  # < Increase me for better results
+        #     binary_operators=["+", "*"],
+        #     unary_operators=[
+        #         "cos",
+        #         "exp",
+        #         "sin",
+        #         "tanh"
+        #     ],
+        #     random_state=0,
+        #     temp_equation_file=False
+        # )
+        #
+        # model_pysrr.fit(to_numpy(uu[:, None]), to_numpy(func[:, None]))
+        #
+        # sys.stdout = sys.__stdout__
+        #
+        # expr = model_pysrr.sympy(2).as_terms()[0]
+        # coeff = expr[0][1][0][0]
+        # print(expr)
+        # logger.info(expr)
 
-        model_pysrr = PySRRegressor(
-            niterations=30,  # < Increase me for better results
-            binary_operators=["+", "*"],
-            unary_operators=[
-                "cos",
-                "exp",
-                "sin",
-                "tanh"
-            ],
-            random_state=0,
-            temp_equation_file=False
-        )
-
-        model_pysrr.fit(to_numpy(uu[:, None]), to_numpy(func[:, None]))
-
-        sys.stdout = sys.__stdout__
-
-        expr = model_pysrr.sympy(2).as_terms()[0]
-        coeff = expr[0][1][0][0]
-        print(expr)
-        logger.info(expr)
+        coeff = 1
 
         A = torch.zeros(n_particles, n_particles, device=device, requires_grad=False, dtype=torch.float32)
         if 'asymmetric' in config.simulation.adjacency_matrix:
@@ -3021,11 +3023,49 @@ def plot_signal(config_file, epoch_list, log_dir, logger, cc, device):
             A[i,j] = model.vals
             A.T[i,j] = model.vals
 
+        # fig, ax = fig_init()
+        # gt_weight = to_numpy(adjacency[adj_t])
+        # pred_weight = to_numpy(A[adj_t]) * coeff
+        # x_data = gt_weight
+        # y_data = pred_weight.squeeze()
+        # lin_fit, lin_fitv = curve_fit(linear_model, x_data, y_data)
+        # residuals = y_data - linear_model(x_data, *lin_fit)
+        # ss_res = np.sum(residuals ** 2)
+        # ss_tot = np.sum((y_data - np.mean(y_data)) ** 2)
+        # r_squared = 1 - (ss_res / ss_tot)
+        # plt.plot(x_data, linear_model(x_data, lin_fit[0], lin_fit[1]), color='r', linewidth=4)
+        # plt.scatter(gt_weight, pred_weight, s=200, c='k', edgecolors='none')
+        # plt.ylabel('Learned $A_{ij}$ values', fontsize=64)
+        # plt.xlabel('True network $A_{ij}$ values', fontsize=64)
+        # print(f"R^2$: {np.round(r_squared, 3)}  Slope: {np.round(lin_fit[0], 2)}   offset: {np.round(lin_fit[1], 2)}  ")
+        # logger.info(f"R^2$: {np.round(r_squared, 3)}  Slope: {np.round(lin_fit[0], 2)}   offset: {np.round(lin_fit[1], 2)}  ")
+        # plt.tight_layout()
+        # plt.savefig(f"./{log_dir}/results/Aij_{config_file}_{epoch}.tif", dpi=300)
+        # plt.close()
+        #
+        # coeff = 1/np.round(lin_fit[0], 2)
+
+        fig = plt.figure(figsize=(20, 10))
+        ax = fig.add_subplot(1,2,1)
+        plt.imshow(to_numpy(adjacency), cmap='viridis', vmin=0, vmax=0.01)
+        plt.title('True $A_{ij}$', fontsize=64)
+        plt.xticks(fontsize=24.0)
+        plt.yticks(fontsize=24.0)
+        ax = fig.add_subplot(1,2,2)
+        plt.imshow(to_numpy(A)*coeff, cmap='viridis', vmin=0, vmax=0.01)
+        plt.title('Learned $A_{ij}$', fontsize=64)
+        plt.xticks(fontsize=24.0)
+        plt.yticks(fontsize=24.0)
+        plt.tight_layout()
+        plt.tight_layout()
+        plt.savefig(f"./{log_dir}/results/Aij_comparison_{config_file}_{epoch}.tif", dpi=300)
+        plt.close()
+
         fig, ax = fig_init()
-        gt_weight = to_numpy(adjacency[adj_t])
-        pred_weight = to_numpy(A[adj_t]) * coeff
-        x_data = gt_weight
-        y_data = pred_weight.squeeze()
+        gt_weight = to_numpy(adjacency)
+        pred_weight = to_numpy(A) * coeff
+        x_data = np.reshape(gt_weight, (n_particles * n_particles))
+        y_data =  np.reshape(pred_weight,  (n_particles * n_particles))
         lin_fit, lin_fitv = curve_fit(linear_model, x_data, y_data)
         residuals = y_data - linear_model(x_data, *lin_fit)
         ss_res = np.sum(residuals ** 2)
@@ -3038,31 +3078,14 @@ def plot_signal(config_file, epoch_list, log_dir, logger, cc, device):
         print(f"R^2$: {np.round(r_squared, 3)}  Slope: {np.round(lin_fit[0], 2)}   offset: {np.round(lin_fit[1], 2)}  ")
         logger.info(f"R^2$: {np.round(r_squared, 3)}  Slope: {np.round(lin_fit[0], 2)}   offset: {np.round(lin_fit[1], 2)}  ")
         plt.tight_layout()
-        plt.savefig(f"./{log_dir}/results/Aij_{config_file}_{epoch}.tif", dpi=300)
+        plt.savefig(f"./{log_dir}/results/all_Aij_{config_file}_{epoch}.tif", dpi=300)
         plt.close()
 
-        fig = plt.figure(figsize=(20, 10))
-        ax = fig.add_subplot(1,2,1)
-        plt.imshow(to_numpy(adjacency), cmap='viridis', vmin=0, vmax=0.01)
-        plt.title('True $A_{ij}$', fontsize=64)
-        plt.xticks(fontsize=24.0)
-        plt.yticks(fontsize=24.0)
-        ax = fig.add_subplot(1,2,2)
-        plt.imshow(to_numpy(model.vals)*coeff, cmap='viridis', vmin=0, vmax=0.01)
-        plt.title('Learned $A_{ij}$', fontsize=64)
-        plt.xticks(fontsize=24.0)
-        plt.yticks(fontsize=24.0)
-        plt.tight_layout()
-        plt.tight_layout()
-        plt.savefig(f"./{log_dir}/results/Aij_comparison_{config_file}_{epoch}.tif", dpi=300)
-        plt.close()
-
-        fig, ax = fig_init()
-        plt.scatter(to_numpy(adjacency),to_numpy(model.vals)*coeff)
+        coeff = 1 / np.round(lin_fit[0], 2)
 
         fig, ax = fig_init()
         gt_weight = to_numpy(adjacency)
-        pred_weight = to_numpy(model.vals) * coeff
+        pred_weight = to_numpy(A) * coeff
         x_data = np.reshape(gt_weight, (n_particles * n_particles))
         y_data =  np.reshape(pred_weight,  (n_particles * n_particles))
         lin_fit, lin_fitv = curve_fit(linear_model, x_data, y_data)
@@ -3121,25 +3144,25 @@ def plot_signal(config_file, epoch_list, log_dir, logger, cc, device):
             plt.savefig(f"./{log_dir}/results/comparison_phi_{type}_{config_file}_{epoch}.tif", dpi=300)
             plt.close()
 
-            text_trap = StringIO()
-            sys.stdout = text_trap
-
-            model_pysrr = PySRRegressor(
-                niterations=100,  # < Increase me for better results
-                unary_operators=[
-                    "tanh"
-                ],
-                nested_constraints={
-                    "tanh": {"tanh": 0},
-                },
-                random_state=0,
-                maxsize=20,
-                maxdepth=6,
-                temp_equation_file=False
-            )
-            model_pysrr.fit(to_numpy(uu[:, None]), to_numpy(learned_func[:, None]))
-
-            sys.stdout = sys.__stdout__
+            # text_trap = StringIO()
+            # sys.stdout = text_trap
+            #
+            # model_pysrr = PySRRegressor(
+            #     niterations=100,  # < Increase me for better results
+            #     unary_operators=[
+            #         "tanh"
+            #     ],
+            #     nested_constraints={
+            #         "tanh": {"tanh": 0},
+            #     },
+            #     random_state=0,
+            #     maxsize=20,
+            #     maxdepth=6,
+            #     temp_equation_file=False
+            # )
+            # model_pysrr.fit(to_numpy(uu[:, None]), to_numpy(learned_func[:, None]))
+            #
+            # sys.stdout = sys.__stdout__
 
         # model_pysrr = PySRRegressor(
         #     niterations=100,  # < Increase me for better results
@@ -3173,7 +3196,7 @@ def data_video_validation(config_file, epoch_list, log_dir, logger, device):
 
     os.makedirs(f"video_tmp/{config_file}", exist_ok=True)
 
-    for n in trange(N_files):
+    for n in range(N_files):
         generated = imread(graph_files[n])
         reconstructed = imread(recons_files[n])
         frame = np.concatenate((generated[:, :, 0:3], reconstructed[:, :, 0:3]), axis=1)
@@ -3209,7 +3232,7 @@ def data_video_training(config_file, epoch_list, log_dir, logger, device):
 
     os.makedirs(f"video_tmp/{config_file}_training", exist_ok=True)
 
-    for n in trange(embedding.shape[0]):
+    for n in range(embedding.shape[0]):
         fig = plt.figure(figsize=(16, 8))
         ax = fig.add_subplot(1, 2, 1)
         ax.imshow(embedding[n, :, :, 0:3])
@@ -3424,6 +3447,7 @@ def get_figures(index, *, device):
             epoch_list = ['20']
         case 'supp18':
             config_list = ['signal_N_100_2']
+            epoch_list = ['20']
         case _:
             config_list = ['arbitrary_3']
 

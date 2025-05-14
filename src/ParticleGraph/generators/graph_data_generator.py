@@ -123,7 +123,7 @@ def data_generate_particles(
         # initialize particle and graph states
         X1, V1, T1, H1, A1, N1 = init_particles(config=config, scenario=scenario, ratio=ratio, device=device)
         time.sleep(0.5)
-        for it in trange(simulation_config.start_frame, n_frames + 1):
+        for it in range(simulation_config.start_frame, n_frames + 1):
 
             x = torch.concatenate(
                 (N1.clone().detach(), X1.clone().detach(), V1.clone().detach(), T1.clone().detach(),
@@ -561,7 +561,7 @@ def data_generate_synaptic(
         X1 = X1[perm]
 
         time.sleep(0.5)
-        for it in trange(simulation_config.start_frame, n_frames + 1):
+        for it in range(simulation_config.start_frame, n_frames + 1):
 
             x = torch.concatenate(
                 (N1.clone().detach(), X1.clone().detach(), V1.clone().detach(), T1.clone().detach(),
@@ -711,7 +711,7 @@ def data_generate_mesh(
         time.sleep(0.5)
         x_mesh_list=[]
         y_mesh_list=[]
-        for it in trange(simulation_config.start_frame, n_frames + 1):
+        for it in range(simulation_config.start_frame, n_frames + 1):
 
             x_mesh = torch.concatenate(
                 (N1_mesh.clone().detach(), X1_mesh.clone().detach(), V1_mesh.clone().detach(),
@@ -944,7 +944,7 @@ def data_generate_particle_field(
         mask_mesh = mesh_data['mask'].squeeze()
 
         time.sleep(0.5)
-        for it in trange(simulation_config.start_frame, n_frames + 1):
+        for it in range(simulation_config.start_frame, n_frames + 1):
 
             if ('siren' in model_config.field_type) & (it >= 0):
                 im = imread(f"../ressources/{simulation_config.node_value_map}") # / 255 * 5000

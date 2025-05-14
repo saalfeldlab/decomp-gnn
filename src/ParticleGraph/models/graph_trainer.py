@@ -14,7 +14,6 @@ from sklearn.neighbors import NearestNeighbors
 import torch_geometric.data as data
 from torch_geometric.loader import DataLoader
 import scipy
-from tqdm import trange
 import gc
 
 from ParticleGraph.models.utils import *
@@ -94,7 +93,7 @@ def data_train_particles(config, config_file, erase, device):
 
     x_list = []
     y_list = []
-    for run in trange(n_runs):
+    for run in range(n_runs):
         x = torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device, weights_only=True)
         y = torch.load(f'graphs_data/graphs_{dataset_name}/y_list_{run}.pt', map_location=device, weights_only=True)
         x_list.append(x)
@@ -102,7 +101,7 @@ def data_train_particles(config, config_file, erase, device):
     x = x_list[0][0].clone().detach()
     y = y_list[0][0].clone().detach()
     for run in range(n_runs):
-        for k in trange(n_frames):
+        for k in range(n_frames):
             if (k % 10 == 0) | (n_frames < 1000):
                 x = torch.cat((x, x_list[run][k].clone().detach()), 0)
                 y = torch.cat((y, y_list[run][k].clone().detach()), 0)
@@ -179,7 +178,7 @@ def data_train_particles(config, config_file, erase, device):
         Niter = n_frames * data_augmentation_loop // batch_size
 
 
-        for N in trange(Niter):
+        for N in range(Niter):
 
             phi = torch.randn(1, dtype=torch.float32, requires_grad=False, device=device) * np.pi * 2
             cos_phi = torch.cos(phi)
@@ -450,7 +449,7 @@ def data_train_mesh(config, config_file, erase, device):
     x_mesh_list = []
     y_mesh_list = []
     time.sleep(0.5)
-    for run in trange(n_runs):
+    for run in range(n_runs):
         x_mesh = torch.load(f'graphs_data/graphs_{dataset_name}/x_mesh_list_{run}.pt', map_location=device, weights_only=True)
         x_mesh_list.append(x_mesh)
         h = torch.load(f'graphs_data/graphs_{dataset_name}/y_mesh_list_{run}.pt', map_location=device, weights_only=True)
@@ -527,7 +526,7 @@ def data_train_mesh(config, config_file, erase, device):
         if (batch_size == 1):
             Niter = Niter // 4
 
-        for N in trange(Niter):
+        for N in range(Niter):
 
             run = 1 + np.random.randint(n_runs - 1)
 
@@ -820,7 +819,7 @@ def data_train_particle_field(config, config_file, erase, device):
     edge_p_f_list = []
     edge_f_f_list = []
     edge_f_p_list = []
-    for run in trange(n_runs):
+    for run in range(n_runs):
         x = torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device, weights_only=True)
         y = torch.load(f'graphs_data/graphs_{dataset_name}/y_list_{run}.pt', map_location=device, weights_only=True)
         edge_p_p = torch.load(f'graphs_data/graphs_{dataset_name}/edge_p_p_list{run}.pt', map_location=device, weights_only=True)
@@ -832,7 +831,7 @@ def data_train_particle_field(config, config_file, erase, device):
     x = x_list[0][0].clone().detach()
     y = y_list[0][0].clone().detach()
     for run in range(n_runs):
-        for k in trange(n_frames):
+        for k in range(n_frames):
             if (k % 10 == 0) | (n_frames < 1000):
                 x = torch.cat((x, x_list[run][k].clone().detach()), 0)
                 y = torch.cat((y, y_list[run][k].clone().detach()), 0)
@@ -849,7 +848,7 @@ def data_train_particle_field(config, config_file, erase, device):
     x_mesh_list = []
     y_mesh_list = []
     time.sleep(0.5)
-    for run in trange(n_runs):
+    for run in range(n_runs):
         x_mesh = torch.load(f'graphs_data/graphs_{dataset_name}/x_mesh_list_{run}.pt', map_location=device, weights_only=True)
         x_mesh_list.append(x_mesh)
         h = torch.load(f'graphs_data/graphs_{dataset_name}/y_mesh_list_{run}.pt', map_location=device, weights_only=True)
@@ -974,7 +973,7 @@ def data_train_particle_field(config, config_file, erase, device):
             logger.info(f'{Niter} iterations per epoch')
             print(f'plot every {plot_frequency} iterations')
 
-        for N in trange(Niter):
+        for N in range(Niter):
 
             phi = torch.randn(1, dtype=torch.float32, requires_grad=False, device=device) * np.pi * 2
             cos_phi = torch.cos(phi)
@@ -1278,7 +1277,7 @@ def data_train_signal(config, config_file, erase, device):
 
     x_list = []
     y_list = []
-    for run in trange(n_runs):
+    for run in range(n_runs):
         x = torch.load(f'graphs_data/graphs_{dataset_name}/x_list_{run}.pt', map_location=device, weights_only=True)
         y = torch.load(f'graphs_data/graphs_{dataset_name}/y_list_{run}.pt', map_location=device, weights_only=True)
         x_list.append(x)
@@ -1379,7 +1378,7 @@ def data_train_signal(config, config_file, erase, device):
         print(f'Niter = {Niter}')
         logger.info(f'Niter = {Niter}')
 
-        for N in trange(Niter):
+        for N in range(Niter):
 
             run = 1 + np.random.randint(n_runs - 1)
             k = np.random.randint(n_frames - 6)
@@ -1589,7 +1588,7 @@ def data_test(
         x_mesh_list = []
         y_mesh_list = []
         time.sleep(0.5)
-        for run in trange(n_runs):
+        for run in range(n_runs):
             x_mesh = torch.load(f'graphs_data/graphs_{dataset_name}/x_mesh_list_{run}.pt', map_location=device, weights_only=True)
             x_mesh_list.append(x_mesh)
             h = torch.load(f'graphs_data/graphs_{dataset_name}/y_mesh_list_{run}.pt', map_location=device, weights_only=True)
@@ -1632,7 +1631,6 @@ def data_test(
                 index_particles.append(index)
                 n_particle_types = 3
 
-
     model, bc_pos, bc_dpos = choose_training_model(config, device)
     table = PrettyTable(["Modules", "Parameters"])
     total_params = 0
@@ -1651,7 +1649,7 @@ def data_test(
             mesh_model.load_state_dict(state_dict['model_state_dict'])
             mesh_model.eval()
         else:
-            state_dict = torch.load(net, map_location=device)
+            state_dict = torch.load(net, map_location=device, weights_only=True)
             model.load_state_dict(state_dict['model_state_dict'])
             model.eval()
             mesh_model = None
@@ -1687,8 +1685,6 @@ def data_test(
                 with torch.no_grad():
                     model.a = a_.clone().detach()
                     model.field[run] = t.clone().detach()
-
-
 
     if ratio > 1:
         first_embedding = model.a[1].clone().detach()
@@ -1738,7 +1734,7 @@ def data_test(
 
         # plt.scatter(x_, y_, s=2, c=to_numpy(mask_mesh))
     if has_adjacency_matrix:
-        mat = scipy.io.loadmat(simulation_config.connectivity_file)
+        mat = scipy.io.loadmat('../ressources/' + simulation_config.connectivity_file)
         adjacency = torch.tensor(mat['A'], device=device)
         adj_t = adjacency > 0
         edge_index = adj_t.nonzero().t().contiguous()
@@ -1751,13 +1747,11 @@ def data_test(
         print(table)
         print(f"Total Trainable Params: {total_params}")
 
-
-
     rmserr_list= []
     gloss = SamplesLoss(loss="sinkhorn", p=2, blur=.05)
     geomloss_list=[]
     time.sleep(1)
-    for it in trange(n_frames):
+    for it in range(n_frames):
 
         x0 = x_list[0][it].clone().detach()
         y0 = y_list[0][it].clone().detach()
@@ -1938,23 +1932,22 @@ def data_test(
                     # plt.axis('off')
             elif model_config.signal_model_name == 'PDE_N':
                 matplotlib.rcParams['savefig.pad_inches'] = 0
+                plt.close()
                 fig = plt.figure(figsize=(12, 12))
                 ax = fig.add_subplot(1, 1, 1)
-                ax.xaxis.set_major_locator(plt.MaxNLocator(3))
-                ax.yaxis.set_major_locator(plt.MaxNLocator(3))
-                ax.xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
-                ax.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
-                plt.scatter(to_numpy(x[:, 2]), to_numpy(x[:, 1]), s=200, c=to_numpy(x[:, 6]), cmap='viridis', vmin=0,
+                plt.axis('off')
+                plt.scatter(to_numpy(x[:, 2]), to_numpy(x[:, 1]), s=160, c=to_numpy(x[:, 6]), cmap='viridis', vmin=0,
                             vmax=3)
-                plt.xlim([-1.2, 1.2])
-                plt.ylim([-1.2, 1.2])
+                plt.xlim([-0.6, 0.6])
+                plt.ylim([-0.6, 0.6])
                 # plt.xlabel('x', fontsize=48)
                 # plt.ylabel('y', fontsize=48)
-                plt.xticks(fontsize=48.0)
-                plt.yticks(fontsize=48.0)
+                plt.xticks([])
+                plt.yticks([])
                 ax.tick_params(axis='both', which='major', pad=15)
-                plt.text(0, 1.1, f'   ', ha='left', va='top', transform=ax.transAxes, fontsize=48)
+                # plt.text(0, 1.1, f'   ', ha='left', va='top', transform=ax.transAxes, fontsize=48)
                 plt.tight_layout()
+
             elif (simulation_config.n_particle_types > 1000):
                 plt.scatter(to_numpy(x[:, 2]), to_numpy(x[:, 1]), s=100, color='k')
                 plt.tight_layout()
