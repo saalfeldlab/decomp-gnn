@@ -1,6 +1,5 @@
-# %% [markdown]
+# %% [raw]
 # ---
-# title: Wave propagation with different diffusion coefficients
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Mesh, Simulation
@@ -10,6 +9,7 @@
 # ---
 
 # %% [markdown]
+# # Wave propagation with different diffusion coefficients
 # This script creates the fifth column of paper's Figure 2.
 # Simulation of wave-propagation over a mesh of 1E4 nodes with
 # variable propagation-coefficients.

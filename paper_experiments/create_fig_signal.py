@@ -1,6 +1,5 @@
-# %% [markdown]
+# %% [raw]
 # ---
-# title: Training GNN on signaling
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Signaling
@@ -10,6 +9,7 @@
 # ---
 
 # %% [markdown]
+# # Training GNN on signaling
 # This script generates figures shown in Supplementary Figures 18.
 # A GNN is trained on a signaling network (998 nodes, 17,865 edges).
 # Note 100 of datasets are generated for training.

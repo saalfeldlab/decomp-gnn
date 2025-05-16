@@ -1,6 +1,5 @@
-# %% [markdown]
+# %% [raw]
 # ---
-# title: Attraction-repulsion system with 3 particle types
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles, Simulation
@@ -10,6 +9,7 @@
 # ---
 
 # %% [markdown]
+# # Attraction-repulsion system with 3 particle types
 # This script creates the first column of paper's Figure 2.
 # Simulation of an attraction-repulsion system, 4800 particles, 3 particle types.
 

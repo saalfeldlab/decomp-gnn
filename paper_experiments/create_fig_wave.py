@@ -1,6 +1,5 @@
-# %% [markdown]
+# %% [raw]
 # ---
-# title: Training GNN on wave propagation
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Mesh
@@ -10,6 +9,7 @@
 # ---
 
 # %% [markdown]
+# # Training GNN on wave propagation
 # This script generates Supplementary Figure 15.
 # It demonstrates how a Graph Neural Network (GNN) learns the rules of wave propagation.
 # The training simulation consists of 1E4 mesh observed over 8E3 frames.

@@ -1,6 +1,5 @@
-# %% [markdown]
+# %% [raw]
 # ---
-# title: Training GNN on gravity-like system
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles, GNN training
@@ -10,6 +9,7 @@
 # ---
 
 # %% [markdown]
+# # Training GNN on gravity-like system
 # This script generates Supplementary Figure 7.
 # A GNN learns the motion rules governing a gravity-like system
 # The simulation used to train the GNN consists of 960 particles of 16 different masses.

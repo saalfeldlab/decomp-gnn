@@ -1,6 +1,5 @@
-# %% [markdown]
+# %% [raw]
 # ---
-# title: Gravity-like system with different particle masses
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles, Simulation
@@ -10,6 +9,7 @@
 # ---
 
 # %% [markdown]
+# # Gravity-like system with different particle masses
 # This script creates the second column of paper's Figure 2.
 # Simulation of a gravity-like system, 960 particles, 16 different masses.
 

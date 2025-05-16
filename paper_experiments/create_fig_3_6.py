@@ -1,6 +1,5 @@
-# %% [markdown]
+# %% [raw]
 # ---
-# title: Training GNN on attraction-repulsion (64 particle types)
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles, GNN training
@@ -10,6 +9,7 @@
 # ---
 
 # %% [markdown]
+# # Training GNN on attraction-repulsion (64 particle types)
 # This script creates the sixth column of paper's Figure 3.
 # A GNN learns the motion rules of an attraction-repulsion system.
 # The simulation used to train the GNN consists of 4800 particles of 64 different types.

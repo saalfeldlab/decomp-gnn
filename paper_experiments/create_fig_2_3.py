@@ -1,6 +1,5 @@
-# %% [markdown]
+# %% [raw]
 # ---
-# title: Coulomb-like system with different particle charges
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles, Simulation
@@ -10,6 +9,7 @@
 # ---
 
 # %% [markdown]
+# # Coulomb-like system with different particle charges
 # This script creates the third column of paper's Figure 2.
 # Simulation of a Coulomb-like system: 960 particles, 3 different charges.
 

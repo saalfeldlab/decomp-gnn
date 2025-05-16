@@ -1,6 +1,5 @@
-# %% [markdown]
+# %% [raw]
 # ---
-# title: Generalization test of GNN trained on boids
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles, GNN generalization test
@@ -10,6 +9,7 @@
 # ---
 
 # %% [markdown]
+# # Generalization test of GNN trained on boids
 # This script generates figures shown in Supplementary Figures 13.
 # This is a generalization test of the GNN trained with the boids simulation .
 # As a generalization test, the number of particle was multiplied by a factor of 4 (from 1,792 to 7,168) and the initial positions were split into 16 stripes to separate particle types.

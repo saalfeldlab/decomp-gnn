@@ -1,6 +1,5 @@
-# %% [markdown]
+# %% [raw]
 # ---
-# title: Training GNN on boids (16 types)
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles, GNN training
@@ -10,6 +9,7 @@
 # ---
 
 # %% [markdown]
+# # Training GNN on boids (16 types)
 # This script generates figures shown in Supplementary Figures 4, 11 and 12.
 # A GNN learns the motion rules of boids (https://en.wikipedia.org/wiki/Boids).
 # The simulation used to train the GNN consists of 1792 particles of 16 different types.

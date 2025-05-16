@@ -1,6 +1,5 @@
-# %% [markdown]
+# %% [raw]
 # ---
-# title: Reaction-diffusion propagation with different diffusion coefficients
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Mesh, Simulation
@@ -10,6 +9,7 @@
 # ---
 
 # %% [markdown]
+# # Reaction-diffusion propagation with different diffusion coefficients
 # This script creates the sixth column of paper's Figure 2.
 # Simulation of reaction-diffusion over a mesh of 1E4 nodes with
 # variable propagation-coefficients.

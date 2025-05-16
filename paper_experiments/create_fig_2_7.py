@@ -1,6 +1,5 @@
-# %% [markdown]
+# %% [raw]
 # ---
-# title: Signaling system with 998 nodes
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Signaling, Simulation
@@ -10,6 +9,7 @@
 # ---
 
 # %% [markdown]
+# # Signaling system with 998 nodes
 # This script creates the seventh column of paper's Figure 2.
 # Simulation of a signaling network, 986 nodes, 17,865 edges, 2 types of nodes.
 # Note 100 of datasets are generated to test training with multiple trials.

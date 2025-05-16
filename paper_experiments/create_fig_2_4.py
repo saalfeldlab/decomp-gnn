@@ -1,6 +1,5 @@
-# %% [markdown]
+# %% [raw]
 # ---
-# title: Boids system with 16 different particle types
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles, Simulation
@@ -10,6 +9,7 @@
 # ---
 
 # %% [markdown]
+# # Boids system with 16 different particle types
 # This script creates the fourth column of paper's Figure 2.
 # Simulation of boids (https://en.wikipedia.org/wiki/Boids), 1792 particles, 16 types.
 

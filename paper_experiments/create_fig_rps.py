@@ -1,6 +1,5 @@
-# %% [markdown]
+# %% [raw]
 # ---
-# title: Training GNN on reaction-diffusion (rock-paper-scissors)
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Mesh
@@ -10,6 +9,7 @@
 # ---
 
 # %% [markdown]
+# # Training GNN on reaction-diffusion (rock-paper-scissors)
 # This script generates Supplementary Figure 17.
 # It showcases a Graph Neural Network (GNN) learning the dynamics of a reaction-diffusion system.
 # The training simulation involves 1E4 mesh nodes observed over 4E3 frames.
