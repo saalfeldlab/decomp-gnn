@@ -11,7 +11,7 @@ dependencies:
   - jupytext=1.16.4
   - matplotlib=3.9.2
   - networkx=3.4.2
-  - numpy=2.0.2
+  - numpy=2.2.5
   - pandas=2.2.3
   - pip=24.3.1
   - prettytable=3.12.0
@@ -33,4 +33,5 @@ dependencies:
     - geomloss==0.2.6
     - torch-geometric==2.6.1
     - fa2_modified==0.3.10
+    - -e .
 
