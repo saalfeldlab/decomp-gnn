@@ -3,7 +3,7 @@
 # title: Signaling system with 998 nodes
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Signaling
+#   - Signaling, Simulation
 # execute:
 #   echo: false
 # image: "create_fig_2_7_files/figure-html/cell-10-output-1.png"

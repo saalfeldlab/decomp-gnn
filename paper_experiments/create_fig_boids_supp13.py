@@ -3,7 +3,7 @@
 # title: Generalization test of GNN trained on boids
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles
+#   - Particles, GNN generalization test
 # execute:
 #   echo: false
 # image: "create_fig_boids_supp13_files/figure-html/cell-8-output-1.png"

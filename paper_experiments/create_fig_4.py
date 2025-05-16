@@ -3,7 +3,7 @@
 # title: Training GNN on attraction-repulsion (hidden field)
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles
+#   - Particles, GNN training
 # execute:
 #   echo: false
 # image: "create_fig_4_files/figure-html/cell-7-output-1.png"

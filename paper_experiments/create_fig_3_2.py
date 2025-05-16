@@ -3,7 +3,7 @@
 # title: Training GNN on attraction-repulsion (assymetric, 3 particle types)
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles
+#   - Particles, GNN training
 # execute:
 #   echo: false
 # image: "create_fig_3_2_files/figure-html/cell-11-output-1.png"

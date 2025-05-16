@@ -3,7 +3,7 @@
 # title: Coulomb-like system with different particle charges
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles
+#   - Particles, Simulation
 # execute:
 #   echo: false
 # image: "create_fig_2_3_files/figure-html/cell-10-output-1.png"

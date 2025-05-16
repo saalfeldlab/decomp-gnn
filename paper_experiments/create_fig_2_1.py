@@ -3,7 +3,7 @@
 # title: Attraction-repulsion system with 3 particle types
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles
+#   - Particles, Simulation
 # execute:
 #   echo: false
 # image: "create_fig_2_1_files/figure-html/cell-10-output-1.png"

@@ -3,7 +3,7 @@
 # title: Training GNN on attraction-repulsion (continuous function domain)
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles
+#   - Particles, GNN training
 # execute:
 #   echo: false
 # image: "create_fig_3_3_files/figure-html/cell-12-output-1.png"
