@@ -5,7 +5,7 @@
 #   - Particles, GNN training
 # execute:
 #   echo: false
-# image: "create_fig_Coulomb_files/figure-html/cell-12-output-1.png"
+# image: "create_fig_coulomb_files/figure-html/cell-12-output-1.png"
 # ---
 
 # %% [markdown]

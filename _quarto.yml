@@ -7,7 +7,7 @@ website:
     tools:
       - icon: github
         href:  https://www.github.com/saalfeldlab/decomp-gnn.git
-  page-footer: "Copyright 2024, Cédric Allier, Magdalena C. Schneider, Michael Innerberger, Larissa Heinrich, John A. Bogovic, Stephan Saalfeld"
+  page-footer: "Copyright 2025, Cédric Allier, Magdalena C. Schneider, Michael Innerberger, Larissa Heinrich, John A. Bogovic, Stephan Saalfeld"
 
 format:
   html:
