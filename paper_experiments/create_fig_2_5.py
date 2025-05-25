@@ -5,7 +5,7 @@
 #   - Mesh, Simulation
 # execute:
 #   echo: false
-# image: "create_fig_2_5_files/figure-html/cell-10-output-1.png"
+# image: "create_fig_2_5_files/figure-html/cell-8-output-1.png"
 # ---
 
 # %% [markdown]
