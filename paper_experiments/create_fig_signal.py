@@ -2,7 +2,7 @@
 # ---
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Signaling
+#   - Signaling, GNN training
 # execute:
 #   echo: false
 # image: "create_fig_signal_files/figure-html/cell-9-output-1.png"
