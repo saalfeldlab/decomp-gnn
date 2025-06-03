@@ -1,36 +1,30 @@
 # %% [raw]
 # ---
+# title: Wave propagation with different diffusion coefficients
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Mesh, Simulation
+#   - Mesh
+#   - Simulation
 # execute:
 #   echo: false
-# image: "create_fig_2_5_files/figure-html/cell-10-output-1.png"
+# image: "create_fig_2_5_files/figure-html/cell-9-output-1.png"
 # ---
 
 # %% [markdown]
-# # Wave propagation with different diffusion coefficients
 # This script creates the fifth column of paper's Figure 2.
 # Simulation of wave-propagation over a mesh of 1E4 nodes with
 # variable propagation-coefficients.
 
 # %%
 #| output: false
-import os
-
 import umap
 import torch
 import torch_geometric as pyg
-import torch_geometric.utils as pyg_utils
-from torch_geometric.data import Data
 
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.generators import data_generate_mesh
-from ParticleGraph.models import data_train, data_test
-from ParticleGraph.plotting import get_figures, load_and_display
-from ParticleGraph.utils import set_device, to_numpy
-from tifffile import imread
-import numpy as np
+from ParticleGraph.plotting import load_and_display
+from ParticleGraph.utils import set_device
 
 # %% [markdown]
 # First, we load the configuration file and set the device.
@@ -44,11 +38,9 @@ device = set_device("auto")
 
 # %% [markdown]
 # The following model is used to simulate the wave propagation with PyTorch Geometric.
-#
+
 # %%
 #| echo: true
-
-
 class WaveModel(pyg.nn.MessagePassing):
     """Interaction Network as proposed in this paper:
     https://proceedings.neurips.cc/paper/2016/hash/3147da8ab4a0437c15ef51a5cc7f2dc4-Abstract.html"""
@@ -102,11 +94,10 @@ def bc_dpos(x):
 # The data is generated with the above Pytorch Geometric model.
 # Note two datasets are generated, one for training and one for validation.
 # If the simulation is too large, you can decrease n_particles (multiple of 5) and n_nodes in "wave_slit.yaml"
-#
+
 # %%
 #| echo: true
 #| output: false
-
 model = WaveModel(aggr_type=config.graph_model.aggr_type, beta=config.simulation.beta)
 
 generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', erase=False, save=True, step=20)
@@ -115,13 +106,9 @@ test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, 
 
 data_generate_mesh(config, model , **generate_kwargs)
 
-
 # %% [markdown]
 # Finally, we generate the figures that are shown in Figure 2.
 # All frames are saved in 'decomp-gnn/paper_experiments/graphs_data/graphs_wave_slit/Fig/'.
-# %%
-#| echo: true
-#| output: false
 
 # %%
 #| fig-cap: "Initial configuration of the simulation. There are 1E4 nodes. The colors indicate the node scalar values."
@@ -138,4 +125,3 @@ load_and_display('graphs_data/graphs_wave_slit/Fig/Fig_0_5000.tif')
 # %%
 #| fig-cap: "Frame 7500 out of 8000"
 load_and_display('graphs_data/graphs_wave_slit/Fig/Fig_0_7500.tif')
-

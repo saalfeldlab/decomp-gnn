@@ -1,15 +1,16 @@
 # %% [raw]
 # ---
+# title: Training GNN on gravity-like system
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles, GNN training
+#   - Particles
+#   - GNN Training
 # execute:
 #   echo: false
 # image: "create_fig_gravity_files/figure-html/cell-12-output-1.png"
 # ---
 
 # %% [markdown]
-# # Training GNN on gravity-like system
 # This script generates Supplementary Figure 7.
 # A GNN learns the motion rules governing a gravity-like system
 # The simulation used to train the GNN consists of 960 particles of 16 different masses.
@@ -23,7 +24,6 @@ import umap
 import torch
 import torch_geometric as pyg
 import torch_geometric.utils as pyg_utils
-from torch_geometric.data import Data
 
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.generators import data_generate_particles
@@ -44,7 +44,7 @@ device = set_device("auto")
 
 # %% [markdown]
 # The following model is used to simulate the gravity-like system with PyTorch Geometric.
-#
+
 # %%
 #| echo: true
 class GravityModel(pyg.nn.MessagePassing):
@@ -103,7 +103,7 @@ def bc_dpos(x):
 # Vizualizations of the particle motions can be found in "decomp-gnn/paper_experiments/graphs_data/gravity_16/"
 #
 # If the simulation is too large, you can decrease n_particles (multiple of 16) in "gravity_16.yaml"
-#
+
 # %%
 #| echo: true
 #| output: false
@@ -129,7 +129,7 @@ load_and_display('graphs_data/graphs_gravity_16/Fig/Fig_0_1800.tif')
 # The GNN model (see src/ParticleGraph/models/Interaction_Particle.py) is trained and tested.
 #
 # Since we ship the trained model with the repository, this step can be skipped if desired.
-#
+
 # %%
 #| echo: true
 #| output: false
@@ -143,6 +143,7 @@ if not os.path.exists(f'log/try_{config_file}'):
 # "paper_experiments/log/try_gravity_16/tmp_training/function"
 #
 # The model that has been trained in the previous step is used to generate the rollouts.
+
 # %%
 #| echo: true
 #| output: false
@@ -151,6 +152,7 @@ data_test(config, config_file, **test_kwargs)
 # %% [markdown]
 # Finally, we generate the figures that are shown in Supplementary Figure 7.
 # The results of the GNN post-analysis are saved into 'decomp-gnn/paper_experiments/log/try_gravity_16/results'.
+
 # %%
 #| echo: true
 #| output: false
@@ -174,6 +176,3 @@ load_and_display('log/try_gravity_16/tmp_recons/Fig_gravity_16_1980.tif')
 
 # %% [markdown]
 # All frames can be found in "decomp-gnn/paper_experiments/log/try_gravity_16/tmp_recons/"
-# %%
-#| echo: true
-#| output: false

@@ -1,33 +1,29 @@
 # %% [raw]
 # ---
+# title: Coulomb-like system with different particle charges
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles, Simulation
+#   - Particles
+#   - Simulation
 # execute:
 #   echo: false
 # image: "create_fig_2_3_files/figure-html/cell-10-output-1.png"
 # ---
 
 # %% [markdown]
-# # Coulomb-like system with different particle charges
 # This script creates the third column of paper's Figure 2.
 # Simulation of a Coulomb-like system: 960 particles, 3 different charges.
 
 # %%
 #| output: false
-import os
-
 import umap
 import torch
 import torch_geometric as pyg
-import torch_geometric.utils as pyg_utils
-from torch_geometric.data import Data
 
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.generators import data_generate_particles
-from ParticleGraph.models import data_train, data_test
-from ParticleGraph.plotting import get_figures, load_and_display
-from ParticleGraph.utils import set_device, to_numpy
+from ParticleGraph.plotting import load_and_display
+from ParticleGraph.utils import set_device
 
 # %% [markdown]
 # First, we load the configuration file and set the device.
@@ -42,9 +38,9 @@ device = set_device("auto")
 # %% [markdown]
 # The following model is used to simulate the Coulomb-like system with PyTorch Geometric.
 # There are three possible charges: -1, 1, and 2.
+
 # %%
 #| echo: true
-
 class CoulombModel(pyg.nn.MessagePassing):
         """Interaction Network as proposed in this paper:
         https://proceedings.neurips.cc/paper/2016/hash/3147da8ab4a0437c15ef51a5cc7f2dc4-Abstract.html"""

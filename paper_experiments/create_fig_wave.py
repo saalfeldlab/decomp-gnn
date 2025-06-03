@@ -1,15 +1,16 @@
 # %% [raw]
 # ---
+# title: Training GNN on wave propagation
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Mesh
+#   - GNN Training
 # execute:
 #   echo: false
-# image: "create_fig_wave_files/figure-html/cell-7-output-1.png"
+# image: "create_fig_wave_files/figure-html/cell-6-output-1.png"
 # ---
 
 # %% [markdown]
-# # Training GNN on wave propagation
 # This script generates Supplementary Figure 15.
 # It demonstrates how a Graph Neural Network (GNN) learns the rules of wave propagation.
 # The training simulation consists of 1E4 mesh observed over 8E3 frames.
@@ -23,14 +24,9 @@ import umap
 import torch
 import torch_geometric as pyg
 import torch_geometric.utils as pyg_utils
-from torch_geometric.data import Data
-from tifffile import imread, imsave
-import numpy as np
 
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.generators import data_generate_mesh
-from ParticleGraph.generators import data_generate_particles
-from ParticleGraph.generators import init_mesh
 from ParticleGraph.models import data_train, data_test
 from ParticleGraph.plotting import get_figures, load_and_display
 from ParticleGraph.utils import set_device, to_numpy
@@ -48,10 +44,9 @@ device = set_device("auto")
 
 # %% [markdown]
 # The following model is used to simulate the wave-propagation model with PyTorch Geometric.
-#
+
 # %%
 #| echo: true
-
 class WaveModel(pyg.nn.MessagePassing):
     """Interaction Network as proposed in this paper:
     https://proceedings.neurips.cc/paper/2016/hash/3147da8ab4a0437c15ef51a5cc7f2dc4-Abstract.html"""
@@ -90,11 +85,6 @@ class WaveModel(pyg.nn.MessagePassing):
 
         return dd_u
 
-        pos = to_numpy(data.x)
-        deg = pyg_utils.degree(edge_index[0], data.num_nodes)
-        plt.ion()
-        plt.scatter(pos[:,1],pos[:,2], s=20, c=to_numpy(deg),vmin=7,vmax=10)
-
     def message(self, u_j, edge_attr):
         L = edge_attr[:,None] * u_j
 
@@ -114,10 +104,10 @@ def bc_dpos(x):
 # Vizualizations of the wave propagation can be found in "decomp-gnn/paper_experiments/graphs_data/graphs_wave_slit/"
 #
 # If the simulation is too large, you can decrease n_particles and n_nodes in "wave_slit.yaml".
+
 # %%
 #| echo: true
 #| output: false
-
 model = WaveModel(aggr_type=config.graph_model.aggr_type, beta=config.simulation.beta)
 
 generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='color', erase=False, save=True, step=50)
@@ -138,7 +128,7 @@ load_and_display('graphs_data/graphs_wave_slit/Fig/Fig_0_7500.tif')
 # The  GNN model (see src/ParticleGraph/models/Mesh_Laplacian.py) is optimized using the simulated data.
 #
 # Since we ship the trained model with the repository, this step can be skipped if desired.
-#
+
 # %%
 #| echo: true
 #| output: false
@@ -147,6 +137,7 @@ if not os.path.exists(f'log/try_{config_file}'):
 
 # %% [markdown]
 # The model that has been trained in the previous step is used to generate the rollouts.
+
 # %%
 #| echo: true
 #| output: false
@@ -155,12 +146,12 @@ data_test(config, config_file, **test_kwargs)
 # %% [markdown]
 # Finally, we generate the figures that are shown in Supplementary Figure 15.
 # The results of the GNN post-analysis are saved into 'decomp-gnn/paper_experiments/log/try_wave_slit/results'.
+
 # %%
 #| echo: true
 #| output: false
 config_list, epoch_list = get_figures(figure_id, device=device)
 
-# %%
 # %%
 #| fig-cap: "Learned latent vectors (x1E4)"
 load_and_display('log/try_wave_slit/results/embedding_wave_slit_20.tif')
@@ -179,7 +170,3 @@ load_and_display('log/try_wave_slit/tmp_recons/Fig_wave_slit_7980.tif')
 
 # %% [markdown]
 # All frames can be found in "decomp-gnn/paper_experiments/log/try_wave_slit/tmp_recons/"
-# %%
-#| echo: true
-#| output: false
-

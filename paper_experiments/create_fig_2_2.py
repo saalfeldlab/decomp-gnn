@@ -1,32 +1,29 @@
 # %% [raw]
 # ---
+# title: Gravity-like system with different particle masses
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles, Simulation
+#   - Particles
+#   - Simulation
 # execute:
 #   echo: false
-# image: "create_fig_2_2_files/figure-html/cell-10-output-1.png"
+# image: "create_fig_2_2_files/figure-html/cell-9-output-1.png"
 # ---
 
 # %% [markdown]
-# # Gravity-like system with different particle masses
 # This script creates the second column of paper's Figure 2.
 # Simulation of a gravity-like system, 960 particles, 16 different masses.
 
 # %%
 #| output: false
-import os
-
 import umap
 import torch
 import torch_geometric as pyg
 import torch_geometric.utils as pyg_utils
-from torch_geometric.data import Data
 
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.generators import data_generate_particles
-from ParticleGraph.models import data_train, data_test
-from ParticleGraph.plotting import get_figures, load_and_display
+from ParticleGraph.plotting import load_and_display
 from ParticleGraph.utils import set_device, to_numpy
 
 # %% [markdown]
@@ -41,7 +38,7 @@ device = set_device("auto")
 
 # %% [markdown]
 # The following model is used to simulate the gravity-like system with PyTorch Geometric.
-#
+
 # %%
 #| echo: true
 class GravityModel(pyg.nn.MessagePassing):
@@ -98,7 +95,7 @@ def bc_dpos(x):
 # The data is generated with the above Pytorch Geometric model.
 # Note two datasets are generated, one for training and one for validation.
 # If the simulation is too large, you can decrease n_particles (multiple of 16) in "gravity_16.yaml".
-#
+
 # %%
 #| echo: true
 #| output: false
@@ -116,9 +113,6 @@ data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 # %% [markdown]
 # Finally, we generate the figures shown in Figure 2.
 # All frames are saved in 'decomp-gnn/paper_experiments/graphs_data/gravity_16/Fig/'.
-# %%
-#| echo: true
-#| output: false
 
 # %%
 #| fig-cap: "Initial configuration of the simulation. There are 960 particles. The colors indicate different masses."
@@ -135,4 +129,3 @@ load_and_display('graphs_data/graphs_gravity_16/Fig/Fig_0_1200.tif')
 # %%
 #| fig-cap: "Frame 1800 out of 2000"
 load_and_display('graphs_data/graphs_gravity_16/Fig/Fig_0_1800.tif')
-

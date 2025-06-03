@@ -1,15 +1,16 @@
 # %% [raw]
 # ---
+# title: Signaling system with 998 nodes
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Signaling, Simulation
+#   - Signaling
+#   - Simulation
 # execute:
 #   echo: false
-# image: "create_fig_2_7_files/figure-html/cell-10-output-1.png"
+# image: "create_fig_2_7_files/figure-html/cell-9-output-1.png"
 # ---
 
 # %% [markdown]
-# # Signaling system with 998 nodes
 # This script creates the seventh column of paper's Figure 2.
 # Simulation of a signaling network, 986 nodes, 17,865 edges, 2 types of nodes.
 # Note 100 of datasets are generated to test training with multiple trials.
@@ -22,13 +23,11 @@ import umap
 import torch
 import torch_geometric as pyg
 import torch_geometric.utils as pyg_utils
-from torch_geometric.data import Data
 
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.generators import data_generate_synaptic
-from ParticleGraph.models import data_train, data_test
-from ParticleGraph.plotting import get_figures, load_and_display
-from ParticleGraph.utils import set_device, to_numpy
+from ParticleGraph.plotting import load_and_display
+from ParticleGraph.utils import set_device
 
 # %% [markdown]
 # First, we load the configuration file and set the device.
@@ -42,10 +41,9 @@ device = set_device("auto")
 
 # %% [markdown]
 # The following model is used to simulate the signaling network with PyTorch Geometric.
-#
+
 # %%
 #| echo: true
-
 class SignalingNetwork(pyg.nn.MessagePassing):
     """Interaction Network as proposed in this paper:
     https://proceedings.neurips.cc/paper/2016/hash/3147da8ab4a0437c15ef51a5cc7f2dc4-Abstract.html"""
@@ -105,7 +103,7 @@ def bc_dpos(x):
 # %% [markdown]
 # The data is generated with the above Pytorch Geometric model.
 # If the simulation is too large, you can decrease n_particles (multiple of 2) and n_nodes in "signal_N_100_2.yaml"
-#
+
 # %%
 #| echo: true
 #| output: false
@@ -122,9 +120,6 @@ data_generate_synaptic(config, model, **generate_kwargs)
 # %% [markdown]
 # Finally, we generate the figures that are shown in Figure 2.
 # The frames of the first six datasets are saved in 'decomp-gnn/paper_experiments/graphs_data/graphs_signal_N_100_2/Fig/'.
-# %%
-#| echo: true
-#| output: false
 
 # %%
 #| fig-cap: "Initial configuration of the simulation. There are 998 nodes. The colors indicate the node scalar values."
@@ -141,4 +136,3 @@ load_and_display('graphs_data/graphs_signal_N_100_2/Fig/Fig_0_10500.tif')
 # %%
 #| fig-cap: "Frame 900 out of 1000"
 load_and_display('graphs_data/graphs_signal_N_100_2/Fig/Fig_0_10750.tif')
-

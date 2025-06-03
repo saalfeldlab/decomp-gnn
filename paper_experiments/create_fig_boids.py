@@ -1,15 +1,16 @@
 # %% [raw]
 # ---
+# title: Training GNN on boids (16 types)
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles, GNN training
+#   - Particles
+#   - GNN Training
 # execute:
 #   echo: false
 # image: "create_fig_boids_files/figure-html/cell-16-output-1.png"
 # ---
 
 # %% [markdown]
-# # Training GNN on boids (16 types)
 # This script generates figures shown in Supplementary Figures 4, 11 and 12.
 # A GNN learns the motion rules of boids (https://en.wikipedia.org/wiki/Boids).
 # The simulation used to train the GNN consists of 1792 particles of 16 different types.
@@ -23,7 +24,6 @@ import umap
 import torch
 import torch_geometric as pyg
 import torch_geometric.utils as pyg_utils
-from torch_geometric.data import Data
 
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.generators import data_generate_particles
@@ -44,7 +44,7 @@ device = set_device("auto")
 
 # %% [markdown]
 # The following model is used to simulate the boids system with PyTorch Geometric.
-#
+
 # %%
 #| echo: true
 class BoidsModel(pyg.nn.MessagePassing):
@@ -117,7 +117,7 @@ def bc_dpos(x):
 # Vizualizations of the boids motion can be found in "decomp-gnn/paper_experiments/graphs_data/graphs_boids_16_256/Fig/"
 #
 # If the simulation is too large, you can decrease n_particles (multiple of 16) in "boids_16_256.yaml"
-#
+
 # %%
 #| echo: true
 #| output: false
@@ -128,7 +128,7 @@ generate_kwargs = dict(device=device, visualize=True, run_vizualized=0, style='c
 train_kwargs = dict(device=device, erase=True)
 test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, best_model='20', run=0, step=50, save_velocity=True)
 
-# data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
+data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 
 # %%
 #| fig-cap: "Initial configuration of the simulation. There are 1792 boids. The colors indicate different types."
@@ -142,7 +142,7 @@ load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_7500.tif')
 # The GNN model (see src/ParticleGraph/models/Interaction_Particle.py) is trained and tested.
 #
 # Since we ship the trained model with the repository, this step can be skipped if desired.
-#
+
 # %%
 #| echo: true
 #| output: false
@@ -156,6 +156,7 @@ if not os.path.exists(f'log/try_{config_file}'):
 # "paper_experiments/log/try_boids_16_256/tmp_training/function"
 #
 # The model that has been trained in the previous step is used to generate the rollouts.
+
 # %%
 #| echo: true
 #| output: false
@@ -164,6 +165,7 @@ data_test(config, config_file, **test_kwargs)
 # %% [markdown]
 # Finally, we generate figures from the post-analysis of the GNN.
 # The results of the GNN post-analysis are saved into 'decomp-gnn/paper_experiments/log/try_boids_16_256/results'.
+
 # %%
 #| echo: true
 #| output: false
@@ -195,8 +197,3 @@ load_and_display('log/try_boids_16_256/tmp_recons/Fig_boids_16_256_7950.tif')
 
 # %% [markdown]
 # All frames can be found in "decomp-gnn/paper_experiments/log/try_boids_16_256/tmp_recons/"
-# %%
-#| echo: true
-#| output: false
-
-

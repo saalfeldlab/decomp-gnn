@@ -1,15 +1,16 @@
 # %% [raw]
 # ---
+# title: Training GNN on attraction-repulsion (32 particle types)
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles, GNN training
+#   - Particles
+#   - GNN Training
 # execute:
 #   echo: false
 # image: "create_fig_3_5_files/figure-html/cell-12-output-1.png"
 # ---
 
 # %% [markdown]
-# # Training GNN on attraction-repulsion (32 particle types)
 # This script creates the fifth column of paper's Figure 3.
 # A GNN learns the motion rules of an attraction-repulsion system.
 # The simulation used to train the GNN consists of 4800 particles of three different types.
@@ -44,7 +45,7 @@ device = set_device("auto")
 
 # %% [markdown]
 # The following model is used to simulate the attraction-repulsion system with PyTorch Geometric.
-#
+
 # %%
 #| echo: true
 class AttractionRepulsionModel(pyg.nn.MessagePassing):
@@ -93,7 +94,7 @@ def bc_dpos(x):
 
 # %% [markdown]
 # The training data is generated with the above Pytorch Geometric model
-#
+
 # %%
 #| echo: true
 #| output: false
@@ -116,7 +117,7 @@ data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 # The GNN model (see src/ParticleGraph/models/Interaction_Particle.py) is trained and tested.
 #
 # Since we ship the trained model with the repository, this step can be skipped if desired.
-#
+
 # %%
 #| echo: true
 #| output: false
@@ -126,6 +127,7 @@ if not os.path.exists(f'log/try_{config_file}'):
 # %% [markdown]
 # The model that has been trained in the previous step is used to generate the rollouts.
 # The rollout visualization can be found in `paper_experiments/log/try_arbitrary_32/tmp_recons`.
+
 # %%
 #| echo: true
 #| output: false
@@ -133,6 +135,7 @@ data_test(config, config_file, **test_kwargs)
 
 # %% [markdown]
 # Finally, we generate the figures that are shown in Figure 3.
+
 # %%
 #| echo: true
 #| output: false

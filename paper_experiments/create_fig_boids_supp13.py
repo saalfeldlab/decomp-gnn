@@ -1,28 +1,26 @@
 # %% [raw]
 # ---
+# title: Generalization test of GNN trained on boids
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles, GNN generalization test
+#   - Particles
+#   - GNN Generalization Test
 # execute:
 #   echo: false
 # image: "create_fig_boids_supp13_files/figure-html/cell-8-output-1.png"
 # ---
 
 # %% [markdown]
-# # Generalization test of GNN trained on boids
 # This script generates figures shown in Supplementary Figures 13.
 # This is a generalization test of the GNN trained with the boids simulation .
 # As a generalization test, the number of particle was multiplied by a factor of 4 (from 1,792 to 7,168) and the initial positions were split into 16 stripes to separate particle types.
 
 # %%
 #| output: false
-import os
-
 import umap
 import torch
 import torch_geometric as pyg
 import torch_geometric.utils as pyg_utils
-from torch_geometric.data import Data
 
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.generators import data_generate_particles

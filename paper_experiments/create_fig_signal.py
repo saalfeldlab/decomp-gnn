@@ -1,15 +1,15 @@
 # %% [raw]
 # ---
+# title: Training GNN on signaling
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Signaling
 # execute:
 #   echo: false
-# image: "create_fig_signal_files/figure-html/cell-16-output-1.png"
+# image: "create_fig_signal_files/figure-html/cell-15-output-1.png"
 # ---
 
 # %% [markdown]
-# # Training GNN on signaling
 # This script generates figures shown in Supplementary Figures 18.
 # A GNN is trained on a signaling network (998 nodes, 17,865 edges).
 # Note 100 of datasets are generated for training.
@@ -22,13 +22,12 @@ import umap
 import torch
 import torch_geometric as pyg
 import torch_geometric.utils as pyg_utils
-from torch_geometric.data import Data
 
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.generators import data_generate_synaptic
 from ParticleGraph.models import data_train, data_test
 from ParticleGraph.plotting import get_figures, load_and_display
-from ParticleGraph.utils import set_device, to_numpy
+from ParticleGraph.utils import set_device
 
 # %% [markdown]
 # First, we load the configuration file and set the device.
@@ -43,10 +42,9 @@ device = set_device("auto")
 
 # %% [markdown]
 # The following model is used to simulate the signaling network with PyTorch Geometric.
-#
+
 # %%
 #| echo: true
-
 class SignalingNetwork(pyg.nn.MessagePassing):
     """Interaction Network as proposed in this paper:
     https://proceedings.neurips.cc/paper/2016/hash/3147da8ab4a0437c15ef51a5cc7f2dc4-Abstract.html"""
@@ -106,7 +104,7 @@ def bc_dpos(x):
 # %% [markdown]
 # The data is generated with the above Pytorch Geometric model.
 # If the simulation is too large, you can decrease n_particles (multiple of 2) and n_nodes in "signal_N_100_2.yaml"
-#
+
 # %%
 #| echo: true
 #| output: false
@@ -119,13 +117,9 @@ test_kwargs = dict(device=device, visualize=True, style='color', verbose=False, 
 
 data_generate_synaptic(config, model, **generate_kwargs)
 
-
 # %% [markdown]
 # Finally, we generate the figures that are shown in Figure 2.
 # The frames of the first six datasets are saved in 'decomp-gnn/paper_experiments/graphs_data/graphs_signal_N_100_2/Fig/'.
-# %%
-#| echo: true
-#| output: false
 
 # %%
 #| fig-cap: "Initial configuration of the simulation. There are 998 nodes. The colors indicate the node scalar values."
@@ -147,13 +141,12 @@ load_and_display('graphs_data/graphs_signal_N_100_2/Fig/Fig_0_10750.tif')
 # The GNN model (see src/ParticleGraph/models/Signal_Propagation.py) is trained and tested.
 #
 # Since we ship the trained model with the repository, this step can be skipped if desired.
-#
+
 # %%
 #| echo: true
 #| output: false
 if not os.path.exists(f'log/try_{config_file}'):
     data_train(config, config_file, **train_kwargs)
-
 
 # %% [markdown]
 # During training the plot of the embedding are saved in
@@ -162,6 +155,7 @@ if not os.path.exists(f'log/try_{config_file}'):
 # "paper_experiments/log/try_signal_N_100_2/tmp_training/function"
 #
 # The model that has been trained in the previous step is used to generate the rollouts.
+
 # %%
 #| echo: true
 #| output: false
@@ -183,10 +177,10 @@ load_and_display('log/try_signal_N_100_2/tmp_recons/Fig_signal_N_100_2_500.tif')
 #| fig-cap: "Frame 750 out of 1000"
 load_and_display('log/try_signal_N_100_2/tmp_recons/Fig_signal_N_100_2_750.tif')
 
-
 # %% [markdown]
 # Finally, we generate figures from the post-analysis of the GNN.
 # The results of the GNN post-analysis are saved into 'decomp-gnn/paper_experiments/log/try_signal_N_100_2/results'.
+
 # %%
 #| echo: true
 #| output: false
@@ -207,9 +201,3 @@ load_and_display('log/try_signal_N_100_2/results/comparison_phi_0_signal_N_100_2
 # %%
 #| fig-cap: "Comparison between the learned and the true update functions (neuron type 2)"
 load_and_display('log/try_signal_N_100_2/results/comparison_phi_1_signal_N_100_2_20.tif')
-
-
-
-
-
-

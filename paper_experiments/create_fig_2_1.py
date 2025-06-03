@@ -24,8 +24,7 @@ from torch_geometric.data import Data
 
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.generators import data_generate_particles
-from ParticleGraph.models import data_train, data_test
-from ParticleGraph.plotting import get_figures, load_and_display
+from ParticleGraph.plotting import load_and_display
 from ParticleGraph.utils import set_device, to_numpy
 
 # %% [markdown]
@@ -40,7 +39,7 @@ device = set_device("auto")
 
 # %% [markdown]
 # The following model is used to simulate the attraction-repulsion system with PyTorch Geometric.
-#
+
 # %%
 #| echo: true
 class AttractionRepulsionModel(pyg.nn.MessagePassing):
@@ -68,7 +67,6 @@ class AttractionRepulsionModel(pyg.nn.MessagePassing):
         d_pos = self.propagate(edge_index, pos=x[:, 1:self.dimension + 1], parameters=parameters)
         return d_pos
 
-
     def message(self, pos_i, pos_j, parameters_i):
 
         relative_position = self.bc_dpos(pos_j - pos_i)
@@ -91,7 +89,7 @@ def bc_dpos(x):
 # The data is generated with the above Pytorch Geometric model.
 # Note two datasets are generated, one for training and one for validation.
 # If the simulation is too large, you can decrease n_particles (multiple of 3) in "arbitrary_3.yaml".
-#
+
 # %%
 #| echo: true
 #| output: false
@@ -130,4 +128,3 @@ load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_160.tif')
 # %%
 #| fig-cap: "Frame 240 out 250"
 load_and_display('graphs_data/graphs_arbitrary_3/Fig/Fig_0_240.tif')
-

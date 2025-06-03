@@ -1,15 +1,16 @@
 # %% [raw]
 # ---
+# title: Training GNN on reaction-diffusion (rock-paper-scissors)
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Mesh
+#   - GNN Training
 # execute:
 #   echo: false
-# image: "create_fig_rps_files/figure-html/cell-7-output-1.png"
+# image: "create_fig_rps_files/figure-html/cell-6-output-1.png"
 # ---
 
 # %% [markdown]
-# # Training GNN on reaction-diffusion (rock-paper-scissors)
 # This script generates Supplementary Figure 17.
 # It showcases a Graph Neural Network (GNN) learning the dynamics of a reaction-diffusion system.
 # The training simulation involves 1E4 mesh nodes observed over 4E3 frames.
@@ -22,18 +23,12 @@ import os
 import umap
 import torch
 import torch_geometric as pyg
-import torch_geometric.utils as pyg_utils
-from torch_geometric.data import Data
-from tifffile import imread, imsave
-import numpy as np
 
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.generators import data_generate_mesh
-from ParticleGraph.generators import data_generate_particles
-from ParticleGraph.generators import init_mesh
 from ParticleGraph.models import data_train, data_test
 from ParticleGraph.plotting import get_figures, load_and_display
-from ParticleGraph.utils import set_device, to_numpy
+from ParticleGraph.utils import set_device
 
 # %% [markdown]
 # First, we load the configuration file and set the device.
@@ -48,10 +43,9 @@ device = set_device("auto")
 
 # %% [markdown]
 # The following model is used to simulate the 'rock-paper-scissor' model with PyTorch Geometric.
-#
+
 # %%
 #| echo: true
-
 class RDModel(pyg.nn.MessagePassing):
     """Interaction Network as proposed in this paper:
     https://proceedings.neurips.cc/paper/2016/hash/3147da8ab4a0437c15ef51a5cc7f2dc4-Abstract.html"""
@@ -112,10 +106,10 @@ def bc_dpos(x):
 # Vizualizations of the reaction diffusion can be found in "decomp-gnn/paper_experiments/graphs_data/RD_RPS/"
 #
 # If the simulation is too large, you can decrease n_particles and n_nodes in "RD_RPS.yaml".
+
 # %%
 #| echo: true
 #| output: false
-
 model = RDModel(
     aggr_type='add',
     bc_dpos=bc_dpos)
@@ -138,7 +132,7 @@ load_and_display('graphs_data/graphs_RD_RPS/Fig/Fig_0_3750.tif')
 # The  GNN model (see src/ParticleGraph/models/Mesh_RPS.py) is optimized using the 'rock-paper-scissor' data.
 #
 # Since we ship the trained model with the repository, this step can be skipped if desired.
-#
+
 # %%
 #| echo: true
 #| output: false
@@ -148,21 +142,21 @@ if not os.path.exists(f'log/try_{config_file}'):
 # %% [markdown]
 # The model that has been trained in the previous step is used to generate the rollouts.
 # The rollout visualization can be found in `paper_experiments/log/try_RD_RPS/tmp_recons`.
+
 # %%
 #| echo: true
 #| output: false
 data_test(config, config_file, **test_kwargs)
 
-
 # %% [markdown]
 # Finally, we generate the figures that are shown in Supplementary Figure 17.
 # The results of the GNN post-analysis are saved into 'decomp-gnn/paper_experiments/log/try_RD_RPS/results'.
+
 # %%
 #| echo: true
 #| output: false
 config_list, epoch_list = get_figures(figure_id, device=device)
 
-# %%
 # %%
 #| fig-cap: "Learned latent vectors (x1E4)"
 load_and_display('log/try_RD_RPS/results/embedding_RD_RPS_20.tif')
@@ -171,11 +165,9 @@ load_and_display('log/try_RD_RPS/results/embedding_RD_RPS_20.tif')
 #| fig-cap: "Learned map of of node type"
 load_and_display('log/try_RD_RPS/results/labels_map_RD_RPS_cbar.tif')
 
-
 # %%
 #| fig-cap: "Comparison between true and learned coefficients of diffusion"
 load_and_display('log/try_RD_RPS/results/scatter_20.tif')
-
 
 # %%
 #| fig-cap: "Comparison between true (blue) and learned (orange) polynomial coefficients of the first governing equation"
@@ -195,7 +187,3 @@ load_and_display('log/try_RD_RPS/tmp_recons/Fig_RD_RPS_3980.tif')
 
 # %% [markdown]
 # All frames can be found in "decomp-gnn/paper_experiments/log/try_RD_RPS/tmp_recons/"
-# %%
-#| echo: true
-#| output: false
-

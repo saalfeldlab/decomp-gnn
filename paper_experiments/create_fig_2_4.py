@@ -1,32 +1,29 @@
 # %% [raw]
 # ---
+# title: Boids system with 16 different particle types
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles, Simulation
+#   - Particles
+#   - Simulation
 # execute:
 #   echo: false
-# image: "create_fig_2_4_files/figure-html/cell-10-output-1.png"
+# image: "create_fig_2_4_files/figure-html/cell-9-output-1.png"
 # ---
 
 # %% [markdown]
-# # Boids system with 16 different particle types
 # This script creates the fourth column of paper's Figure 2.
 # Simulation of boids (https://en.wikipedia.org/wiki/Boids), 1792 particles, 16 types.
 
 # %%
 #| output: false
-import os
-
 import umap
 import torch
 import torch_geometric as pyg
 import torch_geometric.utils as pyg_utils
-from torch_geometric.data import Data
 
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.generators import data_generate_particles
-from ParticleGraph.models import data_train, data_test
-from ParticleGraph.plotting import get_figures, load_and_display
+from ParticleGraph.plotting import load_and_display
 from ParticleGraph.utils import set_device, to_numpy
 
 # %% [markdown]
@@ -41,10 +38,9 @@ device = set_device("auto")
 
 # %% [markdown]
 # The following model is used to simulate the boids system with PyTorch Geometric.
-#
+
 # %%
 #| echo: true
-
 class BoidsModel(pyg.nn.MessagePassing):
     """Interaction Network as proposed in this paper:
     https://proceedings.neurips.cc/paper/2016/hash/3147da8ab4a0437c15ef51a5cc7f2dc4-Abstract.html"""
@@ -112,7 +108,7 @@ def bc_dpos(x):
 # %% [markdown]
 # The data is generated with the above Pytorch Geometric model.
 # Note two datasets are generated, one for training and one for validation.
-#
+
 # %%
 #| echo: true
 #| output: false
@@ -129,9 +125,6 @@ data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 # %% [markdown]
 # Finally, we generate the figures that are shown in Figure 2.
 # All frames are saved in 'decomp-gnn/paper_experiments/graphs_data/graphs_boids_16_256/Fig/'.
-# %%
-#| echo: true
-#| output: false
 
 # %%
 #| fig-cap: "Initial configuration of the simulation. There are 1792 boids. The colors indicate different types."
@@ -148,4 +141,3 @@ load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_5000.tif')
 # %%
 #| fig-cap: "Frame 7500 out of 8000"
 load_and_display('graphs_data/graphs_boids_16_256/Fig/Fig_0_7500.tif')
-

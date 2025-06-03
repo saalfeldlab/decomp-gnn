@@ -1,15 +1,16 @@
 # %% [raw]
 # ---
+# title: Training GNN on attraction-repulsion (hidden field)
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles, GNN training
+#   - Particles
+#   - GNN Training
 # execute:
 #   echo: false
 # image: "create_fig_4_files/figure-html/cell-7-output-1.png"
 # ---
 
 # %% [markdown]
-# # Training GNN on attraction-repulsion (hidden field)
 # This script creates figure of paper's Figure 4.
 # A GNN learns the motion rules of an attraction-repulsion system.
 # The simulation used to train the GNN consists of 4800 particles of three different types.
@@ -24,7 +25,6 @@ import umap
 import torch
 import torch_geometric as pyg
 import torch_geometric.utils as pyg_utils
-from torch_geometric.data import Data
 
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.generators import data_generate_particle_field
@@ -91,7 +91,6 @@ class ParticleField(pyg.nn.MessagePassing):
         d_pos = self.propagate(edge_index, pos=x[:, 1:self.dimension+1], parameters=parameters, field=field)
         return d_pos
 
-
     def message(self, pos_i, pos_j, parameters_i, field_j):
 
         distance_squared = torch.sum(self.bc_dpos(pos_j - pos_i) ** 2, axis=1)  # squared distance
@@ -119,7 +118,7 @@ def bc_dpos(x):
 # Vizualizations of the particle motions can be found in "decomp-gnn/paper_experiments/graphs_data/graphs_arbitrary_3_field_video/"
 #
 # If the simulation is too large, you can decrease n_particles (multiple of 3) and n_nodes  in "arbitrary_3_field_video.yaml"
-#
+
 # %%
 #| echo: true
 #| output: false
@@ -155,6 +154,7 @@ load_and_display('graphs_data/graphs_arbitrary_3_field_video/Fig/Arrow_0_100.tif
 # During training the plots of the embedding are saved in
 # "paper_experiments/log/try_arbitrary_3_field_video/tmp_training/embedding".
 # The plots of the interaction functions are saved in "function" and the hidden field in "field".
+
 # %%
 #| echo: true
 #| output: false
@@ -163,6 +163,7 @@ if not os.path.exists(f'log/try_{config_file}'):
 
 # %% [markdown]
 # The model that has been trained in the previous step is used to generate the rollouts.
+
 # %%
 #| echo: true
 #| output: false
@@ -171,12 +172,12 @@ data_test(config, config_file, **test_kwargs)
 # %% [markdown]
 # Finally, we generate the figures that are shown in Figure 4.
 # The results of the GNN post-analysis are saved into 'decomp-gnn/paper_experiments/log/try_arbitrary_3_field_video/results'.
+
 # %%
 #| echo: true
 #| output: false
 config_list, epoch_list = get_figures(figure_id, device=device)
 
-# %%
 # %%
 #| fig-cap: "Learned latent vectors (x4800)"
 load_and_display('log/try_arbitrary_3_field_video/results/first_embedding_arbitrary_3_field_video_20.tif')
@@ -203,6 +204,3 @@ load_and_display('log/try_arbitrary_3_field_video/results/cues_scatter_20.tif')
 
 # %% [markdown]
 # All frames can be found in "decomp-gnn/paper_experiments/log/try_arbitrary_3_field_video/tmp_recons/"
-# %%
-#| echo: true
-#| output: false
