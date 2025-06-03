@@ -4,7 +4,7 @@
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Particles
-#   - GNN Generalization Test
+#   - Generalization Test
 # execute:
 #   echo: false
 # image: "create_fig_boids_supp13_files/figure-html/cell-8-output-1.png"

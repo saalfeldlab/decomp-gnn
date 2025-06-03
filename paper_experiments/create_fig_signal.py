@@ -4,9 +4,10 @@
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
 #   - Signaling
+#   - GNN Training
 # execute:
 #   echo: false
-# image: "create_fig_signal_files/figure-html/cell-15-output-1.png"
+# image: "create_fig_signal_files/figure-html/cell-9-output-1.png"
 # ---
 
 # %% [markdown]
