@@ -5,7 +5,7 @@ listing:
   type: default
   categories: true
   image-align: left
-  fields: [image, title, description, categories, filename, file-modified]
+  fields: [image, title, description, categories, filename]
   sort-ui: [title, file-modified]
   filter-ui: true
 ---

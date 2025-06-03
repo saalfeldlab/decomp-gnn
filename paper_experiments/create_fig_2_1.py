@@ -1,22 +1,21 @@
 # %% [raw]
 # ---
+# title: Attraction-repulsion system with 3 particle types
 # author: Cédric Allier, Michael Innerberger, Stephan Saalfeld
 # categories:
-#   - Particles, Simulation
+#   - Particles
+#   - Simulation
 # execute:
 #   echo: false
-# image: "create_fig_2_1_files/figure-html/cell-10-output-1.png"
+# image: "create_fig_2_1_files/figure-html/cell-9-output-1.png"
 # ---
 
 # %% [markdown]
-# # Attraction-repulsion system with 3 particle types
 # This script creates the first column of paper's Figure 2.
 # Simulation of an attraction-repulsion system, 4800 particles, 3 particle types.
 
 # %%
 #| output: false
-import os
-
 import umap
 import torch
 import torch_geometric as pyg
@@ -115,9 +114,6 @@ data_generate_particles(config, model, bc_pos, bc_dpos, **generate_kwargs)
 # %% [markdown]
 # Finally, we generate the figures that are shown in Figure 2.
 # All frames are saved in 'decomp-gnn/paper_experiments/graphs_data/arbitrary_3/Fig/'.
-# %%
-#| echo: true
-#| output: false
 
 # %%
 #| fig-cap: "Initial configuration of the simulation. There are 4800 particles. The orange, blue, and green particles represent the three different particle types."
