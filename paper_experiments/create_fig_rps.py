@@ -23,6 +23,7 @@ import os
 import umap
 import torch
 import torch_geometric as pyg
+import os
 
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.generators import data_generate_mesh
