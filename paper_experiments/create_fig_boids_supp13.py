@@ -27,6 +27,7 @@ from ParticleGraph.generators import data_generate_particles
 from ParticleGraph.models import data_train, data_test
 from ParticleGraph.plotting import get_figures, load_and_display
 from ParticleGraph.utils import set_device, to_numpy
+from torch_geometric.data import Data
 
 # %% [markdown]
 # First, we load the configuration file and set the device.
