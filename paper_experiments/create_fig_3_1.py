@@ -18,12 +18,13 @@
 
 # %%
 #| output: false
+import os
+
 import umap
 import torch
 import torch_geometric as pyg
 import torch_geometric.utils as pyg_utils
 from torch_geometric.data import Data
-import os
 
 from ParticleGraph.config import ParticleGraphConfig
 from ParticleGraph.generators import data_generate_particles
