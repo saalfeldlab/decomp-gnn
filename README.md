@@ -3,10 +3,13 @@ Cédric Allier, Magdalena C. Schneider, Michael Innerberger, Larissa Heinrich, J
 
 Janelia Research Campus, Howard Hughes Medical Institute
 
+To recreate the paper's figures run the scripts in `decomp_gnn/paper_experiments`. 
+The output of all these scripts can be found on our summary page: https://saalfeldlab.github.io/decomp-gnn/
+
 ![Summary of the GNN workflow](ressources/gnn-summary.png)
 
 ### Setup
-Run the following line from the terminal to create a new environment 'gnn':
+Run the following line from the terminal to create a new environment `gnn`:
 ```
 conda env create -f environment.yaml
 ```
@@ -20,9 +23,6 @@ Then, you should be able to import all the modules from the package in python:
 ```python
 from ParticleGraph import *
 ```
-
-To create the paper's figures run the scripts in decomp_gnn/paper_experiments.
-
 
 
 ### Citation
