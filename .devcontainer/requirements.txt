@@ -1,0 +1,32 @@
+# Core scientific computing and ML
+astropy==6.1.4
+geomloss==0.2.6
+GPUtil==1.4.0
+h5py==3.12.1
+imageio==2.36.0
+matplotlib==3.9.2
+networkx==3.4.2
+numpy==2.2.5
+pandas==2.2.3
+pillow==11.3.0
+prettytable==3.12.0
+pydantic==2.9.2
+PyYAML==6.0.2
+scikit-image==0.24.0
+scikit-learn==1.5.2
+scipy==1.14.1
+seaborn==0.13.2
+tifffile==2024.9.20
+torch==2.4.1
+torch-geometric==2.6.1
+torchvision==0.19.1
+tqdm==4.66.6
+umap-learn==0.5.7
+
+# Jupyter environment (for development)
+jupyter==1.1.1
+jupytext==1.16.4
+ipython==8.29.0
+
+# Custom packages
+fa2_modified==0.3.10
